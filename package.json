@@ -1,0 +1,25 @@
+{
+  "name": "corpse",
+  "version": "1.0.0",
+  "description": "CS506 Project",
+  "main": "app.js",
+  "scripts": {
+  "start": "node app.js",
+  "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gregg1494/corpse.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gregg1494/corpse/issues"
+  },
+  "homepage": "https://github.com/gregg1494/corpse#readme",
+  "dependencies": {
+    "chai": "^4.2.0",
+    "express": "^4.17.1",
+    "mocha": "^6.2.1"
+  }
+}
