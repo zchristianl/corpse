@@ -1,13 +1,13 @@
-const express = require('express');
+import express from 'express';
 
-const app = express();
+let app = express();
 
 app.get('/', (req, res) => {
   res.send('ci with travis');
 });
 
-const server = app.listen(3000, () => {
+let server = app.listen(3000, () => {
   console.log('App running on port 3000');
 });
 
-module.exports = server;
+export default server;
