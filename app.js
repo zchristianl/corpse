@@ -3,7 +3,7 @@ const Sequelize = require('sequelize');
 const path = require('path');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-const passport = require('passport');
+const logger = require('./utils/logger');
 require('dotenv').config();
 
 // DB connection
@@ -13,10 +13,10 @@ let sequelize = new Sequelize(process.env.DB_CONNECTIONSTRING);
 sequelize
   .authenticate()
   .then(() => {
-    console.log('Connection has been established successfully.');
+    logger.info('Connection has been established successfully.');
   })
   .catch(err => {
-    console.error('Unable to connect to the database:', err);
+    logger.error('Unable to connect to the database:', err);
   });
 
 let app = express();
@@ -36,26 +36,13 @@ app.use(session({
   saveUninitialized: true
 }));
 
-// Express messages middleware
-app.use(require('connect-flash')());
-app.use(function (req, res, next) {
-  res.locals.messages = require('express-messages')(req, res);
-  next();
-});
-
-// Passport config
-require('./config/passport')(passport);
-// Passport middleware
-app.use(passport.initialize());
-app.use(passport.session());
-
 app.get('/', (req, res) => {
   res.send('ci with travis');
 });
 
 
 let server = app.listen(3000, () => {
-  console.log('App running on port 3000');
+  logger.info('App running on port 3000');
 });
 
 module.exports = server;
