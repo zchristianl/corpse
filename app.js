@@ -1,16 +1,12 @@
 const express = require('express');
-const Sequelize = require('sequelize');
+const {db, User} = require('./config/database');
 const path = require('path');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const logger = require('./utils/logger');
-require('dotenv').config();
-
-// DB connection
-let sequelize = new Sequelize(process.env.DB_CONNECTIONSTRING);
 
 // Check DB connection
-sequelize
+db
   .authenticate()
   .then(() => {
     logger.info('Connection has been established successfully.');
@@ -19,7 +15,7 @@ sequelize
     logger.error('Unable to connect to the database:', err);
   });
 
-let app = express();
+const app = express();
 
 // Body Parser Middleware
 // parse application/x-www-form-urlencoded
@@ -38,10 +34,11 @@ app.use(session({
 
 app.get('/', (req, res) => {
   res.send('ci with travis');
+  User.findOrCreate({ where: { name: 'testname2', username: 'testusername2', password: 'testpass2', email: 'testemail2' }});
+  logger.debug(User.findAll());
 });
 
-
-let server = app.listen(3000, () => {
+const server = app.listen(3000, () => {
   logger.info('App running on port 3000');
 });
 
