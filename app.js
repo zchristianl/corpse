@@ -38,6 +38,7 @@ app.get('/', (req, res) => {
   logger.debug(User.findAll());
 });
 
+
 const server = app.listen(3000, () => {
   logger.info('App running on port 3000');
 });
