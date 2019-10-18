@@ -9,9 +9,9 @@ const db = new Sequelize(process.env.DB_CONNECTIONSTRING);
 const User = UserModel(db, Sequelize);
 
 db.sync().then(function() {
-  console.log('Nice! Database looks fine.');
+  logger.info('Nice! Database looks fine.');
 }).catch(function(err) {
-  console.log(err, "Something went wrong with the Database Update!");
+  logger.error(err, 'Something went wrong with the Database Update!');
 });
 
 module.exports = {

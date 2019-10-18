@@ -1,12 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const path = require('path');
-const bodyParser = require('body-parser');
 const {check, validationResult} = require('express-validator');
-const session = require('express-session');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
-const flash = require('connect-flash');
 const {User} = require('../config/database');
 const logger = require('../utils/logger');
 

@@ -5,7 +5,6 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const logger = require('./utils/logger');
 const passport = require('passport');
-const flash = require('connect-flash');
 
 // Check DB connection
 db
@@ -55,7 +54,7 @@ app.use(function (req, res, next) {
 });
 
 // Passport config
-require('./config/passport')(passport)
+require('./config/passport')(passport);
 // Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
