@@ -69,7 +69,7 @@ router.get('/login', (req, res) => {
 
 // Login process
 router.post('/login', (req, res, next) => {
-  passport.authenticate('local-signin', {
+  passport.authenticate('local', {
     successRedirect: '/',
     failureRedirect: '/users/login',
     failureFlash: true
