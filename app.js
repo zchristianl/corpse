@@ -73,6 +73,6 @@ app.get('/', (req, res) => {
 let users = require('./routes/users');
 app.use('/users', users);
 
-app.listen(8080, () => {
-  logger.info('App running on port 8080');
+app.listen(3000, () => {
+  logger.info('App running on port 3000');
 });
