@@ -8,7 +8,5 @@ module.exports = {
     models.Client.hasOne(models.Location);
     models.Client.hasOne(models.Lab);
     models.Client.hasOne(models.Department);
-
   }
-
 };

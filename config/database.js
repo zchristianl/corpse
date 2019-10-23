@@ -1,7 +1,5 @@
 const Sequelize = require('sequelize');
-
 const relations = require('./associations');
-
 const ProjectRequire = {};
 const logger = require('../utils/logger');
 require('dotenv').config();
@@ -37,7 +35,6 @@ const Lab = ProjectRequire.lab(db, Sequelize);
 const Location = ProjectRequire.location(db, Sequelize);
 const User = ProjectRequire.user(db, Sequelize);
 
-
 //Model Registration Step 2, Add variable to this list
 
 let models = {
@@ -51,22 +48,12 @@ let models = {
   User
 };
 
-
 relations.run(models);
-
-
-
-
-
-
 
 db.sync().then(function() {
   logger.info('Nice! Database looks fine.');
 }).catch(function(err) {
   logger.error(err, 'Something went wrong with the Database Update!');
 });
-
-
-
 
 module.exports = models;
