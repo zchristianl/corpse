@@ -6,8 +6,6 @@ require('dotenv').config();
 const fs = require('fs');
 const path = require('path');
 
-
-
 /*
 * Register all models into ProjectRequire based on model name
 * */
@@ -27,6 +25,7 @@ const db = new Sequelize(process.env.DB_CONNECTIONSTRING);
  * Model Registration Step 1
  * Declare variable and call (db, Sequelize) on it based on ProjectRequire
 */
+
 const Building = ProjectRequire.building(db, Sequelize);
 const Client = ProjectRequire.client(db, Sequelize);
 const Department = ProjectRequire.department(db, Sequelize);
@@ -34,6 +33,7 @@ const Institution = ProjectRequire.institution(db, Sequelize);
 const Lab = ProjectRequire.lab(db, Sequelize);
 const Location = ProjectRequire.location(db, Sequelize);
 const User = ProjectRequire.user(db, Sequelize);
+const Inventory = ProjectRequire.inventory(db, Sequelize);
 
 //Model Registration Step 2, Add variable to this list
 
@@ -45,13 +45,14 @@ let models = {
   Institution,
   Lab,
   Location,
-  User
+  User,
+  Inventory
 };
 
 relations.run(models);
 
 db.sync().then(function() {
-  logger.info('Nice! Database looks fine.');
+  logger.info('Database tables synced. Oh Joy!');
 }).catch(function(err) {
   logger.error(err, 'Something went wrong with the Database Update!');
 });
