@@ -1,13 +1,25 @@
 const express = require('express');
-const {db} = require('./config/database');
+const models = require('./config/database');
 const path = require('path');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const logger = require('./utils/logger');
 const passport = require('passport');
+const app = express();
+
+// prepare server
+// redirect bootstrap JS
+app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
+// redirect JS jQuery
+app.use('/js', express.static(__dirname + '/node_modules/jquery/dist'));
+// redirect
+app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
+// Load View Engine
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'pug');
 
 // Check DB connection
-db
+models.db
   .authenticate()
   .then(() => {
     logger.info('Connection has been established successfully.');
@@ -15,20 +27,6 @@ db
   .catch(err => {
     logger.error('Unable to connect to the database:', err);
   });
-
-const app = express();
-
-// prepare server
-// redirect bootstrap JS
-app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
-// redirect JS jQuery
-app.use('/js', express.static(__dirname + '/node_modules/jquery/dist')); 
-// redirect
-app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
-
-// Load View Engine
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
 
 // Body Parser Middleware
 // parse application/x-www-form-urlencoded
@@ -38,6 +36,7 @@ app.use(bodyParser.json());
 
 // Set public folder
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 // Express session middleware
 app.use(session({
