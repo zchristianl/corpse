@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-const relations = require('./associations')
+const relations = require('./associations');
 
 const ProjectRequire = {};
 const logger = require('../utils/logger');
@@ -38,7 +38,7 @@ const Location = ProjectRequire.location(db, Sequelize);
 const User = ProjectRequire.user(db, Sequelize);
 
 
-
+//Model Registration Step 2, Add variable to this list
 
 let models = {
   db,
@@ -67,5 +67,5 @@ db.sync()
 
 
 
-//Model Registration Step 2, Add variable to this list
+
 module.exports = models;
