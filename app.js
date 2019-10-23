@@ -1,12 +1,17 @@
 const express = require('express');
-const {db, User} = require('./config/database');
+const models = require('./config/database');
 const path = require('path');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const logger = require('./utils/logger');
+const app = express();
+
+
+
+
 
 // Check DB connection
-db
+models.db
   .authenticate()
   .then(() => {
     logger.info('Connection has been established successfully.');
@@ -15,7 +20,7 @@ db
     logger.error('Unable to connect to the database:', err);
   });
 
-const app = express();
+
 
 // Body Parser Middleware
 // parse application/x-www-form-urlencoded
@@ -34,8 +39,8 @@ app.use(session({
 
 app.get('/', (req, res) => {
   res.send('ci with travis');
-  User.findOrCreate({ where: { name: 'testname2', username: 'testusername2', password: 'testpass2', email: 'testemail2' }});
-  logger.debug(User.findAll());
+  models.User.findOrCreate({ where: { name: 'testname2', username: 'testusername2', password: 'testpass2', email: 'testemail2' }});
+  logger.debug(models.User.findAll());
 });
 
 

@@ -9,4 +9,6 @@ module.exports = (sequelize, type) => sequelize.define('location', {
 
   //Foreign keys
   // building, institution(nullable)
+
+
 });

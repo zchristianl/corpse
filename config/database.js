@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 
-
+const relations = require('./associations')
 
 const ProjectRequire = {};
 const logger = require('../utils/logger');
@@ -37,15 +37,10 @@ const Lab = ProjectRequire.lab(db, Sequelize);
 const Location = ProjectRequire.location(db, Sequelize);
 const User = ProjectRequire.user(db, Sequelize);
 
-db.sync()
-  .then(() => {
-    logger.info('Database & tables created!');
-  });
 
 
 
-//Model Registration Step 2, Add variable to this list
-module.exports = {
+let models = {
   db,
   Building,
   Client,
@@ -55,3 +50,22 @@ module.exports = {
   Location,
   User
 };
+
+
+relations.run(models);
+
+
+
+
+
+
+
+db.sync()
+  .then(() => {
+    logger.info('Database & tables created!');
+  });
+
+
+
+//Model Registration Step 2, Add variable to this list
+module.exports = models;

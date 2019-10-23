@@ -7,7 +7,7 @@ module.exports = (sequelize, type) => sequelize.define('institution', {
   name: type.STRING,
   address: type.STRING,
   city: type.STRING,
-  state: type.VARCHAR(2)
+  state: type.STRING(3)
 
 
 

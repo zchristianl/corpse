@@ -7,7 +7,7 @@ module.exports = (sequelize, type) => sequelize.define('lab', {
   pi_first: type.STRING,
   pi_last: type.STRING,
   pi_email: type.STRING,
-  phone: type.VARCHAR(12),
+  phone: type.STRING(12),
   registration: type.DATE
 
   //Foreign Keys

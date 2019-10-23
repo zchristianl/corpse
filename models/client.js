@@ -7,8 +7,8 @@ module.exports = (sequelize, type) => sequelize.define('client', {
   first: type.STRING,
   last: type.STRING,
   email: type.STRING,
-  title: type.VARCHAR(10),
-  phone: type.VARCHAR(12),
+  title: type.STRING(10), //10
+  phone: type.STRING(12), //12
   registration: type.DATE
 
 
