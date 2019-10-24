@@ -37,7 +37,6 @@ app.use(bodyParser.json());
 // Set public folder
 app.use(express.static(path.join(__dirname, 'public')));
 
-
 // Express session middleware
 app.use(session({
   secret: 'keyboard cat',

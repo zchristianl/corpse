@@ -7,7 +7,4 @@ module.exports = (sequelize, type) => sequelize.define('building', {
   name: type.STRING,
   address: type.STRING,
   zip_code: type.INTEGER
-
-
-
 });

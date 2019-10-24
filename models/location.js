@@ -4,9 +4,7 @@ module.exports = (sequelize, type) => sequelize.define('location', {
     primaryKey: true,
     autoIncrement: true
   },
-
   room: type.INTEGER
-
   //Foreign keys
   // building, institution(nullable)
 });
