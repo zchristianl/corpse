@@ -4,8 +4,8 @@ module.exports = {
     models.Location.hasOne(models.Building);
     models.Location.hasOne(models.Institution);
     models.Lab.hasOne(models.Location);
-    models.Client.hasOne(models.Location);
-    models.Client.hasOne(models.Lab);
-    models.Client.hasOne(models.Department);
+    models.User.hasOne(models.Location);
+    models.User.hasOne(models.Lab);
+    models.User.hasOne(models.Department);
   }
 };

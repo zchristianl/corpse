@@ -25,7 +25,6 @@ const db = new Sequelize(process.env.DB_CONNECTIONSTRING);
  * Declare variable and call (db, Sequelize) on it based on ProjectRequire
 */
 const Building = ProjectRequire.building(db, Sequelize);
-const Client = ProjectRequire.client(db, Sequelize);
 const Department = ProjectRequire.department(db, Sequelize);
 const Institution = ProjectRequire.institution(db, Sequelize);
 const Lab = ProjectRequire.lab(db, Sequelize);
@@ -37,7 +36,6 @@ const Inventory = ProjectRequire.inventory(db, Sequelize);
 let models = {
   db,
   Building,
-  Client,
   Department,
   Institution,
   Lab,
