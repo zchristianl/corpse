@@ -13,7 +13,7 @@ router.get('/checkout', ensureAthnticated, (req, res) => {
 });
 
 // Payment
-router.post('/checkout', ensureAthnticated, async (req, res) => {
+router.post('/checkout', ensureAthnticated, (req, res) => {
   let amount = 500;
   stripe.customers.create({
     email: req.body.email,
@@ -26,7 +26,6 @@ router.post('/checkout', ensureAthnticated, async (req, res) => {
         currency: 'usd',
         customer: customer.id
       }))
-    .then(res.redirect('/'))
     .then(charge => res.send(charge))
     .catch(err => {
       logger.error(err);
