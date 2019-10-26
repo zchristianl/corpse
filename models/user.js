@@ -1,13 +1,16 @@
-module.exports = (sequelize, Sequelize) => {
-  return sequelize.define('user', {
-    id: {
-      type: Sequelize.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
-    },
-    name: Sequelize.STRING,
-    username: Sequelize.STRING,
-    email: Sequelize.STRING,
-    password: Sequelize.STRING  
-  });
-};
+module.exports = (sequelize, type) => sequelize.define('user', {
+  id: {
+    type: type.INTEGER,
+    primaryKey: true,
+    autoIncrement: true
+  },
+  first_name: type.STRING,
+  last_name: type.STRING,
+  email: type.STRING,
+  password: type.STRING,
+  account_type: type.STRING(10), //12
+  phone: type.STRING(12), //12
+  fax: type.STRING(12), //12
+  //Foreign Keys
+  //dept, lab, location, linked user????
+});
