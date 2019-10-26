@@ -8,12 +8,12 @@ const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripe = require('stripe')(stripeSecretKey);
 
 // Store
-router.get('/checkout', ensureAthnticated, (req, res) => {
+router.get('/checkout', (req, res) => {
   res.render('checkout');
 });
 
 // Payment
-router.post('/checkout', ensureAthnticated, (req, res) => {
+router.post('/checkout', (req, res) => {
   let amount = 500;
   stripe.customers.create({
     email: req.body.email,
@@ -26,7 +26,7 @@ router.post('/checkout', ensureAthnticated, (req, res) => {
         currency: 'usd',
         customer: customer.id
       }))
-    .then(charge => res.send(charge))
+    .then(charge => logger.debug(charge), res.redirect('/'))
     .catch(err => {
       logger.error(err);
       res.status(500).send({error: 'Purchase Failed'});
