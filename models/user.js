@@ -8,7 +8,7 @@ module.exports = (sequelize, type) => sequelize.define('user', {
   last_name: type.STRING,
   email: type.STRING,
   password: type.STRING,
-  account: type.STRING(10), //12
+  account_type: type.STRING(10), //12
   phone: type.STRING(12), //12
   fax: type.STRING(12), //12
   //Foreign Keys
