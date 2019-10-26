@@ -9,7 +9,6 @@ const path = require('path');
 /*
 * Register all models into ProjectRequire based on model name
 * */
-
 let files =fs.readdirSync(path.join(__dirname,'../models'));
 
 files.forEach((f)=> {
@@ -25,7 +24,6 @@ const db = new Sequelize(process.env.DB_CONNECTIONSTRING);
  * Model Registration Step 1
  * Declare variable and call (db, Sequelize) on it based on ProjectRequire
 */
-
 const Building = ProjectRequire.building(db, Sequelize);
 const Client = ProjectRequire.client(db, Sequelize);
 const Department = ProjectRequire.department(db, Sequelize);
@@ -36,7 +34,6 @@ const User = ProjectRequire.user(db, Sequelize);
 const Inventory = ProjectRequire.inventory(db, Sequelize);
 
 //Model Registration Step 2, Add variable to this list
-
 let models = {
   db,
   Building,

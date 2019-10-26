@@ -8,7 +8,4 @@ module.exports = (sequelize, type) => sequelize.define('institution', {
   address: type.STRING,
   city: type.STRING,
   state: type.STRING(3)
-
-
-
 });
