@@ -4,18 +4,16 @@ require('dotenv').config();
 const logger = require('../utils/logger');
 
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-const stripePublicKey = process.env.STRIPE_PUBLIC_KEY;
 
-// Require the Stripe library with a test secret key.
 const stripe = require('stripe')(stripeSecretKey);
 
 // Store
-router.get('/checkout', (req, res) => {
+router.get('/checkout', ensureAthnticated, (req, res) => {
   res.render('checkout');
 });
 
 // Payment
-router.post('/checkout', (req, res) => {
+router.post('/checkout', ensureAthnticated, (req, res) => {
   let amount = 500;
   stripe.customers.create({
     email: req.body.email,
