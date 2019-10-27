@@ -13,11 +13,9 @@ exports.register_post = (req, res) => {
   const errors = validationResult(req);
   if(!errors.isEmpty()) {
     logger.error(errors.array());
-    res.status(422).json({ errors: errors.array() });
-    // res.render('register', {
-    //   res.status(422).json({ errors: errors.array() });
-    //   errors: errors.array() 
-    // });
+    res.render('register', {
+      errors: errors.array() 
+    });
   } else {
 
     const newUser = {
