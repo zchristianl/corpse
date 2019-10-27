@@ -13,7 +13,7 @@ router.get('/checkout', (req, res) => {
 });
 
 // Payment
-router.post('/checkout', (req, res) => {
+router.post('/checkout', ensureAthnticated, (req, res) => {
   let amount = 500;
   stripe.customers.create({
     email: req.body.email,
