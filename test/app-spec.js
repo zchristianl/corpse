@@ -1,46 +1,26 @@
 const expect = require('chai').expect;
+var express = require('express');
+var app = express();
 
-describe('test', () => {
+describe('Basic Test', () => {
   it('should return a string', () => {
     expect('ci with travis').to.equal('ci with travis');
   });
 });
 
-var User, app, request, server, should, user, agent;
-
-should   = require("should");
-app      = require("../server");
-user     = model("user");
-request  = require("supertest");
-agent = request.agent(app);
-
-describe('User', function () {
-  before(function(done) {
-      user = new user({
-        email    : "user@user.com",
-        first_name: "Full Name",
-        last_name : "Last Name",
-        password : "pass11",
-        account_type : "account_type",
-        phone: "phone_number",
-        fax: "fax number"
-      });
-      user.save(done)
+describe('User module', () => {
+  beforeEach(() => {
+    app.set('views', 'login');
+    app.set('view engine', 'ext');
+    app.engine('ext', (path, options, callback) => {
+      const details = Object.assign({ path, }, options);
+      callback(null, JSON.stringify(details));
     });
-  describe('Login test', function () {
-      it('should redirect to /', function (done) {
-        agent
-        .post('/users/session')
-        .field('email', 'user@user.com')
-        .field('password', 'pass11')
-        .expect('Location','/')
-        .end(done)
-      })
-
-  after(function(done) {
-      User.remove().exec();
-      return done();
-    });
-
-})
-})
+  });
+  it('Login Test', async () => {
+    const res = await app.get('/login').type('text/html');
+  
+    // This will have your response as json
+    expect(res.text).to.equal('Sign In');
+  });
+});
