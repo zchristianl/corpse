@@ -7,5 +7,7 @@ module.exports = {
     models.User.hasOne(models.Location);
     models.User.hasOne(models.Lab);
     models.User.hasOne(models.Department);
+    models.Order.hasOne(models.Inventory);
+    models.Order.hasOne(models.User);
   }
 };
