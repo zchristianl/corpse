@@ -31,6 +31,7 @@ const Lab = ProjectRequire.lab(db, Sequelize);
 const Location = ProjectRequire.location(db, Sequelize);
 const User = ProjectRequire.user(db, Sequelize);
 const Inventory = ProjectRequire.inventory(db, Sequelize);
+const Order = ProjectRequire.order(db, Sequelize);
 
 //Model Registration Step 2, Add variable to this list
 let models = {
@@ -41,7 +42,8 @@ let models = {
   Lab,
   Location,
   User,
-  Inventory
+  Inventory,
+  Order
 };
 
 relations.run(models);
