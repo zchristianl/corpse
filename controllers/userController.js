@@ -75,15 +75,15 @@ exports.login_post = (req, res, next) => {
 
 exports.validate = (method) => {
   switch (method) {
-    case 'createUser': {
-      return  [
-        check('first_name', 'First name is required').not().isEmpty(),
-        check('email', 'Email is required').not().isEmpty().isEmail().normalizeEmail(),
-        check('password', 'Password is required').not().isEmpty(),
-        check('password2', 'Confirm Password is required').not().isEmpty(),
-        check('password2', 'Please make sure both password match').custom((value, {req}) => (value === req.body.password))
-      ]; 
-    }
+  case 'createUser': {
+    return  [
+      check('first_name', 'First name is required').not().isEmpty(),
+      check('email', 'Email is required').not().isEmpty().isEmail().normalizeEmail(),
+      check('password', 'Password is required').not().isEmpty(),
+      check('password2', 'Confirm Password is required').not().isEmpty(),
+      check('password2', 'Please make sure both password match').custom((value, {req}) => (value === req.body.password))
+    ]; 
+  }
   }
 };
 
@@ -102,36 +102,36 @@ const makeAssociations = (user, regInfo) => {
     pi_email: 'lab@gmail.com',
     phone: '18471234567'
   })
-  .then(lab => {
-    models.Location.create({
-      userId: user.get('id'),
-      labId: lab.get('id'),
-      room: 12,
-    })
-    .then(location => {
-      models.Building.create({
-        locationId: location.get('id'),
-        name: 'uw madison CS building',
-        address: 'madison',
-        zip_code: '00000'
+    .then(lab => {
+      models.Location.create({
+        userId: user.get('id'),
+        labId: lab.get('id'),
+        room: 12,
       })
-      .then(() => {
-        models.Institution.create({
-          locationId: location.get('id'),
-          name: 'uw madison',
-          address: '1402 regent st',
-          city: 'madison',
-          post_code: '00000',
-          state: 'WI'
+        .then(location => {
+          models.Building.create({
+            locationId: location.get('id'),
+            name: 'uw madison CS building',
+            address: 'madison',
+            zip_code: '00000'
+          })
+            .then(() => {
+              models.Institution.create({
+                locationId: location.get('id'),
+                name: 'uw madison',
+                address: '1402 regent st',
+                city: 'madison',
+                post_code: '00000',
+                state: 'WI'
+              });
+            });
         });
+    })
+    .then(() => {
+      models.Department.create({
+        userId: user.get('id'),
+        name: 'Computer Sciences'
       });
-    });
-  })
-  .then(() => {
-    models.Department.create({
-      userId: user.get('id'),
-      name: 'Computer Sciences'
-    });
-  })
-  .catch(err => logger.error(err));
+    })
+    .catch(err => logger.error(err));
 };
