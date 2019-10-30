@@ -4,6 +4,7 @@ var app = require('../app');
 var expect = require('chai').expect;
 var userController = require('../controllers/userController.js');
 const http = require('http');
+var assert = require('assert');
 
 chai.use(chaiHttp);
 
@@ -76,7 +77,7 @@ describe('test', () => {
     this.timeout(0);
     chai.request(app)
       .get('/users/register')
-      .end(function(err, res){        
+      .end(function(err, res){
         expect(res.text).to.have.string('Register');
         expect(res.text).to.have.string('<input class=\"form-control\" name=\"first_name\" type=\"text\">');
         expect(res.text).to.have.string('<input class=\"form-control\" name=\"email\" type=\"text\"');
@@ -85,7 +86,31 @@ describe('test', () => {
       });
   });
 
-  //it('/usercontrol Post Test', function(done) {
-    
-  //});
+  it('should send parameters to : /path POST', function(done) {
+    var path = "/users/login";
+    chai
+     .request(app)
+     .post(path)
+    // .field('myparam' , 'test')
+      .set('content-type', 'application/x-www-form-urlencoded')
+      .send({Email: 'test_email@mail.com', Password: 'asdf'})
+      .end(function(response) {
+        expect(response.status).to.equal(200);
+        done();
+    });
+  });
+
+    it('should send parameters to : /path POST', function(done) {
+    var path = "/users/login";
+    chai
+     .request(app)
+     .post(path)
+    // .field('myparam' , 'test')
+      .set('content-type', 'application/x-www-form-urlencoded')
+      .send({Email: 'test_email@mail.com', Password: 'asdf'})
+      .end(function(response) {
+        expect(response.accepted).to.be.equal(false);
+        done();
+    });
+  });
 });

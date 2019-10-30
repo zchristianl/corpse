@@ -49,7 +49,6 @@ exports.login_get = (req, res) => {
 };
 
 exports.login_post = (req, res, next) => {
-  console.log(req);
   passport.authenticate('local', {
     successRedirect: '/',
     failureRedirect: '/users/login',
