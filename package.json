@@ -23,7 +23,6 @@
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
     "bootstrap": "^4.3.1",
-    "chai": "^4.2.0",
     "connect-flash": "^0.1.1",
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
@@ -41,6 +40,9 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
+    "@types/chai-http": "^4.2.0",
+    "chai": "^3.2.0",
+    "chai-http": "^1.0.0",
     "eslint": "^6.5.1",
     "nodemon": "^1.19.4"
   }
