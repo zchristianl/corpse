@@ -73,8 +73,8 @@ app.get('/', (req, res) => {
 // Route files
 let users = require('./routes/users');
 app.use('/users', users);
-let store = require('./routes/store');
-app.use('/store', store);
+let payment = require('./routes/payment');
+app.use('/payment', payment);
 
 app.listen(3000, () => {
   logger.info('App running on port 3000');
