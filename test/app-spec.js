@@ -39,7 +39,7 @@ describe('test', () => {
   it('should return a string', () => {
     chai.expect('ci with travis').to.equal('ci with travis');
   });
-
+  
   it('/user/login GET', function(done) {
     this.timeout(0);
     chai.request(app)

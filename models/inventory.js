@@ -1,21 +1,21 @@
-module.exports = (sequelize, Sequelize) => {
+module.exports = (sequelize, type) => {
   return sequelize.define('inventory', {
     id: {
-      type: Sequelize.INTEGER,
+      type: type.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
     name: {
-      type: Sequelize.STRING,
+      type: type.STRING,
       allowNull: false,
     },
-    category: Sequelize.STRING,
-    type: Sequelize.ENUM('product', 'service'),
-    description: Sequelize.TEXT,
+    category: type.STRING,
+    type: type.ENUM('product', 'service'),
+    description: type.TEXT,
     cost: {
-      type: Sequelize.DECIMAL,
+      type: type.DECIMAL,
       allowNull: false
     },
-    price: Sequelize.DECIMAL
+    price: type.DECIMAL
   });
 };
