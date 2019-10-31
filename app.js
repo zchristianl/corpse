@@ -73,6 +73,8 @@ app.get('/', (req, res) => {
 // Route files
 let users = require('./routes/users');
 app.use('/users', users);
+let inventory = require('./routes/inventory');
+app.use('/inventory', inventory);
 let payment = require('./routes/payment');
 app.use('/payment', payment);
 
