@@ -3,7 +3,7 @@ extends layout
 block content
   h1 Client Registration
   br
-  form.needs-validation(novalidate)
+  form.needs-validation(method='POST', action='/users/register' novalidate)
     .row
       .col
         label First Name:
