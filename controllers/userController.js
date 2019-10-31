@@ -9,7 +9,6 @@ exports.register_get = (req, res) => {
 };
 
 exports.register_post = (req, res) => {
-  console.log('in here');
   const errors = validationResult(req);
   if(!errors.isEmpty()) {
     logger.error(errors.array());
@@ -74,7 +73,6 @@ exports.login_post = (req, res, next) => {
 };
 
 exports.validate = (method) => {
-  console.log('validate');
   switch (method) {
   case 'createUser': {
     return  [
