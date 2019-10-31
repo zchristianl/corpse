@@ -78,10 +78,10 @@ describe('test', () => {
     chai.request(app)
       .get('/users/register')
       .end(function(err, res){
-        expect(res.text).to.have.string('Register');
-        expect(res.text).to.have.string('<input class=\"form-control\" name=\"first_name\" type=\"text\">');
-        expect(res.text).to.have.string('<input class=\"form-control\" name=\"email\" type=\"text\"');
-        expect(res.text).to.have.string('<input class=\"form-control\" name=\"password\" type=\"password\"');
+        expect(res.text).to.have.string('<h1>Client Registration</h1>');
+        expect(res.text).to.have.string('<input class="form-control" name="first_name" type="text" required="required" maxlength="25"');
+        expect(res.text).to.have.string('<input class="form-control" name="email" type="email" required="required" maxlength="50"');
+        expect(res.text).to.have.string('<input class="form-control" name="password" type="password" required="required"');
         done();
       });
   });
