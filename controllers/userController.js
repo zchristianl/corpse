@@ -3,7 +3,6 @@ const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const models = require('../config/database');
 const logger = require('../utils/logger');
-const util = require('util');
 
 exports.register_get = (req, res) => {
   res.render('register');
