@@ -34,6 +34,7 @@ module.exports = {
         "no-multiple-empty-lines": [
             "error", 
             { "max": 1, "maxEOF": 1}
-        ]
+        ],
+        "no-useless-escape": 0
     }
 };
