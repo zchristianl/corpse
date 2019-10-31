@@ -72,7 +72,11 @@ let users = require('./routes/users');
 app.use('/users', users);
 let inventory = require('./routes/inventory');
 app.use('/inventory', inventory);
+let store = require('./routes/store');
+app.use('/store', store);
 
 app.listen(3000, () => {
   logger.info('App running on port 3000');
 });
+
+module.exports = app; 

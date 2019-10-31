@@ -1,7 +1,7 @@
 const models = require('../config/database');
 const logger = require('../utils/logger');
 
-// Inventory home
+// Display all
 exports.inventory_get = (req, res) => {
   models.Inventory.findAll()
     .then(items => res.render('inventory',{
