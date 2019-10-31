@@ -10,7 +10,7 @@ exports.register_get = (req, res) => {
 };
 
 exports.register_post = (req, res) => {
-  //Get errors
+  console.log('in here');
   const errors = validationResult(req);
   if(!errors.isEmpty()) {
     logger.error(errors.array());
@@ -51,7 +51,8 @@ exports.register_post = (req, res) => {
           last_name: last_name,
           email: email,
           password: hash,
-          account_type: 'client'
+          account_type: 'client',
+          phone: regInfo.phone
         })
           .then(user => makeAssociations(user, regInfo))
           .then(() => {res.redirect('/'), req.flash('success', 'You are now registered and can log in');})
@@ -74,14 +75,19 @@ exports.login_post = (req, res, next) => {
 };
 
 exports.validate = (method) => {
+  console.log('validate');
   switch (method) {
   case 'createUser': {
     return  [
       check('first_name', 'First name is required').not().isEmpty(),
+      check('last_name', 'Last name is required').not().isEmpty(),
       check('email', 'Email is required').not().isEmpty().isEmail().normalizeEmail(),
       check('password', 'Password is required').not().isEmpty(),
       check('password2', 'Confirm Password is required').not().isEmpty(),
-      check('password2', 'Please make sure both password match').custom((value, {req}) => (value === req.body.password))
+      check('password2', 'Please make sure both password match').custom((value, {req}) => (value === req.body.password)),
+      check('phone', 'Phone number is required').not().isEmpty(),
+      check('phone', 'Please input phone number correctly').isMobilePhone(),
+      check('first_name', 'First name is required').not().isEmpty(),
     ]; 
   }
   }
@@ -94,7 +100,6 @@ exports.logout_post = (req, res) => {
 };
 
 const makeAssociations = (user, regInfo) => {
-  logger.debug(util.format('%o', regInfo));
   models.Lab.create({
     userId: user.get('id'),
     pi_first: 'pi first',
