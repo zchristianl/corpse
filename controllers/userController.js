@@ -87,7 +87,9 @@ exports.validate = (method) => {
       check('password2', 'Please make sure both password match').custom((value, {req}) => (value === req.body.password)),
       check('phone', 'Phone number is required').not().isEmpty(),
       check('phone', 'Please input phone number correctly').isMobilePhone(),
-      check('first_name', 'First name is required').not().isEmpty(),
+      check('city', 'City is required').not().isEmpty(),
+      check('zip', 'Zip code is required').not().isEmpty(),
+      check('zip', 'Please input zip code correctly').isPostalCode(),
     ]; 
   }
   }
