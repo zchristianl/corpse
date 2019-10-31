@@ -21,7 +21,7 @@ exports.register_post = (req, res) => {
 
     const newUser = {
       first_name: req.body.first_name,
-      // last_name: req.body.last_name,
+      last_name: req.body.last_name,
       email: req.body.email,
       password: req.body.password,
     };
@@ -39,7 +39,7 @@ exports.register_post = (req, res) => {
       payment: req.body.payment
     };
 
-    let {first_name, email, password} = newUser;
+    let {first_name, last_name, email, password} = newUser;
 
     bcrypt.genSalt(10, (err, salt) => {
       bcrypt.hash(password, salt, (err, hash) => {
@@ -48,7 +48,7 @@ exports.register_post = (req, res) => {
         }
         models.User.create({
           first_name: first_name,
-          last_name: 'last_name',
+          last_name: last_name,
           email: email,
           password: hash,
           account_type: 'client'
@@ -97,9 +97,9 @@ const makeAssociations = (user, regInfo) => {
   logger.debug(util.format('%o', regInfo));
   models.Lab.create({
     userId: user.get('id'),
-    pi_first: 'lab first',
-    pi_last: 'lab last',
-    pi_email: 'lab@gmail.com',
+    pi_first: 'pi first',
+    pi_last: 'pi last',
+    pi_email: 'pi_email@gmail.com',
     phone: '18471234567'
   })
     .then(lab => {
@@ -111,18 +111,18 @@ const makeAssociations = (user, regInfo) => {
         .then(location => {
           models.Building.create({
             locationId: location.get('id'),
-            name: 'uw madison CS building',
-            address: 'madison',
-            zip_code: '00000'
+            name: regInfo.department,
+            address: regInfo.address1,
+            zip_code: regInfo.zip_code
           })
             .then(() => {
               models.Institution.create({
                 locationId: location.get('id'),
-                name: 'uw madison',
-                address: '1402 regent st',
-                city: 'madison',
-                post_code: '00000',
-                state: 'WI'
+                name: regInfo.organization,
+                address: regInfo.address1,
+                city: regInfo.city,
+                post_code: regInfo.zip_code,
+                state: regInfo.state
               });
             });
         });
@@ -130,7 +130,7 @@ const makeAssociations = (user, regInfo) => {
     .then(() => {
       models.Department.create({
         userId: user.get('id'),
-        name: 'Computer Sciences'
+        name: regInfo.department
       });
     })
     .catch(err => logger.error(err));
