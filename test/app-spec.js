@@ -113,6 +113,20 @@ describe('test', () => {
       });
   });
 
+  it('/path POST test: register page connection', function(done) {
+    var path = '/users/register';
+    chai
+      .request(app)
+      .post(path)
+    // .field('myparam' , 'test')
+      .set('content-type', 'application/x-www-form-urlencoded')
+      .send({Email: 'test_email@mail.com', Password: 'asdf'})
+      .end(function(response) {
+        expect(response.status).to.equal(200);
+        done();
+      });
+  });
+
   it('/path POST test: register page data validation', function(done) {
     var path = '/users/register';
     chai
@@ -122,7 +136,6 @@ describe('test', () => {
     //  .set('content-type', 'application/x-www-form-urlencoded')
     //  .send({Email: 'test_email@mail.com', Password: 'asdf'})
       .end(function(response) {
-        console.log(response);
         expect(response.accepted).to.be.equal(false);
         expect(response.serverError).to.be.equal(false);
         expect(response.clientError).to.be.equal(false);
@@ -130,5 +143,4 @@ describe('test', () => {
         done();
       });
   });
-
 });
