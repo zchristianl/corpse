@@ -1,0 +1,30 @@
+extends layout
+
+block content
+  h1 Modify Inventory Item
+  br
+  form.needs-validation(method='POST', action='/inventory/edit/1' novalidate)
+    .row
+      .col
+        label Item Name:
+        input.form-control(name='item_name' type='text' required maxlength='25')
+    .row
+      .col 
+        label Type:
+        select.custom-select(name='type')
+          option(value='' selected disabled)
+          option(value='product') Product
+          option(value='service') Service
+      .col
+        label Category: 
+        input.form-control(name='category' type='text' required maxlength='25')
+    .row 
+      .col
+        label Cost: 
+        input.form-control(name='cost' type='number' step=".01" min="0.01" required maxlength='25')
+      .col
+        label Price: 
+        input.form-control(name='price' type='number' step=".01" min="0.01" required maxlength='25')
+    input.btn.btn-primary(type='submit' value='Submit')
+
+        

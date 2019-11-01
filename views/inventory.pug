@@ -21,5 +21,7 @@ block content
           td
             b=item.price
           td
-            button.btn.btn-warning(type="warning" style="margin-right: 5px;") Edit
-            button.btn.btn-danger(type="button") Delete
+            form(type="GET" action="/inventory/edit" style="margin-right: 5px; float:left;")
+              button.btn.btn-warning(type="submit" name="id" value=item.id) Edit
+            form(type="GET" action="/inventory/delete")
+              button.btn.btn-danger(type="submit" name="id" value=item.id) Delete
