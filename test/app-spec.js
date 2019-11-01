@@ -8,38 +8,21 @@ var expect = require('chai').expect;
 
 chai.use(chaiHttp);
 
-// const options = {
-//   hostname: 'localhost',
-//   port: 3000,
-//   method: 'POST',
-//   headers:
-//   { host: 'localhost:3000',
-//     connection: 'keep-alive',
-//     'content-length': '38',
-//     'cache-control': 'max-age=0',
-//     origin: 'http://localhost:3000',
-//     'upgrade-insecure-requests': '1',
-//     'content-type': 'application/x-www-form-urlencoded',
-//     'user-agent':
-//      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.70 Safari/537.36',
-//     'sec-fetch-user': '?1',
-//     accept:
-//      'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3',
-//     'sec-fetch-site': 'same-origin',
-//     'sec-fetch-mode': 'navigate',
-//     referer: 'http://localhost:3000/users/login',
-//     'accept-encoding': 'gzip, deflate, br',
-//     'accept-language': 'en-US,en;q=0.9',
-//     cookie:
-//      'connect.sid=s%3Ark_gfLq-zMP8kALONtk1-ly1Zn8Wju5J.RmmaVaHedy'
-//   }
-// };
-
 describe('test', () => {
   it('should return a string', () => {
     chai.expect('ci with travis').to.equal('ci with travis');
   });
   
+  it('homepage view', function(done) {
+    this.timeout(0);
+    chai.request(app)
+      .get('/')
+      .end(function(err, res){
+        expect(res.status).to.equal(200);
+        done();
+      });
+  });
+
   it('/user/login GET', function(done) {
     this.timeout(0);
     chai.request(app)
@@ -86,7 +69,20 @@ describe('test', () => {
       });
   });
 
-  it('should send parameters to : /path POST', function(done) {
+  it('/user/register View Test', function(done) {
+    this.timeout(0);
+    chai.request(app)
+      .get('/users/register')
+      .end(function(err, res){
+        expect(res.text).to.have.string('<h1>Client Registration</h1>');
+        expect(res.text).to.have.string('<input class="form-control" name="first_name" type="text" required="required" maxlength="25"');
+        expect(res.text).to.have.string('<input class="form-control" name="email" type="email" required="required" maxlength="50"');
+        expect(res.text).to.have.string('<input class="form-control" name="password" type="password" required="required"');
+        done();
+      });
+  });
+
+  it('/path POST test: login page connection', function(done) {
     var path = '/users/login';
     chai
       .request(app)
@@ -100,7 +96,7 @@ describe('test', () => {
       });
   });
 
-  it('should send parameters to : /path POST', function(done) {
+  it('/path POST test: login page data validation', function(done) {
     var path = '/users/login';
     chai
       .request(app)
@@ -110,6 +106,40 @@ describe('test', () => {
       .send({Email: 'test_email@mail.com', Password: 'asdf'})
       .end(function(response) {
         expect(response.accepted).to.be.equal(false);
+        expect(response.serverError).to.be.equal(false);
+        expect(response.clientError).to.be.equal(false);
+        expect(response.error).to.be.equal(false);
+        done();
+      });
+  });
+
+  it('/path POST test: register page connection', function(done) {
+    var path = '/users/register';
+    chai
+      .request(app)
+      .post(path)
+    // .field('myparam' , 'test')
+      .set('content-type', 'application/x-www-form-urlencoded')
+      .send({Email: 'test_email@mail.com', Password: 'asdf'})
+      .end(function(response) {
+        expect(response.status).to.equal(200);
+        done();
+      });
+  });
+
+  it('/path POST test: register page data validation', function(done) {
+    var path = '/users/register';
+    chai
+      .request(app)
+      .post(path)
+    // .field('myparam' , 'test')
+    //  .set('content-type', 'application/x-www-form-urlencoded')
+    //  .send({Email: 'test_email@mail.com', Password: 'asdf'})
+      .end(function(response) {
+        expect(response.accepted).to.be.equal(false);
+        expect(response.serverError).to.be.equal(false);
+        expect(response.clientError).to.be.equal(false);
+        expect(response.error).to.be.equal(false);
         done();
       });
   });
