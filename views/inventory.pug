@@ -10,6 +10,7 @@ block content
         th(scope="col") Description
         th(scope="col") Cost
         th(scope="col") Price
+        th(scope="col")
     tbody
       each item, i in items
         tr
@@ -19,3 +20,6 @@ block content
           td=item.cost
           td
             b=item.price
+          td
+            button.btn.btn-warning(type="warning" style="margin-right: 5px;") Edit
+            button.btn.btn-danger(type="button") Delete
