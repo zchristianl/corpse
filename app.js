@@ -7,6 +7,15 @@ const logger = require('./utils/logger');
 const passport = require('passport');
 const app = express();
 
+global.ensureAuthenticated = (req, res, next) => {
+  if(req.isAuthenticated()){
+    return next ? next() : true;
+  } else {
+    req.flash('danger', 'Please login');
+    res.redirect('/users/login');
+  }
+};
+
 // prepare server
 // redirect bootstrap JS
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
@@ -60,14 +69,7 @@ require('./config/passport')(passport);
 app.use(passport.initialize());
 app.use(passport.session());
 // Authentication function
-global.ensureAuthenticated = (req, res, next) => {
-  if(req.isAuthenticated()){
-    return next ? next() : true;
-  } else {
-    req.flash('danger', 'Please login');
-    res.redirect('/users/login');
-  }
-};
+
 
 // Global for user
 app.get('*', function(req, res, next){
