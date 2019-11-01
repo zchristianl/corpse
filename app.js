@@ -70,7 +70,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 // Authentication function
 
-
 // Global for user
 app.get('*', function(req, res, next){
   res.locals.user = req.user || null;
