@@ -2,5 +2,20 @@ extends layout
 
 block content
   h1 Inventory
-  each item, i in items
-    p= item.name
+  table.table.table-striped
+    thead
+      tr
+        th(scope="col") Name
+        th(scope="col") Type
+        th(scope="col") Description
+        th(scope="col") Cost
+        th(scope="col") Price
+    tbody
+      each item, i in items
+        tr
+          td=item.name
+          td=item.type
+          td=item.description
+          td=item.cost
+          td
+            b=item.price
