@@ -49,9 +49,9 @@ let models = {
 relations.run(models);
 
 db.sync().then(function() {
-  logger.info('Database tables synced. Oh Joy!');
+  logger.info('Database table sync successful. Rock on, son!');
 }).catch(function(err) {
-  logger.error(err, 'Something went wrong with the Database Update!');
+  logger.error(err, 'Database table sync failed.');
 });
 
 module.exports = models;
