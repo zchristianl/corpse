@@ -85,8 +85,7 @@ exports.validate = (method) => {
       check('phone', 'Phone number is required').not().isEmpty(),
       check('phone', 'Please input phone number correctly').isMobilePhone(),
       check('city', 'City is required').not().isEmpty(),
-      check('zip', 'Zip code is required').not().isEmpty(),
-      check('zip', 'Please input zip code correctly').isPostalCode(),
+      check('zip', 'Zip code is required').not().isEmpty()
     ]; 
   }
   }
