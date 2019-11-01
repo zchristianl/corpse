@@ -1,19 +1,15 @@
-const express = require('express');
-const router = express.Router();
-require('dotenv').config();
 const logger = require('../utils/logger');
+require('dotenv').config();
 
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 
 const stripe = require('stripe')(stripeSecretKey);
 
-// Store
-router.get('/checkout', (req, res) => {
+exports.checkout_get = (req, res) => {
   res.render('checkout');
-});
+};
 
-// Payment
-router.post('/checkout', ensureAthnticated, (req, res) => {
+exports.checkout_post = (req, res) => {
   let amount = 500;
   stripe.customers.create({
     email: req.body.email,
@@ -31,16 +27,14 @@ router.post('/checkout', ensureAthnticated, (req, res) => {
       logger.error(err);
       res.status(500).send({error: 'Purchase Failed'});
     });
-});
-
+};
+  
 // Access control
-function ensureAthnticated(req, res, next){
+exports.ensureAthnticated = (req, res, next) => {
   if(req.isAuthenticated()){
     return next();
   } else {
     req.flash('danger', 'Please login');
     res.redirect('/users/login');
   }
-}
-
-module.exports = router;
+};
