@@ -1,9 +1,12 @@
 extends layout
 
 block content
-  h1 Modify Inventory Item
+  if id
+    h1 Modify Inventory Item
+  else
+    h1 Create Inventory Item
   br
-  form.needs-validation(method='POST', action='/inventory/edit/1' novalidate)
+  form.needs-validation(method='POST', action='/inventory/edit' novalidate)
     .row
       .col
         label Item Name:
@@ -25,6 +28,11 @@ block content
       .col
         label Price: 
         input.form-control(name='price' type='number' step=".01" min="0.01" required maxlength='25')
-    input.btn.btn-primary(type='submit' value='Submit')
+    .row
+      .col
+        label Description:
+        textarea.form-control(rows="5" name="description")
+    span(style="float: right; padding: 10px 0px 10px 0px;")
+      input.btn.btn-primary(type='submit' value='Submit')
 
         

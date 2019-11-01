@@ -35,7 +35,7 @@ exports.inventory_modify = (req, res) => {
     name: req.body.item_name,
     category: req.body.category,
     type: req.body.type,
-    //description: req.body.description,
+    description: req.body.description,
     cost: req.body.cost,
     price: req.body.price
   };
