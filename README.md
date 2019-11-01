@@ -1,9 +1,14 @@
 # CORPSE
 
+## Build Status
+
+CORPSE [![Build Status](https://travis-ci.com/gregg1494/corpse.svg?token=GQEMD2VmuLPJ4dotme3N&branch=master)](https://travis-ci.com/gregg1494/corpse)
+
+## Summary
+
 Chemical Ordering and Receiving Platform - Software Edition
 
 CORPSE is an online ecommerce platform for biotechnology companies that allows client engagement, chemical inventory management and order fulfillment workflows to be streamlined and consolidated into one convenient system. Clients can place orders for gene synthesis, protein analysis or other biotechnological products and services through the online storefront. Sellers will be able to generate estimates, track fulfillment of each order and prepare invoices all while keeping the client engaged throughout each step of the workflow.
-
 
 ## Downloads
 * [Node JS] (https://nodejs.org/en/download/) - Development Platform
@@ -35,10 +40,6 @@ CORPSE is an online ecommerce platform for biotechnology companies that allows c
   b. This will run all of the tests
 2. Run lint tests `eslint ./`
 2. Check the current build status directly below. 
-
-## Build Status
-
-CORPSE [![Build Status](https://travis-ci.com/gregg1494/corpse.svg?token=GQEMD2VmuLPJ4dotme3N&branch=master)](https://travis-ci.com/gregg1494/corpse)
 
 ## Authors
 Rohan Sampat, Greg Van Dycke, Zachary Lesavich, Ryan Castle, Raul Martins
