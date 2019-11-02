@@ -8,6 +8,12 @@ exports.register_get = (req, res) => {
   res.render('register');
 };
 
+exports.portal_get = (req, res) => {
+  //global.ensureAuthenticated(req, res);
+  //Authing here at some point.
+  res.render('portal');
+};
+
 exports.register_post = (req, res) => {
   const errors = validationResult(req);
   if(!errors.isEmpty()) {
