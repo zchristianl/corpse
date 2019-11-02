@@ -3,7 +3,7 @@ const logger = require('../utils/logger');
 
 // Display all
 exports.inventory_get = (req, res) => {
-  global.ensureAuthenticated(req, res);
+  //global.ensureAuthenticated(req, res);
   models.Inventory.findAll()
     .then(items => res.render('inventory', {
       items: items
@@ -13,7 +13,7 @@ exports.inventory_get = (req, res) => {
 
 //WARNING UNSUPPORTED VIEW
 exports.inventory_select = (req, res) => {
-  global.ensureAuthenticated(req, res);
+  //global.ensureAuthenticated(req, res);
   models.Inventory.findOne({
     where: {
       id: req.params.id
@@ -83,7 +83,7 @@ exports.inventory_create = (req, res) => {
 };
 
 exports.inventory_remove = (req, res) => {
-  global.ensureAuthenticated(req, res);
+  //global.ensureAuthenticated(req, res);
   //AUTHORIZE ACTION
   models.Inventory.destroy({
     where: {
