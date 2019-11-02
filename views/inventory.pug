@@ -2,12 +2,12 @@ extends layout
 
 block content
   h1 Inventory
+  a.btn.btn-success(href="/inventory/create" style="float:right; margin-bottom: 5px;") Create
   table.table.table-striped
     thead
       tr
         th(scope="col") Name
         th(scope="col") Type
-        th(scope="col") Description
         th(scope="col") Cost
         th(scope="col") Price
         th(scope="col")
@@ -16,13 +16,12 @@ block content
         tr
           td=item.name
           td=item.type
-          td=item.description
-          td=item.cost
+          td="$"+item.cost
           td
-            b=item.price
+            b="$"+item.price
           td
-            //form(type="GET" action="/inventory/edit" style="margin-right: 5px; float:left;")
-            //  button.btn.btn-warning(type="submit" name="id" value=item.id) Edit
-            form(type="POST" action="/inventory/delete")
-              input(type="hidden" name="id" value=item.id)
-              button.btn.btn-danger(type="submit") Delete
+            form(method="GET" action="/inventory/edit/"+item.id style="margin-right: 5px; float:left;")
+              button.btn.btn-warning(type="submit") Edit
+            form(method='POST' action="/inventory/delete")
+              //input(type="hidden" name="id" value=item.id)
+              button.btn.btn-danger(type="submit" name="id" value=item.id) Delete
