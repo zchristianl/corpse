@@ -8,6 +8,6 @@ module.exports = {
     models.User.hasOne(models.Lab);
     models.User.hasOne(models.Department);
     models.Order.belongsTo(models.Inventory);
-    models.Order.hasOne(models.User);
+    models.Order.belongsTo(models.User);
   }
 };
