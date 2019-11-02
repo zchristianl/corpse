@@ -3,7 +3,6 @@ const logger = require('../utils/logger');
 
 // Display all
 exports.inventory_get = (req, res) => {
-  //global.ensureAuthenticated(req, res);
   models.Inventory.findAll()
     .then(items => res.render('inventory', {
       items: items
@@ -13,7 +12,6 @@ exports.inventory_get = (req, res) => {
 
 //WARNING UNSUPPORTED VIEW
 exports.inventory_select = (req, res) => {
-  //global.ensureAuthenticated(req, res);
   models.Inventory.findOne({
     where: {
       id: req.params.id
@@ -25,7 +23,6 @@ exports.inventory_select = (req, res) => {
 };
 
 exports.inventory_modify = (req, res) => {
-  //global.ensureAuthenticated(req, res); Not working
   if (req.body.id) {
     models.Inventory.findOne({
       where: {
@@ -61,7 +58,6 @@ exports.inventory_modify = (req, res) => {
 };
 
 exports.inventory_create = (req, res) => {
-  //global.ensureAuthenticated(req, res); Not working
   if (!req.body.item_name) {
     res.render('inventory-cu');
     return;
@@ -83,7 +79,6 @@ exports.inventory_create = (req, res) => {
 };
 
 exports.inventory_remove = (req, res) => {
-  //global.ensureAuthenticated(req, res);
   //AUTHORIZE ACTION
   models.Inventory.destroy({
     where: {

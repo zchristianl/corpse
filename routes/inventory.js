@@ -3,14 +3,14 @@ const router = express.Router();
 const inventoryController = require('../controllers/inventoryController.js');
 
 //router.get('/edit',inventoryController.inventory_modify);
-router.get('/edit',inventoryController.inventory_modify);
-router.get('/edit/:id',inventoryController.inventory_modify);
-router.post('/edit',inventoryController.inventory_modify);
-router.get('/create', inventoryController.inventory_create);
-router.post('/create', inventoryController.inventory_create);
-router.post('/delete', inventoryController.inventory_remove);
-router.get('/view', inventoryController.inventory_select);
+router.get('/edit', global.ensureAuthenticated, inventoryController.inventory_modify);
+router.get('/edit/:id', global.ensureAuthenticated, inventoryController.inventory_modify);
+router.post('/edit', global.ensureAuthenticated, inventoryController.inventory_modify);
+router.get('/create', global.ensureAuthenticated, inventoryController.inventory_create);
+router.post('/create', global.ensureAuthenticated, inventoryController.inventory_create);
+router.post('/delete', global.ensureAuthenticated, inventoryController.inventory_remove);
+router.get('/view', global.ensureAuthenticated, inventoryController.inventory_select);
 // Inventory home
-router.get('/', inventoryController.inventory_get);
+router.get('/', global.ensureAuthenticated, inventoryController.inventory_get);
 
 module.exports = router;
