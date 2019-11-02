@@ -28,13 +28,3 @@ exports.checkout_post = (req, res) => {
       res.status(500).send({error: 'Purchase Failed'});
     });
 };
-  
-// Access control
-exports.ensureAthnticated = (req, res, next) => {
-  if(req.isAuthenticated()){
-    return next();
-  } else {
-    req.flash('danger', 'Please login');
-    res.redirect('/users/login');
-  }
-};

@@ -17,4 +17,7 @@ router.post('/login', userController.login_post);
 // Logout
 router.get('/logout', userController.logout_post);
 
+//Portal
+router.get('/portal', userController.portal_get);
+
 module.exports = router;

@@ -1,13 +1,22 @@
 extends layout
 
 block content
-  h1 Sign in
-  form(method='POST', action='/users/login')
-    #form-group
-      label Email:
-      input.form-control(name='email', type='text')
-    #form-group
-      label Password:
-      input.form-control(name='password', type='password')
-    br
-    input.btn.btn-primary(type='submit', value='Log in')
+  h1 Login
+  .container.w-50
+    form(method='POST', action='/users/login')
+      .row
+        .col
+          label Email:
+          input.form-control(name='email', type='text')
+          br
+      .row
+        .col
+          label Password:
+          input.form-control(name='password', type='password')
+          span
+            a(href="" style="float: right; padding: 10px 0px 10px 0px;") Forgot Password?
+      .row
+        .col
+          input.w-100.btn.btn-primary(type='submit', value='Login')
+      span(style="float: right; padding: 10px 0px 10px 0px;") Need an account? 
+        a(href="/users/register") Register

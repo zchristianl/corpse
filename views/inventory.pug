@@ -2,5 +2,26 @@ extends layout
 
 block content
   h1 Inventory
-  each item, i in items
-    p= item.name
+  a.btn.btn-success(href="/inventory/create" style="float:right; margin-bottom: 5px;") Create
+  table.table.table-striped
+    thead
+      tr
+        th(scope="col") Name
+        th(scope="col") Type
+        th(scope="col") Cost
+        th(scope="col") Price
+        th(scope="col")
+    tbody
+      each item, i in items
+        tr
+          td=item.name
+          td=item.type
+          td="$"+item.cost
+          td
+            b="$"+item.price
+          td
+            form(method="GET" action="/inventory/edit/"+item.id style="margin-right: 5px; float:left;")
+              button.btn.btn-warning(type="submit") Edit
+            form(method='POST' action="/inventory/delete")
+              //input(type="hidden" name="id" value=item.id)
+              button.btn.btn-danger(type="submit" name="id" value=item.id) Delete
