@@ -43,7 +43,7 @@ describe('user tests', () => {
         expect(res.text).to.have.string('Login');
         expect(res.text).to.have.string('name=\"password\"');
         expect(res.text).to.have.string('type=\"password\"');
-        expect(res.text).to.have.string('\"btn btn-primary\" type=\"submit\" value=\"Login\"');
+        expect(res.text).to.have.string('type="submit" value="Login"');
         done();
       });
   });
