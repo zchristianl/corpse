@@ -40,10 +40,10 @@ describe('user tests', () => {
     chai.request(app)
       .get('/users/login')
       .end(function(err, res){        
-        expect(res.text).to.have.string('Log in');
+        expect(res.text).to.have.string('Login');
         expect(res.text).to.have.string('name=\"password\"');
         expect(res.text).to.have.string('type=\"password\"');
-        expect(res.text).to.have.string('\"btn btn-primary\" type=\"submit\" value=\"Log in\"');
+        expect(res.text).to.have.string('\"btn btn-primary\" type=\"submit\" value=\"Login\"');
         done();
       });
   });
