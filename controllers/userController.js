@@ -142,3 +142,7 @@ const makeAssociations = (user, regInfo) => {
     })
     .catch(err => logger.error(err));
 };
+
+exports.contact_post = () => {
+
+}
