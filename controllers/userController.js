@@ -9,8 +9,6 @@ exports.register_get = (req, res) => {
 };
 
 exports.portal_get = (req, res) => {
-  //global.ensureAuthenticated(req, res);
-  //Authing here at some point.
   res.render('portal');
 };
 
