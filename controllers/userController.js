@@ -144,5 +144,5 @@ const makeAssociations = (user, regInfo) => {
 };
 
 exports.contact_post = () => {
-
-}
+  // STUFF GOES HERE
+};
