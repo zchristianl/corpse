@@ -1,3 +1,4 @@
+sudo: required
 language: node_js
 os:
   - linux
@@ -6,6 +7,27 @@ node_js:
 cache:
   directories:
     - "node_modules"
+    
+services:
+  - docker
+
+before_install:
+  - docker build -t gregg1494/corpse -f Dockerfile .
+
 script:
   - npm run test
   - npm run lint 
+  - docker run -d gregg1494/corpse
+
+deploy:
+  provider: elasticbeanstalk
+  region: "us-east-1"
+  app: "corpse"
+  env: "Corpse-env-1"
+  bucket_name: "elasticbeanstalk-us-east-1-765297982370"
+  bucket_path: "corpse"
+  on:
+    branch: aws-setup
+  access_key_id: $AWS_ACCESS_KEY
+  secret_access_key:
+    secure: "$AWS_SECRET_KEY"
