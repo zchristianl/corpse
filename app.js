@@ -16,7 +16,6 @@ global.ensureAuthenticated = (req, res, next) => {
   }
 };
 
-// prepare server
 // redirect bootstrap JS
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
 // redirect JS jQuery
