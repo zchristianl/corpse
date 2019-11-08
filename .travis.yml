@@ -23,7 +23,7 @@ deploy:
   provider: elasticbeanstalk
   region: "us-east-1"
   app: "corpse"
-  env: "Corpse-env-1"
+  env: "Corpse-env-2"
   bucket_name: "elasticbeanstalk-us-east-1-765297982370"
   bucket_path: "corpse"
   on:
