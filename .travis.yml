@@ -20,6 +20,7 @@ script:
   - docker run -d gregg1494/corpse
 
 deploy:
+  skip_cleanup: true
   provider: elasticbeanstalk
   region: "us-east-1"
   app: "corpse"
