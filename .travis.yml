@@ -20,7 +20,6 @@ script:
   - docker run -d gregg1494/corpse
 
 deploy:
-  skip_cleanup: true
   provider: elasticbeanstalk
   region: "us-east-1"
   app: "corpse"
@@ -30,6 +29,6 @@ deploy:
   on:
     branch: test
   access_key_id: 
-    secure: $AWS_ACCESS_KEY
+    secure: "$AWS_ACCESS_KEY"
   secret_access_key:
-    secure: $AWS_SECRET_KEY
+    secure: "$AWS_SECRET_KEY"
