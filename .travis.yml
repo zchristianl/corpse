@@ -27,6 +27,6 @@ deploy:
   bucket_name: "elasticbeanstalk-us-east-1-765297982370"
   bucket_path: "corpse"
   on:
-    branch: master
+    branch: test
   access_key_id: "$AWS_ACCESS_KEY"
   secret_access_key: "$AWS_SECRET_KEY"
