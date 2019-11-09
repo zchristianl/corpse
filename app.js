@@ -16,7 +16,6 @@ global.ensureAuthenticated = (req, res, next) => {
   }
 };
 
-// prepare server
 // redirect bootstrap JS
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
 // redirect JS jQuery
@@ -68,7 +67,6 @@ require('./config/passport')(passport);
 // Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
-// Authentication function
 
 // Global for user
 app.get('*', function(req, res, next){
@@ -76,7 +74,7 @@ app.get('*', function(req, res, next){
   next();
 });
 
-app.get('/', (req, res) => {
+app.get('/', global.ensureAuthenticated, (req, res) => {
   res.render('layout');
 });
 
