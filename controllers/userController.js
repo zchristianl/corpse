@@ -165,11 +165,11 @@ exports.send_post = (req, res) => {
   mailer.send(req.body.email, req.body.subject, output, (err, info) => {
     if(err){
       logger.error(err);
-      req.flash('danger', 'There was an error. Please try again.')
+      req.flash('danger', 'There was an error. Please try again.');
       res.redirect('contact');
 
     } else {
-      req.flash('success', 'Your message has been sent!')
+      req.flash('success', 'Your message has been sent!');
       res.redirect('portal');
     }
     logger.info(info.messageId);

@@ -17,7 +17,7 @@ exports.checkout_post = (req, res) => {
   })
     .then(customer =>
       stripe.charges.create({
-        amount: 5,
+        amount: amount,
         description: 'Sample Charge',
         currency: 'usd',
         customer: customer.id,
