@@ -21,9 +21,9 @@ router.get('/logout', userController.logout_post);
 router.get('/portal', global.ensureAuthenticated, userController.portal_get);
 
 // Contact
-router.get('/contact', global.ensureAuthenticated, userController.contact_post);
+router.get('/contact_seller', global.ensureAuthenticated, userController.contact_seller);
 
 // Process contact
-router.post('/contact', userController.contact_post);
+router.post('/send', userController.send_post);
 
 module.exports = router;

@@ -1,12 +1,14 @@
-exports.send = function(email, subject, htmlcontent, callback) {
+require('dotenv').config();
+
+exports.send = async function(email, subject, htmlcontent, callback) {
   var nodemailer = require('nodemailer');
   var smtpTransport = require('nodemailer-smtp-transport');
   require('dotenv').config();
 
   var transporter = nodemailer.createTransport(smtpTransport({
-    host: process.env.MAIL_HOST, //mail.example.com (your server smtp)
-    port: process.env.MAIL_PORT, // (specific port)
-    secureConnection: process.env.CONNECTION, //true or false
+    host: 'smtp.gmail.com', //mail.example.com (your server smtp)
+    port: 465, // (specific port)
+    secureConnection: false, //true or false
     auth: {
       user: process.env.AUTH_USER, //user@mydomain.com
       pass: process.env.AUTH_PASS //password from specific user mail
@@ -14,8 +16,8 @@ exports.send = function(email, subject, htmlcontent, callback) {
   }));
 
   var mailOptions = {
-    from: '',
-    to: '',
+    from: email,
+    to: process.env.AUTH_USER,
     subject: subject,
     html: htmlcontent
   };
