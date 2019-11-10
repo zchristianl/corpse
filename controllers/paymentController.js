@@ -17,12 +17,16 @@ exports.checkout_post = (req, res) => {
   })
     .then(customer =>
       stripe.charges.create({
-        amount,
+        amount: 5,
         description: 'Sample Charge',
         currency: 'usd',
-        customer: customer.id
+        customer: customer.id,
+        receipt_email: 'corpsedev@gmail.com'
       }))
-    .then(charge => logger.debug(charge), res.redirect('/'))
+    .then(charge => {
+      logger.debug(charge);
+      res.redirect('/');
+    })
     .catch(err => {
       logger.error(err);
       res.status(500).send({error: 'Purchase Failed'});

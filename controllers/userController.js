@@ -3,14 +3,13 @@ const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const models = require('../config/database');
 const logger = require('../utils/logger');
+const flash = require('connect-flash');
 
 exports.register_get = (req, res) => {
   res.render('register');
 };
 
 exports.portal_get = (req, res) => {
-  //global.ensureAuthenticated(req, res);
-  //Authing here at some point.
   res.render('portal');
 };
 
