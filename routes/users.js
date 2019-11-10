@@ -17,7 +17,13 @@ router.post('/login', userController.login_post);
 // Logout
 router.get('/logout', userController.logout_post);
 
-//Portal
-router.get('/portal', userController.portal_get);
+// Portal
+router.get('/portal', global.ensureAuthenticated, userController.portal_get);
+
+// Contact
+router.get('/contact_seller', global.ensureAuthenticated, userController.contact_seller);
+
+// Process contact
+router.post('/send', userController.send_post);
 
 module.exports = router;
