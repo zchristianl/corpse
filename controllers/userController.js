@@ -170,7 +170,7 @@ exports.send_post = (req, res) => {
 
     } else {
       req.flash('success', 'Your message has been sent!');
-      res.redirect('portal');
+      res.render('portal');
     }
     logger.info(info.messageId);
   });
