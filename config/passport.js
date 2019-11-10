@@ -14,7 +14,7 @@ module.exports = (passport) => {
       }
     }).then(function (user) {
       if (user == null) {
-        return done(null, false, { message: 'Incorrect credentials.' });
+        return done(null, false, { message: 'Incorrect credentials'});
       }
       bcrypt.compare(password, user.password, (err, isMatch) => {
         if(err) throw err;
