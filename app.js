@@ -86,6 +86,8 @@ let payment = require('./routes/payment');
 app.use('/payment', payment);
 let order = require('./routes/order');
 app.use('/order', order);
+let contact = require('./routes/contact');
+app.use('/contact', contact);
 
 app.listen(3000, () => {
   logger.info('App running on port 3000');
