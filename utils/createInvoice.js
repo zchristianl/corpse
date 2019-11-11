@@ -1,7 +1,8 @@
 const fs = require('fs');
 const PDFDocument = require('pdfkit');
+const mailer = require('../utils/mail');
 
-function createInvoice(invoice, path) {
+function createInvoiceDownload(invoice, path) {
   let doc = new PDFDocument({ size: 'A4', margin: 50 });
 
   generateHeader(doc);
@@ -11,6 +12,29 @@ function createInvoice(invoice, path) {
 
   doc.end();
   doc.pipe(fs.createWriteStream(path));
+}
+
+function createInvoiceEmail(invoice, path) {
+  let doc = new PDFDocument({ size: 'A4', margin: 50 });
+
+  generateHeader(doc);
+  generateCustomerInformation(doc, invoice);
+  generateInvoiceTable(doc, invoice);
+  generateFooter(doc);
+
+  doc.end();
+  mailer.sendInvoice(doc, path, order, (err, info) => {
+    if(err){
+      logger.error(err);
+      req.flash('danger', 'There was an error. Please try again.');
+      res.redirect('contact');
+  
+    } else {
+      req.flash('success', 'Your message has been sent!');
+      res.render('portal');
+    }
+    logger.info(info.messageId);
+  });
 }
 
 function generateHeader(doc) {

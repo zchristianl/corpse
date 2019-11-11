@@ -9,10 +9,11 @@ exports.order_get = (req, res) => {
     .catch(err => logger.error(err));
 };
 
-exports.create_invoice = (res) => {
+exports.create_invoice = (req, res) => {
   const createInvoice  = require('../utils/createInvoice.js');
   // CREATE INVOICE HERE
-  const invoice = {
+  // USING ORDER USER ASSOCIATION
+  let invoice = {
     shipping: {
       name: 'CLIENT NAME',
       address: 'CLIENT ADDRESS',
@@ -39,5 +40,12 @@ exports.create_invoice = (res) => {
     invoice_nr: 1234
   };
   // MAKE INVOICE NAME UNIQUE
-  createInvoice(invoice, 'invoice.pdf');
+  createInvoice.createInvoiceDownload(invoice, 'invoice.pdf');
+
+  let order = {
+    orderNumber: 123,
+    clientEmail: 'client@gmail.com',
+  };
+  // MAKE INVOICE NAME UNIQUE
+  createInvoice.createInvoiceEmail(invoice, 'invoice.pdf', order);
 };
