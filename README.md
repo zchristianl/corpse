@@ -41,4 +41,4 @@ CORPSE is an online E-commerce platform for biotechnology companies that allows 
 2. Run lint tests `eslint ./` 
 
 ## Authors
-Rohan Sampat, Greg Van Dycke, Zachary Lesavich, Ryan Castle, Raul Martins
+Rohan Sampat, Gregg Van Dycke, Zachary Lesavich, Ryan Castle, Raul Martins
