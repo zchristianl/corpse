@@ -3,4 +3,4 @@
 /logs
 .nyc_output/
 coverage/
-invoice.pdf
+*.pdf
