@@ -31,7 +31,7 @@ exports.sendSeller = async function(email, subject, htmlcontent, callback) {
   });
 };
 
-exports.sendInvoice = async function(doc, path, order, callback) {
+exports.sendInvoice = async function(doc, filename, order, callback) {
   var transporter = nodemailer.createTransport(smtpTransport({
     host: 'smtp.gmail.com', //mail.example.com (your server smtp)
     port: 465, // (specific port)
@@ -49,8 +49,8 @@ exports.sendInvoice = async function(doc, path, order, callback) {
     text: 'Thank you for your order!',
     attachments: [
       {
-        filename: path,
-        path: path
+        filename: filename,
+        content: doc
       }
     ]
   };

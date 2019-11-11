@@ -3,7 +3,7 @@ const PDFDocument = require('pdfkit');
 const mailer = require('../utils/mail');
 const logger = require('../utils/logger');
 
-function createInvoiceDownload(invoice, path) {
+function createInvoiceDownload(invoice, filename) {
   let doc = new PDFDocument({ size: 'A4', margin: 50 });
 
   generateHeader(doc);
@@ -12,10 +12,10 @@ function createInvoiceDownload(invoice, path) {
   generateFooter(doc);
 
   doc.end();
-  doc.pipe(fs.createWriteStream(path));
+  doc.pipe(fs.createWriteStream(filename));
 }
 
-function createInvoiceEmail(invoice, path, order ,req, res) {
+function createInvoiceEmail(invoice, filename, order ,req, res) {
   let doc = new PDFDocument({ size: 'A4', margin: 50 });
 
   generateHeader(doc);
@@ -24,7 +24,7 @@ function createInvoiceEmail(invoice, path, order ,req, res) {
   generateFooter(doc);
 
   doc.end();
-  mailer.sendInvoice(doc, path, order, (err, info) => {
+  mailer.sendInvoice(doc, filename, order, (err, info) => {
     if(err){
       logger.error(err);
       req.flash('danger', 'There was an error. Please try again.');
