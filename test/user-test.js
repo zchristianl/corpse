@@ -8,23 +8,7 @@ var expect = require('chai').expect;
 
 chai.use(chaiHttp);
 
-describe('dashboard tests', () => {
-  it('homepage view', function(done) {
-    this.timeout(0);
-    chai.request(app)
-      .get('/')
-      .end(function(err, res){
-        expect(res.status).to.equal(200);
-        done();
-      });
-  });
-});
-
 describe('user tests', () => {
-  it('should return a string', () => {
-    chai.expect('ci with travis').to.equal('ci with travis');
-  });
-
   it('/user/login GET', function(done) {
     this.timeout(0);
     chai.request(app)
