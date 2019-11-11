@@ -28,7 +28,7 @@ exports.register_post = (req, res) => {
     }).then(user => {
       if(user !== null) {
         req.flash('danger', 'A user with that email address already exists.');
-        res.render('register')
+        res.render('register');
       }
     }).catch(err => logger.error(err));
 
@@ -70,7 +70,7 @@ exports.register_post = (req, res) => {
           .then(user => makeAssociations(user, regInfo))
           .then(() => {
             req.flash('success', 'You are now registered and can log in');
-            res.redirect('/')
+            res.redirect('/');
           })
           .catch(err => logger.error(err));
       });
