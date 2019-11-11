@@ -1,6 +1,6 @@
 var nodemailer = require('nodemailer');
-  var smtpTransport = require('nodemailer-smtp-transport');
-  require('dotenv').config();
+var smtpTransport = require('nodemailer-smtp-transport');
+require('dotenv').config();
 
 exports.sendSeller = async function(email, subject, htmlcontent, callback) {
   var transporter = nodemailer.createTransport(smtpTransport({
@@ -46,7 +46,7 @@ exports.sendInvoice = async function(doc, path, order, callback) {
     from: 'orders@ProteinCT.com',
     to: order.clientEmail,
     subject: 'Your Order From ProteinCT - #' + order.id,
-    text: "Thank you for your order!",
+    text: 'Thank you for your order!',
     attachments: [
       {
         filename: path,

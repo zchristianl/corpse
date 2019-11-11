@@ -3,7 +3,6 @@ const PDFDocument = require('pdfkit');
 const mailer = require('../utils/mail');
 const logger = require('../utils/logger');
 
-
 function createInvoiceDownload(invoice, path) {
   let doc = new PDFDocument({ size: 'A4', margin: 50 });
 
