@@ -20,6 +20,17 @@ exports.register_post = (req, res) => {
       errors: errors.array() 
     });
   } else {
+    // Check for existing user
+    models.User.findOne({
+      where: {
+        'email': req.body.email
+      }
+    }).then(user => {
+      if(user !== null) {
+        req.flash('danger', 'A user with that email address already exists.');
+        res.render('register');
+      }
+    }).catch(err => logger.error(err));
 
     const newUser = {
       first_name: req.body.first_name,
@@ -57,7 +68,10 @@ exports.register_post = (req, res) => {
           phone: regInfo.phone
         })
           .then(user => makeAssociations(user, regInfo))
-          .then(() => {res.redirect('/'), req.flash('success', 'You are now registered and can log in');})
+          .then(() => {
+            req.flash('success', 'You are now registered and can log in');
+            res.redirect('/');
+          })
           .catch(err => logger.error(err));
       });
     });
