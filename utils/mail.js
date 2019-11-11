@@ -1,10 +1,8 @@
-require('dotenv').config();
-
-exports.sendSeller = async function(email, subject, htmlcontent, callback) {
-  var nodemailer = require('nodemailer');
+var nodemailer = require('nodemailer');
   var smtpTransport = require('nodemailer-smtp-transport');
   require('dotenv').config();
 
+exports.sendSeller = async function(email, subject, htmlcontent, callback) {
   var transporter = nodemailer.createTransport(smtpTransport({
     host: 'smtp.gmail.com', //mail.example.com (your server smtp)
     port: 465, // (specific port)
@@ -34,10 +32,6 @@ exports.sendSeller = async function(email, subject, htmlcontent, callback) {
 };
 
 exports.sendInvoice = async function(doc, path, order, callback) {
-  var nodemailer = require('nodemailer');
-  var smtpTransport = require('nodemailer-smtp-transport');
-  require('dotenv').config();
-
   var transporter = nodemailer.createTransport(smtpTransport({
     host: 'smtp.gmail.com', //mail.example.com (your server smtp)
     port: 465, // (specific port)
@@ -50,8 +44,9 @@ exports.sendInvoice = async function(doc, path, order, callback) {
 
   var mailOptions = {
     from: 'orders@ProteinCT.com',
-    to: order.cleintEmail,
-    subject: 'Your Order From ProteinCT - ' + order.id,
+    to: order.clientEmail,
+    subject: 'Your Order From ProteinCT - #' + order.id,
+    text: "Thank you for your order!",
     attachments: [
       {
         filename: path,

@@ -1,6 +1,8 @@
 const fs = require('fs');
 const PDFDocument = require('pdfkit');
 const mailer = require('../utils/mail');
+const logger = require('../utils/logger');
+
 
 function createInvoiceDownload(invoice, path) {
   let doc = new PDFDocument({ size: 'A4', margin: 50 });
@@ -14,7 +16,7 @@ function createInvoiceDownload(invoice, path) {
   doc.pipe(fs.createWriteStream(path));
 }
 
-function createInvoiceEmail(invoice, path) {
+function createInvoiceEmail(invoice, path, order ,req, res) {
   let doc = new PDFDocument({ size: 'A4', margin: 50 });
 
   generateHeader(doc);
@@ -27,13 +29,13 @@ function createInvoiceEmail(invoice, path) {
     if(err){
       logger.error(err);
       req.flash('danger', 'There was an error. Please try again.');
-      res.redirect('contact');
+      res.redirect('contact/contact_seller');
   
     } else {
       req.flash('success', 'Your message has been sent!');
       res.render('portal');
     }
-    logger.info(info.messageId);
+    logger.info(info);
   });
 }
 
@@ -204,4 +206,7 @@ function formatDate(date) {
   return month + '/' + day + '/' + year;
 }
 
-module.exports = createInvoice;
+module.exports = {
+  createInvoiceDownload,
+  createInvoiceEmail
+};
