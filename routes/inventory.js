@@ -8,7 +8,7 @@ router.get('/edit/:id', global.ensureAuthenticated, inventoryController.inventor
 router.post('/edit', global.ensureAuthenticated, inventoryController.inventory_modify);
 router.get('/create', global.ensureAuthenticated, inventoryController.inventory_create);
 router.post('/create', global.ensureAuthenticated, inventoryController.inventory_create);
-router.post('/delete', global.ensureAuthenticated, inventoryController.inventory_remove);
+router.post('/delete/:id', global.ensureAuthenticated, inventoryController.inventory_remove);
 router.get('/view', global.ensureAuthenticated, inventoryController.inventory_select);
 // Inventory home
 router.get('/', global.ensureAuthenticated, inventoryController.inventory_get);

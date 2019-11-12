@@ -22,6 +22,28 @@ block content
           td
             form(method="GET" action="/inventory/edit/"+item.id style="margin-right: 5px; float:left;")
               button.btn.btn-warning(type="submit") Edit
-            form(method='POST' action="/inventory/delete")
               //input(type="hidden" name="id" value=item.id)
-              button.btn.btn-danger(onclick="if (!confirm('Are you sure you would like to delete this?')) { return false }" type="submit" name="id" value=item.id) Delete
+            button.btn.btn-danger.deleteButton(type="submit" name="id" value=item.id data-toggle='modal' data-target='#DeleteModal') Delete
+  .container
+    #DeleteModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="DeleteModal", aria-hidden="true")
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h5.modal-title Delete
+            button.close(type="button", data-dismiss="modal", aria-hidden="true") &times;
+          .modal-body
+            p
+              | Click &apos;Delete&apos; to 
+              strong permanently
+              |  delete this record. Click &apos;Cancel&apos; to cancel your action.
+          .modal-footer
+            button.btn.btn-secondary(type="button", data-dismiss="modal") Cancel
+            button.btn.btn-danger.deleteModal(type="button", data-dismiss="modal" id="delete" value=0) Delete
+
+    script.
+      // triggered when modal is about to be shown
+      $(document).on('.deleteButton', function(e) {
+          var itemId = $(e.relatedTarget).data('value');
+          $(".deleteModal").val(itemId);
+      });
+
