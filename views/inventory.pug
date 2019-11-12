@@ -24,4 +24,4 @@ block content
               button.btn.btn-warning(type="submit") Edit
             form(method='POST' action="/inventory/delete")
               //input(type="hidden" name="id" value=item.id)
-              button.btn.btn-danger(type="submit" name="id" value=item.id) Delete
+              button.btn.btn-danger(onclick="if (!confirm('Are you sure you would like to delete this?')) { return false }" type="submit" name="id" value=item.id) Delete
