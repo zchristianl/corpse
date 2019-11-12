@@ -15,6 +15,15 @@ global.ensureAuthenticated = (req, res, next) => {
   }
 };
 
+global.ensureSeller = (req, res, next) => {
+  if(req.isAuthenticated() && req.user.acount_type === 'seller'){
+    return next ? next() : true;
+  } else {
+    req.flash('danger', 'You do not have permission to access that URL.');
+    res.redirect('back');
+  }
+};
+
 // redirect bootstrap JS
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
 // redirect JS jQuery
@@ -51,7 +60,11 @@ app.use('/js', express.static(__dirname + '/js'));
 app.use(session({
   secret: 'keyboard cat',
   resave: true,
-  saveUninitialized: true
+  saveUninitialized: true,
+  cookie: {
+    maxAge: 60000*30,
+    expires: false
+  }
 }));
 
 // Express messages middleware
