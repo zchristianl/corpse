@@ -52,7 +52,13 @@ block content
       $target = $(e.target);
       $.ajax({
         type: 'POST',
-        url: '/inventory/delete/'+$target.attr('value')
+        url: '/inventory/delete/'+$target.attr('value'),
+        dataType: 'json',
+        success: function(response){
+          if (response.redirect !== undefined && response.redirect) {
+            window.location.href = response.redirect;
+          }
+        }
       });
     }); 
     

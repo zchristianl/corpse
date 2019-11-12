@@ -84,5 +84,8 @@ exports.inventory_remove = (req, res) => {
     where: {
       id: req.params.id
     }
-  }).then(res.redirect('/inventory')).catch(err => logger.err(err));
+  })
+  
+    .then(() => res.send(JSON.stringify({redirect: '/inventory', status: 200})))
+    .catch(err => logger.error(err));
 };
