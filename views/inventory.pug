@@ -38,12 +38,24 @@ block content
               |  delete this record. Click &apos;Cancel&apos; to cancel your action.
           .modal-footer
             button.btn.btn-secondary(type="button", data-dismiss="modal") Cancel
-            button.btn.btn-danger.deleteModal(type="button", data-dismiss="modal" id="delete" value=0) Delete
+            button.btn.btn-danger.deleteModal(type="button", data-dismiss="modal" id="delete" value=1) Delete
 
-    script.
-      // triggered when modal is about to be shown
-      $(document).on('.deleteButton', function(e) {
-          var itemId = $(e.relatedTarget).data('value');
-          $(".deleteModal").val(itemId);
+  script.
+    $('.deleteButton').on('click', function(e) {
+        var itemId = $(e.target).attr('value');
+        console.log(itemId);
+        $(".deleteModal").val(itemId); 
+    });
+
+    $('.deleteModal').on('click', function(e){
+      console.log('here');
+      $target = $(e.target);
+      $.ajax({
+        type: 'POST',
+        url: '/inventory/delete/'+$target.attr('value')
       });
+    }); 
+    
+
+      
 

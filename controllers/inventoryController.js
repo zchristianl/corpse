@@ -82,7 +82,7 @@ exports.inventory_remove = (req, res) => {
   //AUTHORIZE ACTION
   models.Inventory.destroy({
     where: {
-      id: req.body.id
+      id: req.params.id
     }
   }).then(res.redirect('/inventory')).catch(err => logger.err(err));
 };
