@@ -37,6 +37,7 @@
     "nodemailer-smtp-transport": "^2.7.4",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
+    "pdfkit": "^0.10.0",
     "popper.js": "^1.16.0",
     "pug": "^2.0.4",
     "sequelize": "^5.20.0",

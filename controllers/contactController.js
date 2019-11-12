@@ -19,7 +19,7 @@ exports.send_post = (req, res) => {
       <p>${req.body.message}</p>
     `;
   
-  mailer.send(req.body.email, req.body.subject, output, (err, info) => {
+  mailer.sendSeller(req.body.email, req.body.subject, output, (err, info) => {
     if(err){
       logger.error(err);
       req.flash('danger', 'There was an error. Please try again.');
