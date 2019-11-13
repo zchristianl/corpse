@@ -52,7 +52,7 @@ exports.register_post = (req, res) => {
       address2: req.body.address2,
       city: req.body.city,
       state: req.body.state,
-      zip_code: req.body.zip,
+      zip: req.body.zip,
       phone: req.body.phone,
       payment: req.body.payment
     };
@@ -179,13 +179,13 @@ exports.forgot_get = (req, res) => {
 
 exports.forgot_post = (req, res, next) => {
   async.waterfall([
-    function(done) {
-      crypto.randomBytes(20, function(err, buf) {
+    function (done) {
+      crypto.randomBytes(20, function (err, buf) {
         var token = buf.toString('hex');
         done(err, token);
       });
     },
-    function(token, done) {
+    function (token, done) {
       console.log(req.body.email);
       models.User.findOne({
         where: {
@@ -205,7 +205,7 @@ exports.forgot_post = (req, res, next) => {
           });
       });
     },
-    function(token, user, done) {
+    function (token, user, done) {
       var transporter = nodemailer.createTransport(smtpTransport({
         host: 'smtp.gmail.com', //mail.example.com (your server smtp)
         port: 465, // (specific port)
@@ -215,7 +215,7 @@ exports.forgot_post = (req, res, next) => {
           pass: process.env.AUTH_PASS //password from specific user mail
         }
       }));
-      
+
       var mailOptions = {
         to: user.email,
         from: 'account@proteinct.com',
@@ -225,18 +225,18 @@ exports.forgot_post = (req, res, next) => {
           'http://' + req.headers.host + '/users/reset/' + token + '\n\n' +
           'If you did not request this, please ignore this email and your password will remain unchanged.\n'
       };
-      transporter.sendMail(mailOptions, function(err) {
+      transporter.sendMail(mailOptions, function (err) {
         req.flash('info', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
         done(err, 'done');
       });
     }
-  ], function(err) {
+  ], function (err) {
     if (err) return next(err);
     res.redirect('/users/forgot');
   });
 };
 
-exports.new_password =(req, res) => {
+exports.new_password = (req, res) => {
   models.User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } })
     .then(() => {
       res.render('reset', {
@@ -252,12 +252,12 @@ exports.new_password =(req, res) => {
 
 exports.reset_confirm = (req, res) => {
   async.waterfall([
-    function(done) {
+    function (done) {
       models.User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } })
         .then(user => {
           bcrypt.genSalt(10, (err, salt) => {
             bcrypt.hash(req.body.password, salt, (err, hash) => {
-              if(err){
+              if (err) {
                 logger.error(err);
               }
               user.update({
@@ -277,7 +277,7 @@ exports.reset_confirm = (req, res) => {
           });
         });
     },
-    function(user, done) {
+    function (user, done) {
       var transporter = nodemailer.createTransport(smtpTransport({
         host: 'smtp.gmail.com', //mail.example.com (your server smtp)
         port: 465, // (specific port)
@@ -294,12 +294,12 @@ exports.reset_confirm = (req, res) => {
         text: 'Hello,\n\n' +
           'This is a confirmation that the password for your ProteinCT account ' + user.email + ' has just been changed.\n'
       };
-      transporter.sendMail(mailOptions, function(err) {
+      transporter.sendMail(mailOptions, function (err) {
         req.flash('success', 'Success! Your password has been changed.');
         done(err);
       });
     }
-  ], function(err) {
+  ], function (err) {
     logger.error(err);
     res.redirect('/users/login');
   });
@@ -308,7 +308,7 @@ exports.reset_confirm = (req, res) => {
 exports.client_view_get = (req, res) => {
   models.User.findAll({
     where: {
-      'account_type': 'client'
+      account_type: 'client'
     }
   }
   ).then(users => res.render('client', {
@@ -317,5 +317,49 @@ exports.client_view_get = (req, res) => {
 };
 
 exports.client_edit_get = (req, res) => {
+  models.User.findOne({
+    where: {
+      id: req.params.id
+    }
+  }).then((client) => {
+    res.render('client-cu', {
+      client: client
+    });
+  }).catch(err => logger.error(err));
+};
+
+exports.client_create_get = (req, res) => {
   res.render('client-cu');
+  return;
+};
+
+exports.client_edit_post = (req, res) => {
+  if (req.body.id) {
+    models.User.findOne({
+      where: {
+        id: req.body.id
+      }
+    }).then((entry) => {
+      entry.update({
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        email: req.body.email,
+        organization: req.body.organization,
+        reserach_area: req.body.research_area,
+        address: req.body.address,
+        city: req.body.city,
+        state: req.body.state,
+        zip: req.body.zip,
+        phone: req.body.phone,
+        payment: req.body.payment,
+        po_num: req.body.po_num
+      }).then(() => { res.redirect('/users/view/'); });
+    }).catch(err => logger.error(err));
+    return;
+  }
+
+  if (!req.params.id) {
+    res.redirect('/users/view');
+    return;
+  }
 };
