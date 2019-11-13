@@ -20,4 +20,8 @@ router.get('/logout', userController.logout_post);
 // Portal
 router.get('/portal', global.ensureAuthenticated, userController.portal_get);
 
+router.get('/forgot', userController.forgot_get);
+
+router.post('/forgot', userController.forgot_post);
+
 module.exports = router;

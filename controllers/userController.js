@@ -3,6 +3,11 @@ const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const models = require('../config/database');
 const logger = require('../utils/logger');
+require('dotenv').config();
+const nodemailer = require('nodemailer');
+const smtpTransport = require('nodemailer-smtp-transport');
+const async = require('async');
+const crypto = require('crypto');
 
 exports.register_get = (req, res) => {
   res.render('register');
@@ -155,4 +160,63 @@ const makeAssociations = (user, regInfo) => {
       });
     })
     .catch(err => logger.error(err));
+};
+exports.forgot_get = (req, res) => {
+  res.render('forgot', {
+    user: req.user
+  });
+};
+
+exports.forgot_post = (req, res, next) => {
+  async.waterfall([
+    function(done) {
+      crypto.randomBytes(20, function(err, buf) {
+        var token = buf.toString('hex');
+        done(err, token);
+      });
+    },
+    function(token, done) {
+      models.User.findOne({ email: req.body.email }, function(err, user) {
+        if (!user) {
+          req.flash('error', 'No account with that email address exists.');
+          return res.redirect('/forgot');
+        }
+
+        user.resetPasswordToken = token;
+        user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+
+        user.save(function(err) {
+          done(err, token, user);
+        });
+      });
+    },
+    function(token, user, done) {
+      var transporter = nodemailer.createTransport(smtpTransport({
+        host: 'smtp.gmail.com', //mail.example.com (your server smtp)
+        port: 465, // (specific port)
+        secureConnection: false, //true or false
+        auth: {
+          user: process.env.AUTH_USER, //user@mydomain.com
+          pass: process.env.AUTH_PASS //password from specific user mail
+        }
+      }));
+      
+      var mailOptions = {
+        to: user.email,
+        from: 'passwordreset@demo.com',
+        subject: 'Node.js Password Reset',
+        text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+          'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+          'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+          'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+      };
+      transporter.sendMail(mailOptions, function(err) {
+        req.flash('info', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
+        done(err, 'done');
+      });
+    }
+  ], function(err) {
+    if (err) return next(err);
+    res.redirect('/forgot');
+  });
 };
