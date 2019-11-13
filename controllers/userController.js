@@ -303,6 +303,7 @@ exports.reset_confirm = (req, res) => {
     logger.error(err);
     res.redirect('/users/login');
   });
+};
 
 exports.client_view_get = (req, res) => {
   models.User.findAll({
