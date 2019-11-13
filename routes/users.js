@@ -20,10 +20,22 @@ router.get('/logout', userController.logout_post);
 // Portal
 router.get('/portal', global.ensureAuthenticated, userController.portal_get);
 
-//Seller - View Clients
+// Seller - View Clients
 router.get('/view', global.ensureAuthenticated, userController.client_view_get);
 
-//Seller - Edit Clients
+// Seller - Edit Clients
 router.get('/edit', global.ensureAuthenticated, userController.client_edit_get);
+
+// Forgot form
+router.get('/forgot', userController.forgot_get);
+
+// Send to Email
+router.post('/forgot', userController.forgot_post);
+
+// New password form
+router.get('/reset/:token', userController.new_password);
+
+// Confirm new password
+router.post('/reset/:token', userController.reset_confirm);
 
 module.exports = router;
