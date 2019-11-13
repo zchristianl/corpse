@@ -1,7 +1,6 @@
 /**
- * Shows the PO # field if PO number is selected.
+ * General form validation
  */
-
 window.addEventListener('load', () => {
   var forms = document.getElementsByClassName('needs-validation');
   Array.prototype.filter.call(forms, (form) => {

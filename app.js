@@ -5,6 +5,7 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const logger = require('./utils/logger');
 const passport = require('passport');
+const fs = require('fs');
 const app = express();
 
 global.ensureAuthenticated = (req, res, next) => {
@@ -16,7 +17,7 @@ global.ensureAuthenticated = (req, res, next) => {
 };
 
 global.ensureSeller = (req, res, next) => {
-  if(req.isAuthenticated() && req.user.acount_type === 'seller'){
+  if(req.isAuthenticated() && req.user.account_type === 'seller'){
     return next ? next() : true;
   } else {
     req.flash('danger', 'You do not have permission to access that URL.');
@@ -90,17 +91,17 @@ app.get('/', global.ensureAuthenticated, (req, res) => {
   res.render('layout');
 });
 
-// Route files
-let users = require('./routes/users');
-app.use('/users', users);
-let inventory = require('./routes/inventory');
-app.use('/inventory', inventory);
-let payment = require('./routes/payment');
-app.use('/payment', payment);
-let order = require('./routes/order');
-app.use('/order', order);
-let contact = require('./routes/contact');
-app.use('/contact', contact);
+/*
+* Register all Routes into app based on route file name
+* */
+let files =fs.readdirSync(path.join(__dirname,'./routes'));
+
+files.forEach((f)=> {
+  if (path.extname(f) === '.js') {
+    let fileName = path.basename(f, '.js');
+    app.use('/'+fileName,require('./routes/' + fileName + '.js'));
+  }
+});
 
 app.listen(3000, () => {
   logger.info('App running on port 3000');

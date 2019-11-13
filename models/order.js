@@ -4,10 +4,7 @@ module.exports = (sequelize, type) => sequelize.define('order', {
     primaryKey: true,
     autoIncrement: true
   },
-  payment_number: {
-    type: type.INTEGER,
-  },
-  payment_type: type.INTEGER, //check,stripe,PO
-  amount: type.INTEGER
+  amount: type.INTEGER,
+  state: type.INTEGER //inquiry quote order
   //inventory, user
 });

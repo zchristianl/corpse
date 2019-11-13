@@ -1,0 +1,29 @@
+extends layout
+
+block content
+  h1 Clients
+  a.btn.btn-success(href="" style="float:right; margin-bottom: 5px;") Register
+  table.table.table-striped
+    thead
+      tr
+        th(scope="col") Name
+        th(scope="col") Customer Since
+        th(scope="col") Paid
+        th(scope="col") Due
+        th(scope="col")
+    tbody
+      each user in users
+        tr
+          td 
+            b=user.first_name + " " + user.last_name
+            |#[br]
+            =user.organization
+          -var date = (new Date(user.createdAt)).toLocaleString('en-US', { month: 'long', year: 'numeric' });
+          td=date
+          td $0.00
+          td $0.00
+          td
+            form(method="GET" action="" style="margin-right: 5px; float:left;")
+              button.btn.btn-info(type="submit" name="id") New Order
+            form(method='POST' action="")
+              button.btn.btn-warning(type="submit") Edit

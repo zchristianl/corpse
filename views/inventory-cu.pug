@@ -28,6 +28,9 @@ block content
       .col
         label Price: 
         input.form-control(name='price' type='number' value=(entry ? entry.price : '') step=".01" min="0.01" required maxlength='25')
+      .col
+        label Stock: 
+        input.form-control(name='stock' type='number' value=(entry ? entry.stock : '') step="1" min="0" required maxlength='25')
     .row
       .col
         label Description:

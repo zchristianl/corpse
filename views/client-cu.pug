@@ -1,8 +1,7 @@
 extends layout
 
 block content
-  h1 Client Registration
-  br
+  h1 Edit Client
   form.needs-validation(method='POST', action='/users/register' id='form_registration' novalidate)
     .row
       .col
@@ -132,6 +131,3 @@ block content
       .col(id='po_num_col' hidden)
         label PO #:
         input.form-control(name='po_num' type='text')  
-    br
-    input.btn.btn-primary(type='submit' value='Submit')
-    script(src='/js/regval.js')

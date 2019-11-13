@@ -1,16 +1,25 @@
 const models = require('../config/database');
 const logger = require('../utils/logger');
 
-exports.order_get = (req, res) => {
-  models.Order.findAll()
-    .then(orders => res.render('NO_EXIST', {
+exports.order_view_get = (req, res) => {
+  models.Order.findAll({
+    include: [
+      { model: models.Item },
+      { model: models.User }
+    ]
+  })
+    .then(orders => res.render('order', {
       orders: orders
     }))
     .catch(err => logger.error(err));
 };
 
+exports.order_inquire_get = (req, res) => {
+  res.render('inquire');
+};
+
 exports.create_invoice = (req, res) => {
-  const {createInvoiceDownload, createInvoiceEmail} = require('../utils/createInvoice.js');
+  const { createInvoiceDownload, createInvoiceEmail } = require('../utils/createInvoice.js');
   // CREATE INVOICE HERE
   // USING ORDER USER ASSOCIATION
   let invoice = {
@@ -49,3 +58,68 @@ exports.create_invoice = (req, res) => {
   // MAKE INVOICE NAME UNIQUE
   createInvoiceEmail(invoice, 'invoice.pdf', order, req, res);
 };
+exports.order_remove = (req, res) => {
+  //AUTHORIZE ACTION
+  models.Order.destroy({
+    where: {
+      id: req.body.id
+    }
+  }).then(res.redirect('NO_EXIST')).catch(err => logger.err(err));
+};
+
+exports.order_modify = (req, res) => {
+  //AUTHORIZE ACTION
+  if (req.body.id) {
+    models.Order.findOne({
+      where: {
+        id: req.body.id
+      },
+      include: [{ model: models.User }, { model: models.Item }]
+
+    }).then((entry) => {
+      entry.update({
+        amount: req.body.amount,
+        state: req.body.state,
+        type: req.body.type,
+        user: req.body.user,
+      }).then(() => { res.redirect('NO_EXIST'); }); // CALL item modify if needed.
+    }).catch(err => logger.error(err));
+    return;
+  }
+
+  if (!req.params.id) {
+    res.redirect('NO_EXIST');
+    return;
+  }
+
+  models.Order.findOne({
+    where: {
+      id: req.params.id
+    }
+  }).then((entry) => {
+    res.render('NO_EXIST', {
+      entry: entry
+    });
+  }).catch(err => logger.error(err));
+};
+
+exports.order_create = (req, res) => {
+  if (!req.body.item_name) {
+    res.render('NO_EXIST');
+    return;
+  }
+
+  let bodyvars = undefined;
+
+  //AUTHORIZE ACTION
+  bodyvars = {
+    amount: req.body.amount,
+    state: req.body.state,
+    type: req.body.type,
+    user: req.body.user,
+    item: req.body.items
+  };
+
+  models.Inventory.create(bodyvars).then(() => { res.redirect('NO_EXIST'); }); //CALL relvant Item creates if needed
+};
+

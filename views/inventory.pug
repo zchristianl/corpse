@@ -9,6 +9,7 @@ block content
         th(scope="col") Name
         th(scope="col") Type
         th(scope="col") Cost
+        th(scope="col") Stock
         th(scope="col") Price
         th(scope="col")
     tbody
@@ -17,6 +18,7 @@ block content
           td=item.name
           td=item.type
           td="$"+item.cost
+          td=item.stock
           td
             b="$"+item.price
           td
@@ -25,26 +27,26 @@ block content
               //input(type="hidden" name="id" value=item.id)
             button.btn.btn-danger.deleteButton(type="submit" name="id" value=item.id data-toggle='modal' data-target='#DeleteModal') Delete
   .container
-    #DeleteModal.modal.fade(tabindex="-1", role="dialog", aria-labelledby="DeleteModal", aria-hidden="true")
+    #DeleteModal.modal.fade(tabindex="-1" role="dialog" aria-labelledby="DeleteModal" aria-hidden="true")
       .modal-dialog
         .modal-content
           .modal-header
             h5.modal-title Delete
-            button.close(type="button", data-dismiss="modal", aria-hidden="true") &times;
+            button.close(type="button" data-dismiss="modal" aria-hidden="true") &times;
           .modal-body
             p
               | Click &apos;Delete&apos; to 
               strong permanently
               |  delete this record. Click &apos;Cancel&apos; to cancel your action.
           .modal-footer
-            button.btn.btn-secondary(type="button", data-dismiss="modal") Cancel
-            button.btn.btn-danger.deleteModal(type="button", data-dismiss="modal" id="delete" value=1) Delete
+            button.btn.btn-secondary(type="button" data-dismiss="modal") Cancel
+            button.btn.btn-danger.deleteModal(type="button" data-dismiss="modal" id="delete" value=1) Delete
 
   script.
     $('.deleteButton').on('click', function(e) {
-        var itemId = $(e.target).attr('value');
-        console.log(itemId);
-        $(".deleteModal").val(itemId); 
+      var itemId = $(e.target).attr('value');
+      console.log(itemId);
+      $(".deleteModal").val(itemId); 
     });
 
     $('.deleteModal').on('click', function(e){
@@ -61,7 +63,7 @@ block content
         }
       });
     }); 
-    
 
-      
+
+
 
