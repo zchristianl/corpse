@@ -1,0 +1,10 @@
+{
+  "Image": {
+    "Name": "image-name"
+  },
+  "Ports": [
+    {
+      "ContainerPort": 3000
+    }
+  ]
+}
