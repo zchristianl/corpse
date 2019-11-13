@@ -1,0 +1,10 @@
+{
+  "Image": {
+    "Name": "gregg1494/corpse"
+  },
+  "Ports": [
+    {
+      "ContainerPort": 3000
+    }
+  ]
+}
