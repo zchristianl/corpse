@@ -20,4 +20,10 @@ router.get('/logout', userController.logout_post);
 // Portal
 router.get('/portal', global.ensureAuthenticated, userController.portal_get);
 
+//Seller - View Clients
+router.get('/view', global.ensureAuthenticated, userController.client_view_get);
+
+//Seller - Edit Clients
+router.get('/edit', global.ensureAuthenticated, userController.client_edit_get);
+
 module.exports = router;

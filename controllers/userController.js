@@ -1,4 +1,4 @@
-const {check, validationResult} = require('express-validator');
+const { check, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
 const models = require('../config/database');
@@ -14,10 +14,10 @@ exports.portal_get = (req, res) => {
 
 exports.register_post = (req, res) => {
   const errors = validationResult(req);
-  if(!errors.isEmpty()) {
+  if (!errors.isEmpty()) {
     logger.error(errors.array());
     res.render('register', {
-      errors: errors.array() 
+      errors: errors.array()
     });
   } else {
     // Check for existing user
@@ -26,7 +26,7 @@ exports.register_post = (req, res) => {
         'email': req.body.email
       }
     }).then(user => {
-      if(user !== null) {
+      if (user !== null) {
         req.flash('danger', 'A user with that email address already exists.');
         res.render('register');
       }
@@ -38,7 +38,7 @@ exports.register_post = (req, res) => {
       email: req.body.email,
       password: req.body.password,
     };
-    
+
     const regInfo = {
       organization: req.body.organization,
       department: req.body.department,
@@ -52,11 +52,11 @@ exports.register_post = (req, res) => {
       payment: req.body.payment
     };
 
-    let {first_name, last_name, email, password} = newUser;
+    let { first_name, last_name, email, password } = newUser;
 
     bcrypt.genSalt(10, (err, salt) => {
       bcrypt.hash(password, salt, (err, hash) => {
-        if(err){
+        if (err) {
           logger.error(err);
         }
         models.User.create({
@@ -65,7 +65,16 @@ exports.register_post = (req, res) => {
           email: email,
           password: hash,
           account_type: 'client',
-          phone: regInfo.phone
+          phone: regInfo.phone,
+          organization: regInfo.organization,
+          department: regInfo.department,
+          research_area: regInfo.research_area,
+          address: (regInfo.address1 + '\n' + regInfo.address2),
+          city: regInfo.city,
+          state: regInfo.state,
+          zip: regInfo.zip,
+          payment: regInfo.payment,
+          po_num: regInfo.po_num
         })
           .then(user => makeAssociations(user, regInfo))
           .then(() => {
@@ -93,18 +102,18 @@ exports.login_post = (req, res, next) => {
 exports.validate = (method) => {
   switch (method) {
   case 'createUser': {
-    return  [
+    return [
       check('first_name', 'First name is required').not().isEmpty(),
       check('last_name', 'Last name is required').not().isEmpty(),
       check('email', 'Email is required').not().isEmpty().isEmail().normalizeEmail(),
       check('password', 'Password is required').not().isEmpty(),
       check('password2', 'Confirm Password is required').not().isEmpty(),
-      check('password2', 'Please make sure both password match').custom((value, {req}) => (value === req.body.password)),
+      check('password2', 'Please make sure both password match').custom((value, { req }) => (value === req.body.password)),
       check('phone', 'Phone number is required').not().isEmpty(),
       check('phone', 'Please input phone number correctly').isMobilePhone(),
       check('city', 'City is required').not().isEmpty(),
       check('zip', 'Zip code is required').not().isEmpty()
-    ]; 
+    ];
   }
   }
 };
@@ -155,4 +164,21 @@ const makeAssociations = (user, regInfo) => {
       });
     })
     .catch(err => logger.error(err));
+};
+
+exports.client_view_get = (req, res) => {
+  
+  models.User.findAll({
+    where: {
+      'account_type': 'client'
+    }
+  }
+  ).then(users => res.render('client', {
+    users: users
+  }));
+};
+
+exports.client_edit_get = (req, res) => {
+  res.render('client-cu');
+
 };

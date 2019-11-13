@@ -11,7 +11,8 @@ exports.inventory_get = (req, res) => {
 };
 
 //WARNING UNSUPPORTED VIEW
-exports.inventory_select = (req, res) => {
+//Don't need to view a single inentory time currently - use edit functionality
+/* exports.inventory_select = (req, res) => {
   models.Inventory.findOne({
     where: {
       id: req.params.id
@@ -20,7 +21,7 @@ exports.inventory_select = (req, res) => {
     .then(item => res.render('NO_EXIST', { item: item }))
     .catch(err => logger.error(err));
 
-};
+}; */
 
 exports.inventory_modify = (req, res) => {
   if (req.body.id) {
@@ -35,7 +36,8 @@ exports.inventory_modify = (req, res) => {
         type: req.body.type,
         description: req.body.description,
         cost: req.body.cost,
-        price: req.body.price
+        price: req.body.price,
+        stock: req.body.stock
       }).then(() => { res.redirect('/inventory/'); });
     }).catch(err => logger.error(err));
     return;
@@ -72,7 +74,8 @@ exports.inventory_create = (req, res) => {
     type: req.body.type,
     description: req.body.description,
     cost: req.body.cost,
-    price: req.body.price
+    price: req.body.price,
+    stock: req.body.stock
   };
 
   models.Inventory.create(bodyvars).then(() => { res.redirect('/inventory'); });

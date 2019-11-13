@@ -16,6 +16,9 @@ module.exports = (sequelize, type) => {
       type: type.DECIMAL,
       allowNull: false
     },
-    price: type.DECIMAL
+    price: type.DECIMAL,
+    stock: {
+      type: type.INTEGER
+    }
   });
 };
