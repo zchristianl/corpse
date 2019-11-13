@@ -283,7 +283,7 @@ exports.reset_confirm = (req, res) => {
         from: 'account@proteinct.com',
         subject: 'Your ProteinCT password has been changed',
         text: 'Hello,\n\n' +
-          'This is a confirmation that the password for your ProteinCT  account ' + user.email + ' has just been changed.\n'
+          'This is a confirmation that the password for your ProteinCT account ' + user.email + ' has just been changed.\n'
       };
       transporter.sendMail(mailOptions, function(err) {
         req.flash('success', 'Success! Your password has been changed.');
