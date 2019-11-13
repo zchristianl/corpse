@@ -161,6 +161,7 @@ const makeAssociations = (user, regInfo) => {
     })
     .catch(err => logger.error(err));
 };
+
 exports.forgot_get = (req, res) => {
   res.render('forgot', {
     user: req.user
@@ -212,7 +213,7 @@ exports.forgot_post = (req, res, next) => {
         subject: 'Reset Your ProteinCT Password',
         text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
           'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-          'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+          'http://' + req.headers.host + '/users/reset/' + token + '\n\n' +
           'If you did not request this, please ignore this email and your password will remain unchanged.\n'
       };
       transporter.sendMail(mailOptions, function(err) {
@@ -226,30 +227,46 @@ exports.forgot_post = (req, res, next) => {
   });
 };
 
-exports.reset_get = (req, res) => {
+exports.new_password =(req, res) => {
+  models.User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } })
+    .then(() => {
+      res.render('reset', {
+        user: req.user
+      });
+    })
+    .catch(err => {
+      logger.error(err);
+      req.flash('error', 'Password reset token is invalid or has expired.');
+      return res.redirect('/user/forgot');
+    });
+};
+
+exports.reset_confirm = (req, res) => {
   async.waterfall([
     function(done) {
-      models.User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
-        if (!user) {
-          req.flash('error', 'Password reset token is invalid or has expired.');
-          return res.redirect('back');
-        }
-      })
+      models.User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } })
         .then(user => {
-          user.update({
-            password: req.body.password,
-            resetPasswordToken: undefined,
-            resetPasswordExpires: undefined,
-          }).then(user => {
-            done(null, token, user);
-          })
-            .catch(err => {
-              logger.error(err);
-              req.flash('error', 'No account with that email address exists.');
-              return res.redirect('/users/forgot');
+          bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(req.body.password, salt, (err, hash) => {
+              if(err){
+                logger.error(err);
+              }
+              user.update({
+                password: hash,
+                resetPasswordToken: undefined,
+                resetPasswordExpires: undefined
+              })
+                .then(user => {
+                  done(null, user);
+                })
+                .catch(err => {
+                  logger.error(err);
+                  req.flash('error', 'Password reset token is invalid or has expired.');
+                  return res.redirect('back');
+                });
             });
+          });
         });
-      
     },
     function(user, done) {
       var transporter = nodemailer.createTransport(smtpTransport({
@@ -263,10 +280,10 @@ exports.reset_get = (req, res) => {
       }));
       var mailOptions = {
         to: user.email,
-        from: 'passwordreset@demo.com',
-        subject: 'Your password has been changed',
+        from: 'account@proteinct.com',
+        subject: 'Your ProteinCT password has been changed',
         text: 'Hello,\n\n' +
-          'This is a confirmation that the password for your account ' + user.email + ' has just been changed.\n'
+          'This is a confirmation that the password for your ProteinCT  account ' + user.email + ' has just been changed.\n'
       };
       transporter.sendMail(mailOptions, function(err) {
         req.flash('success', 'Success! Your password has been changed.');
