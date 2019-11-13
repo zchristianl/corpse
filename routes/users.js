@@ -24,4 +24,6 @@ router.get('/forgot', userController.forgot_get);
 
 router.post('/forgot', userController.forgot_post);
 
+router.post('/reset/:token', userController.reset_get);
+
 module.exports = router;

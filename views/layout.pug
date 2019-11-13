@@ -14,17 +14,15 @@ html
         #headnav.collapse.navbar-collapse
           .navbar-nav
           if user
+            ul.nav.navbar-nav.navbar-right
+              a.nav-item.nav-link(href='/users/login') Login
+              a.nav-item.nav-link(href='/users/register') Register
             if user.account_type === "seller"
               a.nav-item.nav-link(href='#') Dashboard
               a.nav-item.nav-link(href='/inventory') Inventory
-              a.nav-item.nav-link(href='/users/logout') Logout
             else
               a.nav-item.nav-link(href='#') Dashboard
-              a.nav-item.nav-link(href='/payment/checkout') Checkout
-              a.nav-item.nav-link(href='/users/logout') Logout
-          else
-              a.nav-item.nav-link(href='/users/login') Login
-              a.nav-item.nav-link(href='/users/register') Register
+              a.nav-item.nav-li
     .container(style='padding: 15px;')
       != messages('message', locals)
       if errors
