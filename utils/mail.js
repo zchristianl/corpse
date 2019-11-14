@@ -12,7 +12,7 @@ var transporter = exports.transporter = nodemailer.createTransport(smtpTransport
   }
 }));
 
-exports.sendSeller = async function(email, subject, htmlcontent, callback) {
+exports.send = async function(email, subject, htmlcontent, callback) {
   var mailOptions = {
     from: email,
     to: process.env.AUTH_USER,
