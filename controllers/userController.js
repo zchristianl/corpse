@@ -110,7 +110,7 @@ exports.validate = (method) => {
     return [
       check('first_name', 'First name is required').not().isEmpty(),
       check('last_name', 'Last name is required').not().isEmpty(),
-      check('email', 'Email is required').not().isEmpty().isEmail().normalizeEmail(),
+      check('email', 'Email is required').not().isEmpty().isEmail(),
       check('password', 'Password is required').not().isEmpty(),
       check('password2', 'Confirm Password is required').not().isEmpty(),
       check('password2', 'Please make sure both password match').custom((value, { req }) => (value === req.body.password)),
@@ -119,6 +119,9 @@ exports.validate = (method) => {
       check('city', 'City is required').not().isEmpty(),
       check('zip', 'Zip code is required').not().isEmpty()
     ];
+  }
+  case 'forgot': {
+    return check('email', 'Email is required').not().isEmpty();
   }
   }
 };
@@ -178,62 +181,68 @@ exports.forgot_get = (req, res) => {
 };
 
 exports.forgot_post = (req, res, next) => {
-  async.waterfall([
-    function(done) {
-      crypto.randomBytes(20, function(err, buf) {
-        var token = buf.toString('hex');
-        done(err, token);
-      });
-    },
-    function(token, done) {
-      console.log(req.body.email);
-      models.User.findOne({
-        where: {
-          email: req.body.email
-        }
-      }).then(user => {
-        user.update({
-          resetPasswordToken: token,
-          resetPasswordExpires: Date.now() + 3600000 // 1 hour
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.render('forgot', {
+      errors: errors.array()
+    });
+  } else {
+    async.waterfall([
+      function(done) {
+        crypto.randomBytes(20, function(err, buf) {
+          var token = buf.toString('hex');
+          done(err, token);
+        });
+      },
+      function(token, done) {
+        models.User.findOne({
+          where: {
+            email: req.body.email
+          }
         }).then(user => {
-          done(null, token, user);
-        })
-          .catch(err => {
-            logger.error(err);
-            req.flash('error', 'No account with that email address exists.');
-            return res.redirect('/users/forgot');
-          });
-      });
-    },
-    function(token, user, done) {
-      var transporter = nodemailer.createTransport(smtpTransport({
-        host: 'smtp.gmail.com', //mail.example.com (your server smtp)
-        port: 465, // (specific port)
-        secureConnection: false, //true or false
-        auth: {
-          user: process.env.AUTH_USER, //user@mydomain.com
-          pass: process.env.AUTH_PASS //password from specific user mail
-        }
-      }));
+          user.update({
+            resetPasswordToken: token,
+            resetPasswordExpires: Date.now() + 3600000 // 1 hour
+          }).then(user => {
+            done(null, token, user);
+          })
+            .catch(err => {
+              logger.error(err);
+              req.flash('error', 'No account with that email address exists.');
+              return res.redirect('/users/forgot');
+            });
+        });
+      },
+      function(token, user, done) {
+        var transporter = nodemailer.createTransport(smtpTransport({
+          host: 'smtp.gmail.com',
+          port: 465,
+          secureConnection: false,
+          auth: {
+            user: process.env.AUTH_USER,
+            pass: process.env.AUTH_PASS
+          }
+        }));
       
-      var mailOptions = {
-        to: user.email,
-        from: 'account@proteinct.com',
-        subject: 'Reset Your ProteinCT Password',
-        text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+        var mailOptions = {
+          to: user.email,
+          from: 'account@proteinct.com',
+          subject: 'Reset Your ProteinCT Password',
+          text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
           'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
           'http://' + req.headers.host + '/users/reset/' + token + '\n\n' +
           'If you did not request this, please ignore this email and your password will remain unchanged.\n'
-      };
-      transporter.sendMail(mailOptions, function(err) {
-        req.flash('info', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
-        done(err, 'done');
-      });
-    }
-  ], function(err) {
-    if (err) return next(err);
-    res.redirect('/users/forgot');
-  });
+        };
+        transporter.sendMail(mailOptions, function(err) {
+          req.flash('info', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
+          done(err, 'done');
+        });
+      }
+    ], function(err) {
+      if (err) return next(err);
+      res.redirect('/users/forgot');
+    });
+  }
 };
 
 exports.new_password =(req, res) => {
@@ -279,12 +288,12 @@ exports.reset_confirm = (req, res) => {
     },
     function(user, done) {
       var transporter = nodemailer.createTransport(smtpTransport({
-        host: 'smtp.gmail.com', //mail.example.com (your server smtp)
-        port: 465, // (specific port)
-        secureConnection: false, //true or false
+        host: 'smtp.gmail.com',
+        port: 465,
+        secureConnection: false,
         auth: {
-          user: process.env.AUTH_USER, //user@mydomain.com
-          pass: process.env.AUTH_PASS //password from specific user mail
+          user: process.env.AUTH_USER,
+          pass: process.env.AUTH_PASS
         }
       }));
       var mailOptions = {
