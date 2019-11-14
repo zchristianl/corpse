@@ -183,7 +183,6 @@ exports.forgot_get = (req, res) => {
 exports.forgot_post = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    console.log(errors.array().length);
     res.render('forgot', {
       errors: errors.array()
     });
