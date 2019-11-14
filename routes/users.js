@@ -35,7 +35,7 @@ router.post('/create/', global.ensureAuthenticated, userController.validate('cre
 router.get('/forgot', userController.forgot_get);
 
 // Send to Email
-router.post('/forgot', userController.forgot_post);
+router.post('/forgot', userController.validate('forgot'), userController.forgot_post);
 
 // New password form
 router.get('/reset/:token', userController.new_password);

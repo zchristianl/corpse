@@ -109,7 +109,7 @@ exports.validate = (method) => {
     return [
       check('first_name', 'First name is required').not().isEmpty(),
       check('last_name', 'Last name is required').not().isEmpty(),
-      check('email', 'Email is required').not().isEmpty().isEmail().normalizeEmail(),
+      check('email', 'Email is required').not().isEmpty().isEmail(),
       check('password', 'Password is required').not().isEmpty(),
       check('password2', 'Confirm Password is required').not().isEmpty(),
       check('password2', 'Please make sure both password match').custom((value, { req }) => (value === req.body.password)),
@@ -118,6 +118,9 @@ exports.validate = (method) => {
       check('city', 'City is required').not().isEmpty(),
       check('zip', 'Zip code is required').not().isEmpty()
     ];
+  }
+  case 'forgot': {
+    return check('email', 'Email is required').not().isEmpty();
   }
   }
 };
