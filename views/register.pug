@@ -118,20 +118,7 @@ block content
       .col
         label Phone:
         input.form-control(name='phone' type='text' pattern="^[1-9]{1}\\d{5}\\d{4}$" required='true')
-        div.invalid-feedback Please enter a 10-digit phone number without any dashes or parentheses.
+        div.invalid-feedback Please enter a 10-digit phone number without any dashes or parentheses.    
     br
-    h2 Payment
-    .row 
-      .col
-        label Payment Method:
-        select.custom-select(name='payment' id='payment' required)
-          option(value='' selected disabled hidden) 
-          option(value='check') Check
-          option(value='po') Purchase Order
-          option(value='cc') Credit/Debit Card
-      .col(id='po_num_col' hidden)
-        label PO #:
-        input.form-control(name='po_num' type='text')  
-    br
-    input.btn.btn-primary(type='submit' value='Submit')
+    input.btn.btn-primary(type='submit' value='Submit' style="float: right;")
     script(src='/js/regval.js')

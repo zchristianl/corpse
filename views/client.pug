@@ -2,7 +2,7 @@ extends layout
 
 block content
   h1 Clients
-  a.btn.btn-success(href="" style="float:right; margin-bottom: 5px;") Register
+  a.btn.btn-success(href="/users/create" style="float:right; margin-bottom: 5px;") Register
   table.table.table-striped
     thead
       tr
@@ -24,6 +24,6 @@ block content
           td $0.00
           td
             form(method="GET" action="" style="margin-right: 5px; float:left;")
-              button.btn.btn-info(type="submit" name="id") New Order
-            form(method='POST' action="")
+              button.btn.btn-info(type="submit" name="id" disabled) New Order
+            form(method="GET" action="/users/edit/"+user.id)
               button.btn.btn-warning(type="submit") Edit
