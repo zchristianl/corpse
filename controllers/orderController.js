@@ -18,6 +18,34 @@ exports.order_inquire_get = (req, res) => {
   res.render('inquire');
 };
 
+exports.order_create_post = (req, res) => {
+  let bodyvars = undefined;
+
+  //AUTHORIZE ACTION
+  bodyvars = {
+    userId: req.body.user,
+    state: 'new',
+    inquiry_type: req.body.inquiry_type,
+    time_estimate: req.body.time_estimate,
+    intended_use: req.body.intended_use,
+    service: req.body.service,
+    comments: req.body.comments,
+    payment: req.body.payment,
+    po_num: req.body.po_num
+  };
+
+  models.Order.create(bodyvars).then((order) => {
+
+    var itemVars = {
+      orderId: order.id,
+      //Come back for inventoryId
+    };
+    models.Item.create(itemVars).then(() => {
+      res.redirect('/users/portal');
+    });
+  });
+};
+
 exports.create_invoice = (req, res) => {
   const { createInvoiceDownload, createInvoiceEmail } = require('../utils/createInvoice.js');
   // CREATE INVOICE HERE
