@@ -1,5 +1,6 @@
 const models = require('../config/database');
 const logger = require('../utils/logger');
+const mailer = require('../utils/mail');
 
 exports.order_view_get = (req, res) => {
   models.Order.findAll({
@@ -121,5 +122,32 @@ exports.order_create = (req, res) => {
   };
 
   models.Inventory.create(bodyvars).then(() => { res.redirect('NO_EXIST'); }); //CALL relvant Item creates if needed
+};
+
+// Send order confirmation email to client
+exports.order_confirmation = (req, res, order) => {
+  const output = `
+      <h1>Thank you for your order!</h1>
+      <h3>Order Details</h3>
+      <ul>
+        <li>Order Number: ${order.id}</li>
+        <li>Date: ${order.createdAt}</li>
+      </ul>
+      <h3>Message</h3>
+      <p>We will get back to you very soon, feel free to contact us at 1‑608-886-6718.</p>
+    `;
+  
+  mailer.send('corpsedev@gmail.com', '[ProteinCT Order Confirmation]', output, (err, info) => {
+    if(err){
+      logger.error(err);
+      req.flash('danger', 'There was an error. Please try again.');
+      res.redirect('contact');
+  
+    } else {
+      req.flash('success', 'Your message has been sent!');
+      res.render('portal');
+    }
+    logger.info(info.messageId);
+  });
 };
 

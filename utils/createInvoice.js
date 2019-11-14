@@ -28,8 +28,7 @@ function createInvoiceEmail(invoice, filename, order ,req, res) {
     if(err){
       logger.error(err);
       req.flash('danger', 'There was an error. Please try again.');
-      res.redirect('contact/contact_seller');
-  
+      res.redirect('/');
     } else {
       req.flash('success', 'Your message has been sent!');
       res.render('portal');

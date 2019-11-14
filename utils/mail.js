@@ -2,7 +2,7 @@ var nodemailer = require('nodemailer');
 var smtpTransport = require('nodemailer-smtp-transport');
 require('dotenv').config();
 
-exports.sendSeller = async function(email, subject, htmlcontent, callback) {
+exports.send = async function(email, subject, htmlcontent, callback) {
   var transporter = nodemailer.createTransport(smtpTransport({
     host: 'smtp.gmail.com', //mail.example.com (your server smtp)
     port: 465, // (specific port)
@@ -33,12 +33,12 @@ exports.sendSeller = async function(email, subject, htmlcontent, callback) {
 
 exports.sendInvoice = async function(doc, filename, order, callback) {
   var transporter = nodemailer.createTransport(smtpTransport({
-    host: 'smtp.gmail.com', //mail.example.com (your server smtp)
-    port: 465, // (specific port)
-    secureConnection: false, //true or false
+    host: 'smtp.gmail.com',
+    port: 465,
+    secureConnection: false,
     auth: {
-      user: process.env.AUTH_USER, //user@mydomain.com
-      pass: process.env.AUTH_PASS //password from specific user mail
+      user: process.env.AUTH_USER,
+      pass: process.env.AUTH_PASS
     }
   }));
 
