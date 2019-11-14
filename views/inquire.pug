@@ -4,31 +4,35 @@ block content
   h1 Submit an Inquiry
   br
   p Let's start your order. Please let us know what you'd like to order, and we'll respond back to you with an esimate.
-  form.needs-validation(method='POST' action='/users/register' novalidate)
+  form.needs-validation(method='POST' action='/order/inquire' novalidate)
     .row
       .col
         label Nature of Inquiry:
-        select.custom-select(name='nature' required)
+        select.custom-select(name='inquiry_type' required)
+          option(selected hidden disabled)
           option(value='estimate') Pricing Estimate
           option(value='quote') Quote for Ordering
           option(value='grant') Grant Application
       .col
         label Estimated Project Initiation:
         select.custom-select(name='time_estimate' required)
+          option(selected hidden disabled)
           option(value='immediately') Immediately
           option(value='1-3') 1-3 Months
           option(value='3-6') 3-6 Months
-          option(valeu='6_or_more') Longer Than 6 Months
+          option(value='6_or_more') Longer Than 6 Months
     .row
       .col
         label Intended Use:
         select.custom-select(name='intended_use' required)
+          option(selected hidden disabled)
           option(value='research_only') Research Only
           option(value='clinical_applications') Clinical Applications
     .row
       .col
         label Service:
         select.custom-select(name='service' required)
+          option(selected hidden disabled)
           option(value='gene_synthesis') Gene Synthesis
           option(value='structural_biology_services') Structural Biology Services
           option(value='custom_monoclonal_antibodies') Custom Monoclonal Antibodies
@@ -53,7 +57,19 @@ block content
       .col
         label Comments:
         textarea.form-control(rows="5" name="comments")
+    .row 
+      .col
+        label Payment Method:
+        select.custom-select(name='payment' id='payment' required)
+          option(value='' selected hidden disabled) 
+          option(value='check') Check
+          option(value='po') Purchase Order
+          option(value='cc') Credit/Debit Card
+      .col(id='po_num_col' hidden)
+        label PO #:
+        input.form-control(name='po_num' type='text')  
     br
     input.btn.btn-primary(type='submit' value='Submit')
+    input(type='hidden' name='user' value=user.id)
     script(src='/js/formval.js')
-    script(src='/js/regval.js')
+    script(src='/js/poval.js')

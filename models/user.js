@@ -16,7 +16,6 @@ module.exports = (sequelize, type) => sequelize.define('user', {
   city: type.STRING,
   state: type.STRING(2),
   zip: type.STRING(5),
-  payment: type.ENUM('check', 'po', 'cc'),
   po_num: type.STRING,
   resetPasswordToken: type.STRING,
   resetPasswordExpires: type.DATE
