@@ -6,7 +6,7 @@ const logger = require('../utils/logger');
 require('dotenv').config();
 const async = require('async');
 const crypto = require('crypto');
-const transporter = require('../utils/mail');
+const mailer = require('../utils/mail');
 
 exports.register_get = (req, res) => {
   res.render('register');
@@ -214,7 +214,7 @@ exports.forgot_post = (req, res, next) => {
           'http://' + req.headers.host + '/users/reset/' + token + '\n\n' +
           'If you did not request this, please ignore this email and your password will remain unchanged.\n'
       };
-      transporter.sendMail(mailOptions, function (err) {
+      mailer.transporter.sendMail(mailOptions, function (err) {
         req.flash('info', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
         done(err, 'done');
       });
@@ -274,7 +274,7 @@ exports.reset_confirm = (req, res) => {
         text: 'Hello,\n\n' +
           'This is a confirmation that the password for your ProteinCT account ' + user.email + ' has just been changed.\n'
       };
-      transporter.sendMail(mailOptions, function (err) {
+      mailer.transporter.sendMail(mailOptions, function (err) {
         req.flash('success', 'Success! Your password has been changed.');
         done(err);
       });
