@@ -64,13 +64,13 @@ describe('user tests', () => {
       .set('content-type', 'application/x-www-form-urlencoded')
       .send({ email: 'test_email@mail.com', password: 'asdf' })
       .end(function (err, response) {
-        console.log(response)
+        console.log(response);
         expect(response.status).to.equal(200);
         done();
       });
   });
 
-  var page_ = chai.request.agent(app)
+  var page_ = chai.request.agent(app);
   it('/path POST test: login page data validation', function (done) {
     var path = '/users/login';
     page_
@@ -84,7 +84,7 @@ describe('user tests', () => {
         expect(response.error).to.be.equal(false);
         page_.get('/users/portal')
           .end(function (err2, res2) {
-            console.log(res2)
+            console.log(res2);
             done();
           });
       });
