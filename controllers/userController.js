@@ -4,10 +4,9 @@ const passport = require('passport');
 const models = require('../config/database');
 const logger = require('../utils/logger');
 require('dotenv').config();
-const nodemailer = require('nodemailer');
-const smtpTransport = require('nodemailer-smtp-transport');
 const async = require('async');
 const crypto = require('crypto');
+const transporter = require('../utils/mail');
 
 exports.register_get = (req, res) => {
   res.render('register');
@@ -206,16 +205,6 @@ exports.forgot_post = (req, res, next) => {
       });
     },
     function (token, user, done) {
-      var transporter = nodemailer.createTransport(smtpTransport({
-        host: 'smtp.gmail.com', //mail.example.com (your server smtp)
-        port: 465, // (specific port)
-        secureConnection: false, //true or false
-        auth: {
-          user: process.env.AUTH_USER, //user@mydomain.com
-          pass: process.env.AUTH_PASS //password from specific user mail
-        }
-      }));
-
       var mailOptions = {
         to: user.email,
         from: 'account@proteinct.com',
@@ -278,15 +267,6 @@ exports.reset_confirm = (req, res) => {
         });
     },
     function (user, done) {
-      var transporter = nodemailer.createTransport(smtpTransport({
-        host: 'smtp.gmail.com', //mail.example.com (your server smtp)
-        port: 465, // (specific port)
-        secureConnection: false, //true or false
-        auth: {
-          user: process.env.AUTH_USER, //user@mydomain.com
-          pass: process.env.AUTH_PASS //password from specific user mail
-        }
-      }));
       var mailOptions = {
         to: user.email,
         from: 'account@proteinct.com',
