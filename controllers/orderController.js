@@ -103,6 +103,18 @@ exports.order_modify = (req, res) => {
   }).catch(err => logger.error(err));
 };
 
+//INTERNAL USE ONLY
+exports.inventoryUpdate = (id, count)=>{
+  models.Item.findOne(
+    {
+      where: {
+        id: id
+      },
+      include: [{model:models.Inventory}]
+    }
+  ).then((entry)=>{entry.inventory.stock = count;});
+};
+
 exports.order_create = (req, res) => {
   if (!req.body.item_name) {
     res.render('NO_EXIST');
