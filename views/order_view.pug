@@ -1,0 +1,55 @@
+extends layout.pug
+block content
+    h1="Order Num: "+order.id
+    h2=order.state
+    h3=order.inquiry_type
+    h3="Time Estimate: "+order.time_estimate
+    h3="Intended Use"+order.intended_use
+    h3="Payments"+"INSERT PAYMENT INFO"
+    -var date = (new Date(order.updatedAt)).toLocaleString('en-US', { month: 'long', day: '2-digit', year: 'numeric' });
+    h3="Order Date " + date
+    a.btn.btn-success(href="" style="float:right; margin-bottom: 5px;") New Order
+
+    script.
+        console.log(!{JSON.stringify(order)})
+
+    if order.payments != null && !order.payments.count <= 0
+        table.table.table-striped
+            thead
+                tr
+                    th(scope="col") Payment No.
+                    th(scope="col") Type
+                    th(scope="col") Amount
+            tbody
+            each payment in order.payment
+                tr
+                    td=payment.payment_number
+                    td=payment.payment_type
+                    td=payment.payment_amount
+
+    if order.items != null || order.items.isEmpty()
+        table.table.table-striped
+            thead
+                tr
+                    th(scope="col") Name
+                    th(scope="col") Type
+                    th(scope="col") Price
+                    th(scope="col") Category
+                    th(scope="col")
+            tbody
+
+
+
+
+                 each item in order.items
+                    tr
+                        td=(item.inventory == null || item.inventory.name == null) ? "null" : item.inventory.name
+                        td
+                            b=order.user.first_name + " " + order.user.last_name
+                            |#[br]
+                            =order.user.organization
+                        td="$"+order.amount
+                        td=order.state
+                        td
+                            form(method="GET" action="/order/view/" style="margin-right: 5px; float:left;")
+                                button.btn.btn-success(type="submit") View

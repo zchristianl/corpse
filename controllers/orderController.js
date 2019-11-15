@@ -14,6 +14,25 @@ exports.order_view_get = (req, res) => {
     .catch(err => logger.error(err));
 };
 
+exports.order_get = (req, res) => {
+  models.Order.findAll({
+
+    where: {id: req.params.id},
+    include: [
+      { model: models.Item, include: [{
+        model: models.Inventory
+      }]},
+      { model: models.User },
+      {model: models.Payment}
+    ],
+    limit: 1
+  })
+    .then((order) => res.render('order_view', {
+      order: order[0],
+    }))
+    .catch(err => logger.error(err));
+};
+
 exports.order_inquire_get = (req, res) => {
   res.render('inquire');
 };
