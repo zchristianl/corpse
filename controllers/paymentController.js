@@ -1,3 +1,4 @@
+const models = require('../config/database');
 const logger = require('../utils/logger');
 require('dotenv').config();
 
@@ -23,6 +24,7 @@ exports.checkout_post = (req, res) => {
         customer: customer.id,
         receipt_email: 'corpsedev@gmail.com'
       }))
+
     .then(charge => {
       logger.debug(charge);
       res.redirect('/');
@@ -31,4 +33,37 @@ exports.checkout_post = (req, res) => {
       logger.error(err);
       res.status(500).send({error: 'Purchase Failed'});
     });
+};
+exports.payment_get = (req, res) => {
+  models.Payment.findAll({
+
+    where: {id: req.params.id},
+    limit: 1
+  })
+    .catch(err => logger.error(err));
+  return res;
+};
+exports.payment_create = (req, res) => {
+  let bodyvars = undefined;
+
+  //AUTHORIZE ACTION
+  bodyvars = {
+    orderid: req.orderid,
+    payment_number: req.payment_number,
+    payment_type: req.payment_type,
+    payment_amount: req.payment_amount
+  };
+
+  models.Payment.create(bodyvars);
+  return res;
+};
+
+exports.payment_remove = (req, res) => {
+  //AUTHORIZE ACTION
+  models.Payment.destroy({
+    where: {
+      id: req.body.id
+    }
+  }).catch(err => logger.err(err));
+  return res;
 };

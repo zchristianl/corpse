@@ -15,6 +15,21 @@ exports.order_view_get = (req, res) => {
     .catch(err => logger.error(err));
 };
 
+exports.order_view_get_client = (req, res) => {
+
+  models.Order.findAll({
+    where: {userid: req.userid},
+    include: [
+      { model: models.Item },
+      { model: models.User }
+    ]
+  })
+    .then(orders => res.render('NO_EXIST', {
+      orders: orders
+    }))
+    .catch(err => logger.error(err));
+};
+
 exports.order_get = (req, res) => {
   models.Order.findAll({
 
