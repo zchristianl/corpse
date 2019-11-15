@@ -24,6 +24,7 @@ exports.checkout_post = (req, res) => {
         customer: customer.id,
         receipt_email: 'corpsedev@gmail.com'
       }))
+
     .then(charge => {
       logger.debug(charge);
       res.redirect('/');
