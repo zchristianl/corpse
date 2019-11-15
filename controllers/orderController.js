@@ -17,17 +17,19 @@ exports.order_view_get = (req, res) => {
 exports.order_get = (req, res) => {
   models.Order.findAll({
 
-    where: {id: req.params.id},
+    where: { id: req.params.id },
     include: [
-      { model: models.Item, include: [{
-        model: models.Inventory
-      }]},
+      {
+        model: models.Item, include: [{
+          model: models.Inventory
+        }]
+      },
       { model: models.User },
-      {model: models.Payment}
+      { model: models.Payment }
     ],
     limit: 1
   })
-    .then((order) => res.render('order_view', {
+    .then((order) => res.render('order-ru', {
       order: order[0],
     }))
     .catch(err => logger.error(err));
@@ -151,15 +153,15 @@ exports.order_modify = (req, res) => {
 };
 
 //INTERNAL USE ONLY
-exports.inventoryUpdate = (id, count)=>{
+exports.inventoryUpdate = (id, count) => {
   models.Item.findOne(
     {
       where: {
         id: id
       },
-      include: [{model:models.Inventory}]
+      include: [{ model: models.Inventory }]
     }
-  ).then((entry)=>{entry.inventory.stock = count;});
+  ).then((entry) => { entry.inventory.stock = count; });
 };
 
 exports.order_create = (req, res) => {
