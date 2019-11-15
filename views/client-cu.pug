@@ -40,7 +40,7 @@ block content
     .row
       .col 
         label Address:
-        textarea.form-control(rows="5" name="address") #{(client) ? client.address : ""}
+        textarea.form-control(rows="5" name="address" required) #{(client) ? client.address : ""}
     .form-row
       .col-md
         label City:
@@ -58,17 +58,8 @@ block content
         label Phone:
         input.form-control(name='phone' type='text' value=(client ? client.phone : '') pattern="^[1-9]{1}\\d{5}\\d{4}$" required='true')
         div.invalid-feedback Please enter a 10-digit phone number without any dashes or parentheses.
-    br
-    h2 Payment
     .row 
-      .col
-        label Payment Method:
-        select.custom-select(name='payment' id='payment' required)
-          option(value='' selected disabled hidden) 
-          option(value='check' selected=(client != null && client.payment === 'check')) Check
-          option(value='po' selected=(client != null && client.payment === 'po')) Purchase Order
-          option(value='cc' selected=(client != null && client.payment === 'cc')) Credit/Debit Card
-      .col(id='po_num_col' hidden)
+      .col(id='po_num_col')
         label PO #:
         input.form-control(name='po_num' type='text' value=(client ? client.po_num : ""))  
     span(style="float: right; padding: 10px 0px 10px 0px;")
@@ -77,4 +68,4 @@ block content
     if client
       span(style="float: left; padding: 10px 0px 10px 0px;")
         input.btn.btn-danger(type='button' value="Delete" disabled)
-      script(src='/js/regval.js')
+    script(src='/js/formval.js')
