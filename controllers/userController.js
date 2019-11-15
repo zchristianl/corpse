@@ -316,6 +316,21 @@ exports.client_view_get = (req, res) => {
   }));
 };
 
+exports.client_read_get = (req, res) => {
+  models.User.findOne({
+    where: {
+      id: req.params.id
+    }
+  }).then(user => models.Order.findAll({
+    where: {
+      userId: user.id
+    }
+  }).then(orders => res.render('client-r', {
+    user: user,
+    orders: orders
+  })));
+};
+
 exports.client_edit_get = (req, res) => {
   models.User.findOne({
     where: {
