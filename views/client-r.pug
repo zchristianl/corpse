@@ -1,20 +1,20 @@
 extends layout
 
 block content
-  h1=user.first_name + " " + user.last_name
-  h3=user.organization
+  h1=client.first_name + " " + client.last_name
+  h3=client.organization
   nav
   br
   #contact
-    =user.address
+    =client.address
     |#[br]
-    =user.city + ", " + user.state + " " + user.zip
+    =client.city + ", " + client.state + " " + client.zip
     br
     b Phone: 
-    |#{'(' + user.phone.substr(0, 3) + ') ' + user.phone.substr(3, 3) + '-' + user.phone.substr(6,4)}
+    |#{'(' + client.phone.substr(0, 3) + ') ' + client.phone.substr(3, 3) + '-' + client.phone.substr(6,4)}
     |#[br]
     b Email: 
-    a(href="mailto:"+user.email) #{user.email}
+    a(href="mailto:"+client.email) #{client.email}
   br
 
   nav
@@ -42,14 +42,14 @@ block content
                 button.btn.btn-success(type="submit") View
     #info.tab-pane.fade(role='tabpanel', aria-labelledby='info-tab' style='padding: 5px;')
       b Client Registered: 
-      |#{(user.password != null) ? "Yes" : "No"}
+      |#{(client.password != null) ? "Yes" : "No"}
       br
       b Client Since: 
-      -var regDate = (new Date(user.createdAt)).toLocaleString('en-US', { month: 'long', day: '2-digit', year: 'numeric' });
+      -var regDate = (new Date(client.createdAt)).toLocaleString('en-US', { month: 'long', day: '2-digit', year: 'numeric' });
       =regDate
       br
       b Last Updated: 
-      -var upDate = (new Date(user.updatedAt)).toLocaleString('en-US', { month: 'long', day: '2-digit', year: 'numeric' });
+      -var upDate = (new Date(client.updatedAt)).toLocaleString('en-US', { month: 'long', day: '2-digit', year: 'numeric' });
       =upDate
 
 

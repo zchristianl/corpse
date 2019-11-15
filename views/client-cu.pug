@@ -67,5 +67,42 @@ block content
       input.btn.btn-primary(type='submit' value=(client ? 'Update' : 'Create'))
     if client
       span(style="float: left; padding: 10px 0px 10px 0px;")
-        input.btn.btn-danger(type='button' value="Delete" disabled)
-    script(src='/js/formval.js')
+        button.btn.btn-danger.deleteButton(type="button" name="id" value=client.id data-toggle='modal' data-target='#DeleteModal') Delete
+    
+  .container
+    #DeleteModal.modal.fade(tabindex="-1" role="dialog" aria-labelledby="DeleteModal" aria-hidden="true")
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h5.modal-title Delete
+            button.close(type="button" data-dismiss="modal" aria-hidden="true") &times;
+          .modal-body
+            p
+              | Click &apos;Delete&apos; to 
+              strong permanently
+              |  delete this record. Click &apos;Cancel&apos; to cancel your action.
+          .modal-footer
+            button.btn.btn-secondary(type="button" data-dismiss="modal") Cancel
+            button.btn.btn-danger.deleteModal(type="button" data-dismiss="modal" id="delete" value=1) Delete
+  script.
+    $('.deleteButton').on('click', function(e) {
+      var itemId = $(e.target).attr('value');
+      console.log(itemId);
+      $(".deleteModal").val(itemId); 
+    });
+
+    $('.deleteModal').on('click', function(e){
+      console.log('here');
+      $target = $(e.target);
+      $.ajax({
+        type: 'POST',
+        url: '/users/delete/'+$target.attr('value'),
+        dataType: 'json',
+        success: function(response){
+          if (response.redirect !== undefined && response.redirect) {
+            window.location.href = response.redirect;
+          }
+        }
+      });
+    }); 
+  script(src='/js/formval.js')

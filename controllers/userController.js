@@ -392,12 +392,12 @@ exports.client_read_get = (req, res) => {
     where: {
       id: req.params.id
     }
-  }).then(user => models.Order.findAll({
+  }).then(client => models.Order.findAll({
     where: {
-      userId: user.id
+      userId: client.id
     }
   }).then(orders => res.render('client-r', {
-    user: user,
+    client: client,
     orders: orders
   })));
 };
@@ -448,4 +448,15 @@ exports.client_edit_post = (req, res) => {
     res.redirect('/users/view');
     return;
   }
+};
+
+exports.client_delete_post = (req, res) => {
+  //AUTHORIZE ACTION
+  models.User.destroy({
+    where: {
+      id: req.params.id
+    }
+  })
+    .then(() => res.send(JSON.stringify({redirect: '/users/view', status: 200})))
+    .catch(err => logger.error(err));
 };
