@@ -3,6 +3,7 @@ var smtpTransport = require('nodemailer-smtp-transport');
 require('dotenv').config();
 
 var transporter = exports.transporter = nodemailer.createTransport(smtpTransport({
+  service: 'gmail',
   host: process.env.STMP_HOST, //mail.example.com (your server smtp)
   port: process.env.STMP_PORT, // (specific port)
   secureConnection: process.env.STMP_SECURE, //true or false
