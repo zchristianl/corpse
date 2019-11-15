@@ -1,9 +1,15 @@
-document.getElementById('edit_button').addEventListener('click', function(){
+document.getElementById('edit_button').addEventListener('click', function () {
   makeEditable();
 });
 
+Array.from(document.getElementsByName('delete')).forEach(function(element) {
+  element.addEventListener('click', function() {
+    deleteItem(element);
+  });
+});
+
 function stdName(val) {
-  switch(val) {
+  switch (val) {
   case 'new':
     return 'New';
   case 'estimate':
@@ -52,7 +58,7 @@ function makeEditable() {
     var option = document.createElement('option');
     option.value = element;
     option.innerText = stdName(element);
-    if(stdName(element) === currReason) {
+    if (stdName(element) === currReason) {
       option.selected = 'selected';
     }
     selectOrderState.appendChild(option);
@@ -71,7 +77,7 @@ function makeEditable() {
     var option = document.createElement('option');
     option.value = element;
     option.innerText = stdName(element);
-    if(stdName(element) === currReason) {
+    if (stdName(element) === currReason) {
       option.selected = 'selected';
     }
     selectTimeEstimate.appendChild(option);
@@ -90,7 +96,7 @@ function makeEditable() {
     var option = document.createElement('option');
     option.value = element;
     option.innerText = stdName(element);
-    if(stdName(element) === currReason) {
+    if (stdName(element) === currReason) {
       option.selected = 'selected';
     }
     selectIntendedUse.appendChild(option);
@@ -98,4 +104,36 @@ function makeEditable() {
 
   intendedUse.innerHTML = '';
   intendedUse.appendChild(selectIntendedUse);
+
+  /* Now the thing */
+  var column = document.createElement('th');
+  column.setAttribute('scope', 'col');
+  document.getElementById('table_head').appendChild(column);
+
+  var itemOps = document.getElementsByName('item_ops');
+  itemOps.forEach(element => {
+    element.removeAttribute('hidden');
+  });
+  document.getElementById('item_ops_head').hidden = false;
+}
+
+//This is being called in the HTML
+// eslint-disable-next-line no-unused-vars
+function deleteItem(item) {
+  item.disabled = true;
+  console.log('Delete Item: ' + item.value);
+  // eslint-disable-next-line no-undef
+  $.ajax({
+    type: 'POST',
+    url: '/item/delete',
+    dataType: 'json',
+    data: {
+      id: item.value
+    },
+    success: function (response) {
+      if (response.redirect !== undefined && response.redirect) {
+        console.log('SUCC');
+      }
+    }
+  });
 }

@@ -58,16 +58,19 @@ block content
     if order.items != null || order.items.isEmpty()
         table.table.table-striped
             thead
-                tr
+                tr(id="table_head")
                     th(scope="col") Category 
                     th(scope="col") Item Name
                     th(scope="col") Price
-            tbody
+                    th(scope="col" id="item_ops_head" hidden)
+            tbody(id="table_body")
                 each item in order.items
                     tr
                         td=(item.inventory == null || item.inventory.category == null) ? "" : item.inventory.category
                         td=(item.inventory == null || item.inventory.name == null) ? "" : item.inventory.name
                         td="$"+order.amount
+                        td(name="item_ops" hidden)
+                            button.btn.btn-danger(name="delete" value=item.id) Delete
     else
         p There are no payments.
 

@@ -55,5 +55,5 @@ exports.item_remove = (req, res) => {
       id: req.body.id
     }
   }).catch(err => logger.err(err));
-  return res;
+  return res; //Make 200
 };
