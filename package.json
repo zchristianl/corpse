@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "test": "nyc --reporter=html mocha --exit",
+    "test": "nyc --reporter=html --reporter=text mocha --exit",
     "lint": "eslint ./"
   },
   "repository": {
@@ -45,9 +45,8 @@
     "winston": "^3.2.1"
   },
   "devDependencies": {
-    "@types/chai-http": "^4.2.0",
+    "chai-http": "^4.3.0",
     "chai": "^3.2.0",
-    "chai-http": "^1.0.0",
     "eslint": "^6.5.1",
     "nodemon": "^1.19.4",
     "nyc": "^14.1.1"

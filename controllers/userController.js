@@ -4,10 +4,9 @@ const passport = require('passport');
 const models = require('../config/database');
 const logger = require('../utils/logger');
 require('dotenv').config();
-const nodemailer = require('nodemailer');
-const smtpTransport = require('nodemailer-smtp-transport');
 const async = require('async');
 const crypto = require('crypto');
+const mailer = require('../utils/mail');
 
 exports.register_get = (req, res) => {
   res.render('register');
@@ -170,7 +169,7 @@ exports.validate = (method) => {
     return [
       check('first_name', 'First name is required').not().isEmpty(),
       check('last_name', 'Last name is required').not().isEmpty(),
-      check('email', 'Email is required').not().isEmpty().isEmail().normalizeEmail(),
+      check('email', 'Email is required').not().isEmpty().isEmail(),
       check('password', 'Password is required').not().isEmpty(),
       check('password2', 'Confirm Password is required').not().isEmpty(),
       check('password2', 'Please make sure both password match').custom((value, { req }) => (value === req.body.password)),
@@ -190,6 +189,9 @@ exports.validate = (method) => {
       check('city', 'City is required').not().isEmpty(),
       check('zip', 'Zip code is required').not().isEmpty()
     ];
+  }
+  case 'forgot': {
+    return check('email', 'Email is required').not().isEmpty();
   }
   }
 };
@@ -277,16 +279,6 @@ exports.forgot_post = (req, res, next) => {
       });
     },
     function (token, user, done) {
-      var transporter = nodemailer.createTransport(smtpTransport({
-        host: 'smtp.gmail.com', //mail.example.com (your server smtp)
-        port: 465, // (specific port)
-        secureConnection: false, //true or false
-        auth: {
-          user: process.env.AUTH_USER, //user@mydomain.com
-          pass: process.env.AUTH_PASS //password from specific user mail
-        }
-      }));
-
       var mailOptions = {
         to: user.email,
         from: 'account@proteinct.com',
@@ -296,7 +288,7 @@ exports.forgot_post = (req, res, next) => {
           'http://' + req.headers.host + '/users/reset/' + token + '\n\n' +
           'If you did not request this, please ignore this email and your password will remain unchanged.\n'
       };
-      transporter.sendMail(mailOptions, function (err) {
+      mailer.transporter.sendMail(mailOptions, function (err) {
         req.flash('info', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
         done(err, 'done');
       });
@@ -349,15 +341,6 @@ exports.reset_confirm = (req, res) => {
         });
     },
     function (user, done) {
-      var transporter = nodemailer.createTransport(smtpTransport({
-        host: 'smtp.gmail.com', //mail.example.com (your server smtp)
-        port: 465, // (specific port)
-        secureConnection: false, //true or false
-        auth: {
-          user: process.env.AUTH_USER, //user@mydomain.com
-          pass: process.env.AUTH_PASS //password from specific user mail
-        }
-      }));
       var mailOptions = {
         to: user.email,
         from: 'account@proteinct.com',
@@ -365,7 +348,7 @@ exports.reset_confirm = (req, res) => {
         text: 'Hello,\n\n' +
           'This is a confirmation that the password for your ProteinCT account ' + user.email + ' has just been changed.\n'
       };
-      transporter.sendMail(mailOptions, function (err) {
+      mailer.transporter.sendMail(mailOptions, function (err) {
         req.flash('success', 'Success! Your password has been changed.');
         done(err);
       });
@@ -457,6 +440,6 @@ exports.client_delete_post = (req, res) => {
       id: req.params.id
     }
   })
-    .then(() => res.send(JSON.stringify({redirect: '/users/view', status: 200})))
+    .then(() => res.send(JSON.stringify({ redirect: '/users/view', status: 200 })))
     .catch(err => logger.error(err));
 };
