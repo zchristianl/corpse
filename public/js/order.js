@@ -66,6 +66,7 @@ function makeEditable() {
   var state = document.getElementById('order_state');
   var currState = state.innerText;
   var selectState = document.createElement('select');
+  selectState.classList.add('w-auto', 'custom-select');
   selectState.id = 'state_new';
 
   orderState.forEach(element => {
