@@ -29,62 +29,64 @@ exports.register_post = (req, res) => {
       where: {
         email: req.body.email
       }
-    }).then(() => {
-      req.flash('danger', 'A user with that email address already exists.');
-      res.render('register');
-    }).catch(() => {
-      const newUser = {
-        first_name: req.body.first_name,
-        last_name: req.body.last_name,
-        email: req.body.email,
-        password: req.body.password,
-      };
-  
-      const regInfo = {
-        organization: req.body.organization,
-        department: req.body.department,
-        research_area: req.body.research_area,
-        address1: req.body.address1,
-        address2: req.body.address2,
-        city: req.body.city,
-        state: req.body.state,
-        zip: req.body.zip,
-        phone: req.body.phone,
-        payment: req.body.payment
-      };
-  
-      let { first_name, last_name, email, password } = newUser;
-  
-      bcrypt.genSalt(10, (err, salt) => {
-        bcrypt.hash(password, salt, (err, hash) => {
-          if (err) {
-            logger.error(err);
-          }
-          models.User.create({
-            first_name: first_name,
-            last_name: last_name,
-            email: email,
-            password: hash,
-            account_type: 'client',
-            phone: regInfo.phone,
-            organization: regInfo.organization,
-            department: regInfo.department,
-            research_area: regInfo.research_area,
-            address: (regInfo.address1 + '\n' + regInfo.address2),
-            city: regInfo.city,
-            state: regInfo.state,
-            zip: regInfo.zip,
-            payment: regInfo.payment,
-            po_num: regInfo.po_num
-          })
-            .then(user => makeAssociations(user, regInfo))
-            .then(() => {
-              req.flash('success', 'You are now registered and can log in');
-              res.redirect('/');
+    }).then(user => {
+      if(user !== null) {
+        req.flash('danger', 'A user with that email address already exists.');
+        res.render('register');
+      } else {
+        const newUser = {
+          first_name: req.body.first_name,
+          last_name: req.body.last_name,
+          email: req.body.email,
+          password: req.body.password,
+        };
+    
+        const regInfo = {
+          organization: req.body.organization,
+          department: req.body.department,
+          research_area: req.body.research_area,
+          address1: req.body.address1,
+          address2: req.body.address2,
+          city: req.body.city,
+          state: req.body.state,
+          zip: req.body.zip,
+          phone: req.body.phone,
+          payment: req.body.payment
+        };
+    
+        let { first_name, last_name, email, password } = newUser;
+    
+        bcrypt.genSalt(10, (err, salt) => {
+          bcrypt.hash(password, salt, (err, hash) => {
+            if (err) {
+              logger.error(err);
+            }
+            models.User.create({
+              first_name: first_name,
+              last_name: last_name,
+              email: email,
+              password: hash,
+              account_type: 'client',
+              phone: regInfo.phone,
+              organization: regInfo.organization,
+              department: regInfo.department,
+              research_area: regInfo.research_area,
+              address: (regInfo.address1 + '\n' + regInfo.address2),
+              city: regInfo.city,
+              state: regInfo.state,
+              zip: regInfo.zip,
+              payment: regInfo.payment,
+              po_num: regInfo.po_num
             })
-            .catch(err => logger.error(err));
+              .then(user => makeAssociations(user, regInfo))
+              .then(() => {
+                req.flash('success', 'You are now registered and can log in');
+                res.redirect('/');
+              })
+              .catch(err => logger.error(err));
+          });
         });
-      });
+      }
     });
   }
 };
