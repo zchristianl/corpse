@@ -460,3 +460,33 @@ exports.client_delete_post = (req, res) => {
     .then(() => res.send(JSON.stringify({ redirect: '/users/view', status: 200 })))
     .catch(err => logger.error(err));
 };
+
+exports.contact_seller = (req, res) => {
+  res.render('contact');
+};
+
+// Send email to seller
+exports.send_post = (req, res) => {
+  const output = `
+      <p>You have a message from a client</p>
+      <h3>Contact Details</h3>
+      <ul>
+        <li>Name: ${req.body.name}</li>
+        <li>Email: ${req.body.email}</li>
+        <li>Research Area: ${req.body.researchArea}</li>
+        <li>Subject: ${req.body.subject}</li>
+      </ul>
+      <h3>Message</h3>
+      <p>${req.body.message}</p>
+    `;
+
+  var message = {
+    from: 'contact@proteinct.com',
+    to: req.body.email,
+    subject: req.body.subject,
+    html: output
+  };
+  
+  mailer.send(message, req, res);
+
+};

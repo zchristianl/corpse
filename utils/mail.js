@@ -1,40 +1,24 @@
-var nodemailer = require('nodemailer');
-var smtpTransport = require('nodemailer-smtp-transport');
+const SGmail = require('@sendgrid/mail');
+const logger = require('../utils/logger');
 require('dotenv').config();
 
-var transporter = exports.transporter = nodemailer.createTransport(smtpTransport({
-  service: 'gmail',
-  host: process.env.SMTP_HOST, //mail.example.com (your server smtp)
-  port: process.env.SMTP_PORT, // (specific port)
-  secureConnection: process.env.SMTP_SECURE, //true or false
-  auth: {
-    user: process.env.AUTH_USER, //user@mydomain.com
-    pass: process.env.AUTH_PASS //password from specific user mail
-  }
-}));
+SGmail.setApiKey(process.env.SENDGRIND_API_KEY);
 
-exports.send = async function(email, subject, htmlcontent, callback) {
-  var mailOptions = {
-    from: process.env.AUTH_USER,
-    to: email,
-    subject: subject,
-    html: htmlcontent
-  };
-
-  transporter.sendMail(mailOptions, function(err, info){
-    transporter.close();
-    if(err) {
-      callback(err, info);
+exports.send = function(message, req, res) {
+  SGmail.send(message).then(sent => {
+    if(sent) {
+      req.flash('success', 'Your message has been sent!');
+      res.render('portal', {user: req.user});
+    } else {
+      req.flash('danger', 'There was an error. Please try again.');
+      res.render('contact');
     }
-    else {
-      callback(null, info);
-    }
-  });
+  }).catch(err => { logger.error(err); });
 };
 
-exports.sendInvoice = async function(invoice, filename, order, callback) {
-  var mailOptions = {
-    from: 'orders@ProteinCT.com',
+exports.sendInvoice = async function(invoice, filename, order, req, res) {
+  var message = {
+    from: 'billing@ProteinCT.com',
     to: order.clientEmail,
     subject: '[ Invoice From ProteinCT ]',
     text: 'Attached is an invoice for your order #' + order.id,
@@ -46,13 +30,13 @@ exports.sendInvoice = async function(invoice, filename, order, callback) {
     ]
   };
 
-  transporter.sendMail(mailOptions, function(err, info){
-    transporter.close();
-    if(err) {
-      callback(err, info);
+  SGmail.send(message).then(sent => {
+    if(sent){
+      req.flash('info', 'An invoice has been sent to ' + order.clientEmail);
+      res.render('portal', {user: req.user});
+    } else {
+      req.flash('danger', 'There was an error. Please try again.');
+      res.redirect('/');
     }
-    else {
-      callback(null, info);
-    }
-  });
+  }).catch(err => { logger.error(err); });
 };

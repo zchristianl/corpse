@@ -24,17 +24,7 @@ function createInvoiceEmail(invoice, filename, order ,req, res) {
   generateFooter(doc);
 
   doc.end();
-  mailer.sendInvoice(doc, filename, order, (err, info) => {
-    if(err){
-      logger.error(err);
-      req.flash('danger', 'There was an error. Please try again.');
-      res.redirect('/');
-    } else {
-      req.flash('info', 'An invoice has been sent to ' + order.clientEmail);
-      res.render('portal',{user: req.user});
-    }
-    logger.info(info);
-  });
+  mailer.sendInvoice(doc, filename, order, req, res);
 }
 
 function generateHeader(doc) {
