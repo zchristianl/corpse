@@ -55,17 +55,44 @@ describe('user tests', () => {
       });
   });
 
-  it('/path POST test: login page connection', function (done) {
+  it('/path POST test: login incorrect credentials', function (done) {
     var path = '/users/login';
     chai
       .request(app)
       .post(path)
       // .field('myparam' , 'test')
       .set('content-type', 'application/x-www-form-urlencoded')
-      .send({ email: 'test_email@mail.com', password: 'asdf' })
+      .send({ email: 'invalid_email@mail.com', password: 'asdf' })
       .end(function (err, response) {
-        console.log(response);
         expect(response.status).to.equal(200);
+        done();
+      });
+  });
+  
+  it('/path POST test: login Invalid password', function (done) {
+    var path = '/users/login';
+    chai
+      .request(app)
+      .post(path)
+      // .field('myparam' , 'test')
+      .set('content-type', 'application/x-www-form-urlencoded')
+      .send({ email: 'test@test.com', password: 'asdf' })
+      .end(function (err, response) {
+        expect(response.status).to.equal(200);
+        done();
+      });
+  });
+
+  it('/path POST test: Correct login', function (done) {
+    var path = '/users/login';
+    chai
+      .request(app)
+      .post(path)
+      .set('content-type', 'application/x-www-form-urlencoded')
+      .send({ email: 'test@test.com', password: 'test' })
+      .end(function (err, response) {
+        expect(response.status).to.equal(200);
+        expect(response.redirects.some(x => x.includes('/users/portal'))).to.be.true;
         done();
       });
   });
@@ -82,37 +109,78 @@ describe('user tests', () => {
         expect(response.serverError).to.be.equal(false);
         expect(response.clientError).to.be.equal(false);
         expect(response.error).to.be.equal(false);
-        page_.get('/users/portal')
-          .end(function (err2, res2) {
-            console.log(res2);
-            done();
-          });
+        done();
       });
 
   });
 
-  it('/path POST test: register page connection', function (done) {
-    var path = '/users/register';
-    chai
-      .request(app)
-      .post(path)
-      // .field('myparam' , 'test')
-      .set('content-type', 'application/x-www-form-urlencoded')
-      .send({ Email: 'test_email@mail.com', Password: 'asdf' })
+  it('/path GET test: Logout', function (done) {
+    var path = '/users/logout';
+    page_
+      .get(path)
+      .end(function (err, response) {
+        expect(response.text).to.have.string('You have been logged out');
+        done();
+      });
+
+  });
+
+  it('/path GET test: Load page forgot', function (done) {
+    var path = '/users/forgot';
+    page_
+      .get(path)
       .end(function (err, response) {
         expect(response.status).to.equal(200);
         done();
       });
+
   });
 
-  it('/path POST test: register page data validation', function (done) {
+  it('/path POST test: Forgot pass invalid email', function (done) {
+    var path = '/users/forgot';
+    chai
+      .request(app)
+      .post(path)
+      .set('content-type', 'application/x-www-form-urlencoded')
+      .send({ email: 'invalid_email@test.com', user: 'invalid'})
+      .end(function (err, response) {
+        expect(response.status).to.equal(200);
+        //expect(response.text).to.have.string('No account with that email address exists');
+        done();
+      });
+  });
+
+  it('/path POST test: Forgot pass valid email', function (done) {
+    var path = '/users/forgot';
+    chai
+      .request(app)
+      .post(path)
+      .set('content-type', 'application/x-www-form-urlencoded')
+      .send({ email: 'opflpocx@sharklasers.com'})
+      .end(function (err, response) {
+        expect(response.status).to.equal(200);
+        console.log(response);
+        //expect(response.text).to.have.string('An e-mail has been sent to');
+        done();
+      });
+  });
+
+  it('/path POST test: Register page - No field', function (done) {
     var path = '/users/register';
     chai
       .request(app)
       .post(path)
-      // .field('myparam' , 'test')
-      //  .set('content-type', 'application/x-www-form-urlencoded')
-      //  .send({Email: 'test_email@mail.com', Password: 'asdf'})
+      .set('content-type', 'application/x-www-form-urlencoded')
+      .send({
+        first_name: '',
+        last_name: '',
+        email: '',
+        password: '',
+        password2: '',
+        phone: '',
+        city: '',
+        zip: ''
+      })
       .end(function (err, response) {
         expect(response.accepted).to.be.equal(false);
         expect(response.serverError).to.be.equal(false);
@@ -121,4 +189,45 @@ describe('user tests', () => {
         done();
       });
   });
+  
+  it('/path POST test: register page connection', function (done) {
+    var path = '/users/register';
+    chai
+      .request(app)
+      .post(path)
+      .set('content-type', 'application/x-www-form-urlencoded')
+      .send({ Email: 'test_email@mail.com', Password: 'asdf' })
+      .end(function (err, response) {
+        expect(response.status).to.equal(200);
+        done();
+      });
+  });
+
+  it('/path POST test: Register page - Same email', function (done) {
+    var path = '/users/register';
+    chai
+      .request(app)
+      .post(path)
+      .set('content-type', 'application/x-www-form-urlencoded')
+      .send({
+        first_name: 'ASdf',
+        last_name: 'Adsffg',
+        email: 'test@test.com',
+        password: '123123',
+        password2: '123123',
+        phone: '6086086088',
+        city: 'Madison',
+        zip: '53703'
+      })
+      .end(function (err, response) {
+        expect(response.accepted).to.be.equal(false);
+        expect(response.serverError).to.be.equal(false);
+        expect(response.clientError).to.be.equal(false);
+        expect(response.error).to.be.equal(false);
+        done();
+      });
+
+  });
+
 });
+
