@@ -17,9 +17,9 @@ exports.send = function(message, req, res) {
   }).catch(err => { logger.error(err); });
 };
 
-exports.sendInvoice = async function(pdfdata, filename, order, req, res) {
+exports.sendInvoice = async function(pdf, filename, order, req, res) {
 
-  var base64File = new Buffer(pdfdata).toString('base64');
+  var base64File = new Buffer(pdf).toString('base64');
 
   const message = {
     to: order.clientEmail,
