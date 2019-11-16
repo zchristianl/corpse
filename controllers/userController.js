@@ -27,65 +27,63 @@ exports.register_post = (req, res) => {
     // Check for existing user
     models.User.findOne({
       where: {
-        'email': req.body.email
+        email: req.body.email
       }
-    }).then(user => {
-      if (user !== null) {
-        req.flash('danger', 'A user with that email address already exists.');
-        res.render('register');
-      }
-    }).catch(err => logger.error(err));
-
-    const newUser = {
-      first_name: req.body.first_name,
-      last_name: req.body.last_name,
-      email: req.body.email,
-      password: req.body.password,
-    };
-
-    const regInfo = {
-      organization: req.body.organization,
-      department: req.body.department,
-      research_area: req.body.research_area,
-      address1: req.body.address1,
-      address2: req.body.address2,
-      city: req.body.city,
-      state: req.body.state,
-      zip: req.body.zip,
-      phone: req.body.phone,
-      payment: req.body.payment
-    };
-
-    let { first_name, last_name, email, password } = newUser;
-
-    bcrypt.genSalt(10, (err, salt) => {
-      bcrypt.hash(password, salt, (err, hash) => {
-        if (err) {
-          logger.error(err);
-        }
-        models.User.create({
-          first_name: first_name,
-          last_name: last_name,
-          email: email,
-          password: hash,
-          account_type: 'client',
-          phone: regInfo.phone,
-          organization: regInfo.organization,
-          department: regInfo.department,
-          research_area: regInfo.research_area,
-          address: (regInfo.address1 + '\n' + regInfo.address2),
-          city: regInfo.city,
-          state: regInfo.state,
-          zip: regInfo.zip,
-          payment: regInfo.payment,
-          po_num: regInfo.po_num
-        })
-          .then(user => makeAssociations(user, regInfo))
-          .then(() => {
-            req.flash('success', 'You are now registered and can log in');
-            res.redirect('/');
+    }).then(() => {
+      req.flash('danger', 'A user with that email address already exists.');
+      res.render('register');
+    }).catch(() => {
+      const newUser = {
+        first_name: req.body.first_name,
+        last_name: req.body.last_name,
+        email: req.body.email,
+        password: req.body.password,
+      };
+  
+      const regInfo = {
+        organization: req.body.organization,
+        department: req.body.department,
+        research_area: req.body.research_area,
+        address1: req.body.address1,
+        address2: req.body.address2,
+        city: req.body.city,
+        state: req.body.state,
+        zip: req.body.zip,
+        phone: req.body.phone,
+        payment: req.body.payment
+      };
+  
+      let { first_name, last_name, email, password } = newUser;
+  
+      bcrypt.genSalt(10, (err, salt) => {
+        bcrypt.hash(password, salt, (err, hash) => {
+          if (err) {
+            logger.error(err);
+          }
+          models.User.create({
+            first_name: first_name,
+            last_name: last_name,
+            email: email,
+            password: hash,
+            account_type: 'client',
+            phone: regInfo.phone,
+            organization: regInfo.organization,
+            department: regInfo.department,
+            research_area: regInfo.research_area,
+            address: (regInfo.address1 + '\n' + regInfo.address2),
+            city: regInfo.city,
+            state: regInfo.state,
+            zip: regInfo.zip,
+            payment: regInfo.payment,
+            po_num: regInfo.po_num
           })
-          .catch(err => logger.error(err));
+            .then(user => makeAssociations(user, regInfo))
+            .then(() => {
+              req.flash('success', 'You are now registered and can log in');
+              res.redirect('/');
+            })
+            .catch(err => logger.error(err));
+        });
       });
     });
   }
@@ -121,6 +119,13 @@ exports.validate = (method) => {
   }
   case 'forgot': {
     return check('email', 'Email is required').not().isEmpty();
+  }
+  case 'reset': {
+    return [
+      check('password', 'Password is required').not().isEmpty(),
+      check('password2', 'Confirm Password is required').not().isEmpty(),
+      check('password2', 'Please make sure both password match').custom((value, { req }) => (value === req.body.password))
+    ];
   }
   }
 };
@@ -243,49 +248,57 @@ exports.new_password = (req, res) => {
 };
 
 exports.reset_confirm = (req, res) => {
-  async.waterfall([
-    function (done) {
-      models.User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } })
-        .then(user => {
-          bcrypt.genSalt(10, (err, salt) => {
-            bcrypt.hash(req.body.password, salt, (err, hash) => {
-              if (err) {
-                logger.error(err);
-              }
-              user.update({
-                password: hash,
-                resetPasswordToken: undefined,
-                resetPasswordExpires: undefined
-              })
-                .then(user => {
-                  done(null, user);
-                })
-                .catch(err => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    logger.error(errors.array());
+    res.render('reset', {
+      errors: errors.array()
+    });
+  } else {
+    async.waterfall([
+      function (done) {
+        models.User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } })
+          .then(user => {
+            bcrypt.genSalt(10, (err, salt) => {
+              bcrypt.hash(req.body.password, salt, (err, hash) => {
+                if (err) {
                   logger.error(err);
-                  req.flash('error', 'Password reset token is invalid or has expired.');
-                  return res.redirect('back');
-                });
+                }
+                user.update({
+                  password: hash,
+                  resetPasswordToken: undefined,
+                  resetPasswordExpires: undefined
+                })
+                  .then(user => {
+                    done(null, user);
+                  })
+                  .catch(err => {
+                    logger.error(err);
+                    req.flash('error', 'Password reset token is invalid or has expired.');
+                    return res.redirect('back');
+                  });
+              });
             });
           });
-        });
-    },
-    function (user, done) {
-      var mailOptions = {
-        to: user.email,
-        from: 'account@proteinct.com',
-        subject: 'Your ProteinCT password has been changed',
-        text: 'Hello,\n\n' +
+      },
+      function (user, done) {
+        var mailOptions = {
+          to: user.email,
+          from: 'account@proteinct.com',
+          subject: 'Your ProteinCT password has been changed',
+          text: 'Hello,\n\n' +
           'This is a confirmation that the password for your ProteinCT account ' + user.email + ' has just been changed.\n'
-      };
-      mailer.transporter.sendMail(mailOptions, function (err) {
-        req.flash('success', 'Success! Your password has been changed.');
-        done(err);
-      });
-    }
-  ], function (err) {
-    logger.error(err);
-    res.redirect('/users/login');
-  });
+        };
+        mailer.transporter.sendMail(mailOptions, function (err) {
+          req.flash('success', 'Success! Your password has been changed.');
+          done(err);
+        });
+      }
+    ], function (err) {
+      logger.error(err);
+      res.redirect('/users/login');
+    });
+  }
 };
 
 exports.client_view_get = (req, res) => {

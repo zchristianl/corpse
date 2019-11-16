@@ -41,6 +41,6 @@ router.post('/forgot', userController.validate('forgot'), userController.forgot_
 router.get('/reset/:token', userController.new_password);
 
 // Confirm new password
-router.post('/reset/:token', userController.reset_confirm);
+router.post('/reset/:token', userController.validate('reset'), userController.reset_confirm);
 
 module.exports = router;
