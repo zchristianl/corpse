@@ -68,7 +68,7 @@ block content
                     tr(id="row_"+item.id)
                         td=(item.inventory == null || item.inventory.category == null) ? "" : item.inventory.category
                         td=(item.inventory == null || item.inventory.name == null) ? "" : item.inventory.name
-                        td="$"+item.inventory.price
+                        td="$"+ item && item.inventory? item.inventory.price : ""
                         td(name="item_ops" hidden)
                             button.btn.btn-danger(name="delete" value=item.id) Delete
     else
