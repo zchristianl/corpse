@@ -31,7 +31,7 @@ function createInvoiceEmail(invoice, filename, order ,req, res) {
       res.redirect('/');
     } else {
       req.flash('info', 'An invoice has been sent to ' + order.clientEmail);
-      res.render('portal');
+      res.render('portal',{user: req.user});
     }
     logger.info(info);
   });
