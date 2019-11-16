@@ -15,8 +15,52 @@ exports.order_view_get = (req, res) => {
     .catch(err => logger.error(err));
 };
 
+exports.order_view_get_client = (req, res) => {
+
+  models.Order.findAll({
+    where: { userid: req.userid },
+    include: [
+      { model: models.Item },
+      { model: models.User }
+    ]
+  })
+    .then(orders => res.render('NO_EXIST', {
+      orders: orders
+    }))
+    .catch(err => logger.error(err));
+};
+
+exports.order_get = (req, res) => {
+  models.Order.findAll({
+
+    where: { id: req.params.id },
+    include: [
+      {
+        model: models.Item, include: [{
+          model: models.Inventory
+        }]
+      },
+      { model: models.User },
+      { model: models.Payment }
+    ],
+    limit: 1
+  })
+    .then((order) => res.render('order-ru', {
+      order: order[0],
+    }))
+    .catch(err => logger.error(err));
+};
+
 exports.order_inquire_get = (req, res) => {
-  res.render('inquire');
+  models.Inventory.findAll(
+    {
+      price: {
+        $gt:0
+      }
+    }
+  ).then((inventory) => res.render('inquire', {
+    inventory: inventory
+  }));
 };
 
 exports.order_create_post = (req, res) => {
@@ -29,20 +73,19 @@ exports.order_create_post = (req, res) => {
     inquiry_type: req.body.inquiry_type,
     time_estimate: req.body.time_estimate,
     intended_use: req.body.intended_use,
-    service: req.body.service,
     comments: req.body.comments,
     payment: req.body.payment,
-    po_num: req.body.po_num
+    po_num: req.body.po_num,
   };
 
   models.Order.create(bodyvars).then((order) => {
 
     var itemVars = {
       orderId: order.id,
-      //Come back for inventoryId
+      inventoryId: req.body.service
     };
     models.Item.create(itemVars).then(() => {
-      res.redirect('/users/portal');
+      order_confirmation(req, res, bodyvars, itemVars);
     });
   });
 };
@@ -82,11 +125,12 @@ exports.create_invoice = (req, res) => {
 
   let order = {
     id: 1234,
-    clientEmail: 'corpsedev@gmail.com',
+    clientEmail: req.user.email,
   };
   // MAKE INVOICE NAME UNIQUE
   createInvoiceEmail(invoice, 'invoice.pdf', order, req, res);
 };
+
 exports.order_remove = (req, res) => {
   //AUTHORIZE ACTION
   models.Order.destroy({
@@ -111,7 +155,7 @@ exports.order_modify = (req, res) => {
         state: req.body.state,
         type: req.body.type,
         user: req.body.user,
-      }).then(() => { res.redirect('NO_EXIST'); }); // CALL item modify if needed.
+      }).then(() => { res.sendStatus(200).end(); }); // CALL item modify if needed.
     }).catch(err => logger.error(err));
     return;
   }
@@ -133,15 +177,15 @@ exports.order_modify = (req, res) => {
 };
 
 //INTERNAL USE ONLY
-exports.inventoryUpdate = (id, count)=>{
+exports.inventoryUpdate = (id, count) => {
   models.Item.findOne(
     {
       where: {
         id: id
       },
-      include: [{model:models.Inventory}]
+      include: [{ model: models.Inventory }]
     }
-  ).then((entry)=>{entry.inventory.stock = count;});
+  ).then((entry) => { entry.inventory.stock = count; });
 };
 
 exports.order_create = (req, res) => {
@@ -165,29 +209,42 @@ exports.order_create = (req, res) => {
 };
 
 // Send order confirmation email to client
-exports.order_confirmation = (req, res, order) => {
-  const output = `
-      <h1>Thank you for your order!</h1>
-      <h3>Order Details</h3>
-      <ul>
-        <li>Order Number: ${order.id}</li>
-        <li>Date: ${order.createdAt}</li>
-      </ul>
-      <h3>Message</h3>
-      <p>We will get back to you very soon, feel free to contact us at 1‑608-886-6718.</p>
-    `;
-  
-  mailer.send('corpsedev@gmail.com', '[ProteinCT Order Confirmation]', output, (err, info) => {
-    if(err){
-      logger.error(err);
-      req.flash('danger', 'There was an error. Please try again.');
-      res.redirect('contact');
-  
-    } else {
-      req.flash('success', 'Your message has been sent!');
-      res.render('portal');
+const order_confirmation = (req, res, order, itemVars) => {
+  models.User.findOne({
+    where: {
+      id: order.userId
     }
-    logger.info(info.messageId);
-  });
+  }).then(user => {
+    models.Order.findOne({
+      where: {
+        id: itemVars.orderId
+      }
+    }).then(order => {
+      const output = `
+        <h1>Thank you for your order!</h1>
+        <h3>Order Details</h3>
+        <ul>
+          <li>Order Number: ${itemVars.orderId}</li>
+          <li>Date: ${order.createdAt}</li>
+        </ul>
+        <h3>Message</h3>
+        <p>We will get back to you very soon, feel free to contact us at 1‑608-886-6718.</p>
+      `;
+    
+      mailer.send(user.email, '[ProteinCT Order Confirmation]', output, (err, info) => {
+        if(err){
+          logger.error(err);
+          req.flash('danger', 'There was an error. Please try again.');
+          // NOT SURE WHERE TO SEND USER IF EMAIL FAILS
+          res.redirect('back');
+      
+        } else {
+          req.flash('success', 'Thank you for you order. An order confirmation has been sent to ' + user.email);
+          res.redirect('/users/portal');
+        }
+        logger.info(info.messageId);
+      });
+    });
+  }).catch(err => logger.error(err));
 };
 

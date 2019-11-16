@@ -91,6 +91,69 @@ exports.register_post = (req, res) => {
   }
 };
 
+exports.client_new_post = (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    logger.error(errors.array());
+    res.render('client-cu', {
+      errors: errors.array()
+    });
+  } else {
+    // Check for existing user
+    models.User.findOne({
+      where: {
+        'email': req.body.email
+      }
+    }).then(user => {
+      if (user !== null) {
+        req.flash('danger', 'A user with that email address already exists.');
+        res.render('register');
+      }
+    }).catch(err => logger.error(err));
+
+    const newUser = {
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
+      email: req.body.email,
+    };
+
+    const regInfo = {
+      organization: req.body.organization,
+      department: req.body.department,
+      research_area: req.body.research_area,
+      address: req.body.address,
+      city: req.body.city,
+      state: req.body.state,
+      zip: req.body.zip,
+      phone: req.body.phone,
+      po_num: req.body.po_num
+    };
+
+    let { first_name, last_name, email } = newUser;
+    models.User.create({
+      first_name: first_name,
+      last_name: last_name,
+      email: email,
+      account_type: 'client',
+      phone: regInfo.phone,
+      organization: regInfo.organization,
+      department: regInfo.department,
+      research_area: regInfo.research_area,
+      address: regInfo.address,
+      city: regInfo.city,
+      state: regInfo.state,
+      zip: regInfo.zip,
+      po_num: regInfo.po_num
+    })
+      .then(user => makeAssociations(user, regInfo))
+      .then(() => {
+        req.flash('success', 'Client registered successfully!');
+        res.redirect('/users/view');
+      })
+      .catch(err => logger.error(err));
+  }
+};
+
 exports.login_get = (req, res) => {
   res.render('login');
 };
@@ -113,6 +176,17 @@ exports.validate = (method) => {
       check('password', 'Password is required').not().isEmpty(),
       check('password2', 'Confirm Password is required').not().isEmpty(),
       check('password2', 'Please make sure both password match').custom((value, { req }) => (value === req.body.password)),
+      check('phone', 'Phone number is required').not().isEmpty(),
+      check('phone', 'Please input phone number correctly').isMobilePhone(),
+      check('city', 'City is required').not().isEmpty(),
+      check('zip', 'Zip code is required').not().isEmpty()
+    ];
+  }
+  case 'clientCreateUser': {
+    return [
+      check('first_name', 'First name is required').not().isEmpty(),
+      check('last_name', 'Last name is required').not().isEmpty(),
+      check('email', 'Email is required').not().isEmpty().isEmail().normalizeEmail(),
       check('phone', 'Phone number is required').not().isEmpty(),
       check('phone', 'Please input phone number correctly').isMobilePhone(),
       check('city', 'City is required').not().isEmpty(),
@@ -206,12 +280,11 @@ exports.forgot_post = (req, res, next) => {
           resetPasswordExpires: Date.now() + 3600000 // 1 hour
         }).then(user => {
           done(null, token, user);
-        })
-          .catch(err => {
-            logger.error(err);
-            req.flash('error', 'No account with that email address exists.');
-            return res.redirect('/users/forgot');
-          });
+        });
+      }).catch(err => {
+        logger.error(err);
+        req.flash('error', 'No account with that email address exists.');
+        return res.redirect('/users/forgot');
       });
     },
     function (token, user, done) {
@@ -314,6 +387,21 @@ exports.client_view_get = (req, res) => {
   }));
 };
 
+exports.client_read_get = (req, res) => {
+  models.User.findOne({
+    where: {
+      id: req.params.id
+    }
+  }).then(client => models.Order.findAll({
+    where: {
+      userId: client.id
+    }
+  }).then(orders => res.render('client-r', {
+    client: client,
+    orders: orders
+  })));
+};
+
 exports.client_edit_get = (req, res) => {
   models.User.findOne({
     where: {
@@ -360,4 +448,15 @@ exports.client_edit_post = (req, res) => {
     res.redirect('/users/view');
     return;
   }
+};
+
+exports.client_delete_post = (req, res) => {
+  //AUTHORIZE ACTION
+  models.User.destroy({
+    where: {
+      id: req.params.id
+    }
+  })
+    .then(() => res.send(JSON.stringify({ redirect: '/users/view', status: 200 })))
+    .catch(err => logger.error(err));
 };

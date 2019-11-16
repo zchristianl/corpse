@@ -30,7 +30,7 @@ function createInvoiceEmail(invoice, filename, order ,req, res) {
       req.flash('danger', 'There was an error. Please try again.');
       res.redirect('/');
     } else {
-      req.flash('success', 'Your message has been sent!');
+      req.flash('info', 'An invoice has been sent to ' + order.clientEmail);
       res.render('portal');
     }
     logger.info(info);
