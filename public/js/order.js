@@ -1,9 +1,13 @@
-document.getElementById('edit_button').addEventListener('click', function () {
+document.getElementById('edit_button').addEventListener('click', () => {
   makeEditable();
 });
 
-Array.from(document.getElementsByName('delete')).forEach(function(element) {
-  element.addEventListener('click', function() {
+document.getElementById('add_payment').addEventListener('click', () => {
+  addPayment();
+});
+
+Array.from(document.getElementsByName('delete')).forEach(function (element) {
+  element.addEventListener('click', function () {
     deleteItem(element);
   });
 });
@@ -12,16 +16,26 @@ function stdName(val) {
   switch (val) {
   case 'new':
     return 'New';
+  case 'New':
+    return 'new';
   case 'estimate':
     return 'Estimate';
+  case 'Estimate':
+    return 'esimate';
   case 'in-progress':
     return 'In-Progress';
+  case 'In-Progress':
+    return 'in-progress';
   case 'payment':
     return 'Payment';
+  case 'Payment':
+    return 'payment';
   case 'complete':
     return 'Complete';
+  case 'Complete':
+    return 'complete';
   case 'grant':
-    return 'grant';
+    return 'Grant';
   case 'immediately':
     return 'Immediately';
   case '1-3':
@@ -43,16 +57,35 @@ function stdName(val) {
 
 function makeEditable() {
   document.getElementById('edit_button').disabled = true;
-  //var orderState = ['new', 'estimate', 'in-progress', 'payment', 'complete'];
-  var inquiryType = ['estimate', 'quote', 'grant'];
+  var orderState = ['new', 'estimate', 'in-progress', 'payment', 'complete'];
+  /* var inquiryType = ['estimate', 'quote', 'grant'];
   var time_estimate = ['immediately', '1-3', '3-6', '6_or_more'];
-  var intended_use = ['research_only', 'clinical_applications'];
+  var intended_use = ['research_only', 'clinical_applications']; */
 
-  /* Nature of Inquiry */
+  /* Order State */
+  var state = document.getElementById('order_state');
+  var currState = state.innerText;
+  var selectState = document.createElement('select');
+  selectState.id = 'state_new';
+
+  orderState.forEach(element => {
+    var option = document.createElement('option');
+    option.value = element;
+    option.innerText = stdName(element);
+    if (stdName(element) === currState) {
+      option.selected = 'selected';
+    }
+    selectState.appendChild(option);
+  });
+
+  state.innerHTML = '';
+  state.appendChild(selectState);
+
+  /*   // Nature of Inquiry
   var reason = document.getElementById('reason');
   var currReason = reason.innerText;
-  var selectOrderState = document.createElement('select');
-  selectOrderState.id = 'state';
+  var selectInquriy = document.createElement('select');
+  selectInquriy.id = 'inquiry';
 
   inquiryType.forEach(element => {
     var option = document.createElement('option');
@@ -61,17 +94,17 @@ function makeEditable() {
     if (stdName(element) === currReason) {
       option.selected = 'selected';
     }
-    selectOrderState.appendChild(option);
+    selectInquriy.appendChild(option);
   });
 
   reason.innerHTML = '';
-  reason.appendChild(selectOrderState);
+  reason.appendChild(selectInquriy);
 
-  /* Time Estimate */
+  // Time Estimate
   var timeEstimate = document.getElementById('time_estimate');
   currReason = timeEstimate.innerText;
   var selectTimeEstimate = document.createElement('select');
-  selectTimeEstimate.id = 'state';
+  selectTimeEstimate.id = 'time_estimate_updated';
 
   time_estimate.forEach(element => {
     var option = document.createElement('option');
@@ -86,11 +119,11 @@ function makeEditable() {
   timeEstimate.innerHTML = '';
   timeEstimate.appendChild(selectTimeEstimate);
 
-  /* Intended Use */
+  // Intended Use
   var intendedUse = document.getElementById('intended_use');
   currReason = intendedUse.innerText;
   var selectIntendedUse = document.createElement('select');
-  selectIntendedUse.id = 'state';
+  selectIntendedUse.id = 'intended_use_new';
 
   intended_use.forEach(element => {
     var option = document.createElement('option');
@@ -103,13 +136,9 @@ function makeEditable() {
   });
 
   intendedUse.innerHTML = '';
-  intendedUse.appendChild(selectIntendedUse);
+  intendedUse.appendChild(selectIntendedUse); */
 
-  /* Now the thing */
-  var column = document.createElement('th');
-  column.setAttribute('scope', 'col');
-  document.getElementById('table_head').appendChild(column);
-
+  // Now the thing 
   var itemOps = document.getElementsByName('item_ops');
   itemOps.forEach(element => {
     element.removeAttribute('hidden');
@@ -117,23 +146,54 @@ function makeEditable() {
   document.getElementById('item_ops_head').hidden = false;
 }
 
-//This is being called in the HTML
-// eslint-disable-next-line no-unused-vars
 function deleteItem(item) {
   item.disabled = true;
   console.log('Delete Item: ' + item.value);
   // eslint-disable-next-line no-undef
-  $.ajax({
-    type: 'POST',
+  $.post({
     url: '/item/delete',
-    dataType: 'json',
     data: {
       id: item.value
     },
-    success: function (response) {
-      if (response.redirect !== undefined && response.redirect) {
-        console.log('SUCC');
-      }
+    success: () => {
+      var row = 'row_' + item.value;
+      document.getElementById(row).remove();
     }
   });
 }
+
+function addPayment() {
+  var paymentRow = document.getElementById('new_payment_row');
+  if (paymentRow.hidden == true) {
+    paymentRow.hidden = false;
+  }
+}
+
+$('#submit_payment').submit(function (event) {
+  console.log('here');
+  event.preventDefault();
+  $('#submit_payment_button').attr('disabled', true);
+  var data = $(this).serialize();
+  $.post({
+    url: '/payment/create',
+    data: data,
+    success: () => {
+      location.reload();
+    }
+  });
+});
+
+$('#order_state').change( () => {
+  var newState = document.getElementById('state_new').value;
+  $.post({
+    url: '/order/modify',
+    data: {
+      id: document.getElementById('order_state').getAttribute('orderId'),
+      state: stdName(newState)
+    },
+    success: () => {
+      document.getElementById('order_state').innerText = stdName(newState);
+      //location.reload();
+    }
+  });
+});

@@ -147,7 +147,7 @@ exports.order_modify = (req, res) => {
         state: req.body.state,
         type: req.body.type,
         user: req.body.user,
-      }).then(() => { res.redirect('NO_EXIST'); }); // CALL item modify if needed.
+      }).then(() => { res.sendStatus(200).end(); }); // CALL item modify if needed.
     }).catch(err => logger.error(err));
     return;
   }

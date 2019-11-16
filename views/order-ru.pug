@@ -35,7 +35,7 @@ block content
         }
 
     h2(style="float: left;")="Order #"+order.id
-        span.badge.badge-primary(style="margin-left: 5px;")
+        span.badge.badge-primary(id="order_state" orderId=order.id style="margin-left: 5px;")
             | #{stdName(order.state)}
     -var date = (new Date(order.updatedAt)).toLocaleString('en-US', { month: 'long', day: '2-digit', year: 'numeric' });
     h4(style="float: right;")="Ordered: "+date
@@ -65,15 +65,17 @@ block content
                     th(scope="col" id="item_ops_head" hidden)
             tbody(id="table_body")
                 each item in order.items
-                    tr
+                    tr(id="row_"+item.id)
                         td=(item.inventory == null || item.inventory.category == null) ? "" : item.inventory.category
                         td=(item.inventory == null || item.inventory.name == null) ? "" : item.inventory.name
                         td="$"+order.amount
                         td(name="item_ops" hidden)
                             button.btn.btn-danger(name="delete" value=item.id) Delete
     else
-        p There are no payments.
-
+        p There are no items.
+    br
+    button.btn.btn-primary(id="add_payment" style="float: right;") Add Payment
+    br
     h5 Payments
     if order.payments != null && order.payments.length > 0
         table.table.table-striped
@@ -82,12 +84,29 @@ block content
                     th(scope="col") Reference #
                     th(scope="col") Method
                     th(scope="col") Amount
-            tbody
+                    th(scope="col" id="pay_ops_head") 
+            tbody(id="payments_body")
                 each payment in order.payments
                     tr
                         td=payment.reference_number
                         td=payment.method
                         td="$"+payment.amount
+                        td
+                tr(id="new_payment_row" hidden)
+                    form.needs-validation(id="submit_payment" novalidate)
+                        input(type="hidden" name="order_id" value=order.id)
+                        td
+                            input.form-control(name='reference' id="reference" type='text' maxlength='50')
+                        td
+                            select(name="method" id="method" class="custom-select" required)
+                                option(value="cc") Credit Card
+                                option(value="check") Check
+                                option(value="po") Purchase Order
+                        td
+                            input.form-control(name='amount' id="amount" type='number' value=(entry ? entry.price : '') step=".01" min="0.01" maxlength='25' required)
+                        td
+                            input.btn.btn-success(type="submit" id="submit_payment_button" style="float: right;")
     else
         p There are no payments.
     script(src='/js/order.js')
+    script(src='/js/formval.js')

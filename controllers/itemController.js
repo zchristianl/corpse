@@ -4,7 +4,7 @@ const logger = require('../utils/logger');
 exports.item_get = (req, res) => {
   models.Item.findAll({
 
-    where: {id: req.params.id},
+    where: { id: req.params.id },
     include: [{
       model: models.Inventory
     }],
@@ -47,7 +47,9 @@ exports.item_modify = (req, res) => {
     }
 
   }
-  return res;};
+  return res;
+};
+
 exports.item_remove = (req, res) => {
   //AUTHORIZE ACTION
   models.Item.destroy({
@@ -55,5 +57,6 @@ exports.item_remove = (req, res) => {
       id: req.body.id
     }
   }).catch(err => logger.err(err));
-  return res; //Make 200
+  res.sendStatus(200);
+  return;
 };
