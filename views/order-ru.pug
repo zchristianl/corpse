@@ -77,36 +77,37 @@ block content
     button.btn.btn-primary(id="add_payment" style="float: right;") Add Payment
     br
     h5 Payments
-    if order.payments != null && order.payments.length > 0
-        table.table.table-striped
-            thead
-                tr
-                    th(scope="col") Reference #
-                    th(scope="col") Method
-                    th(scope="col") Amount
-                    th(scope="col" id="pay_ops_head") 
-            tbody(id="payments_body")
+    table.table.table-striped
+        thead
+            tr
+                th(scope="col") Reference #
+                th(scope="col") Method
+                th(scope="col") Amount
+                th(scope="col" id="pay_ops_head") 
+        tbody(id="payments_body")
+            if order.payments != null && order.payments.length > 0
                 each payment in order.payments
                     tr
                         td=payment.reference_number
                         td=payment.method
                         td="$"+payment.amount
                         td
-                tr(id="new_payment_row" hidden)
-                    form.needs-validation(id="submit_payment" novalidate)
-                        input(type="hidden" name="order_id" value=order.id)
-                        td
-                            input.form-control(name='reference' id="reference" type='text' maxlength='50')
-                        td
-                            select(name="method" id="method" class="custom-select" required)
-                                option(value="cc") Credit Card
-                                option(value="check") Check
-                                option(value="po") Purchase Order
-                        td
-                            input.form-control(name='amount' id="amount" type='number' value=(entry ? entry.price : '') step=".01" min="0.01" maxlength='25' required)
-                        td
-                            input.btn.btn-success(type="submit" id="submit_payment_button" style="float: right;")
-    else
-        p There are no payments.
+            else
+                p There are no payments.
+            tr(id="new_payment_row" hidden)
+                form.needs-validation(id="submit_payment" novalidate)
+                    input(type="hidden" name="order_id" value=order.id)
+                    td
+                        input.form-control(name='reference' id="reference" type='text' maxlength='50')
+                    td
+                        select(name="method" id="method" class="custom-select" required)
+                            option(value="cc") Credit Card
+                            option(value="check") Check
+                            option(value="po") Purchase Order
+                    td
+                        input.form-control(name='amount' id="amount" type='number' value=(entry ? entry.price : '') step=".01" min="0.01" maxlength='25' required)
+                    td
+                        input.btn.btn-success(type="submit" id="submit_payment_button" style="float: right;")
+
     script(src='/js/order.js')
     script(src='/js/formval.js')

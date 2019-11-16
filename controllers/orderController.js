@@ -18,7 +18,7 @@ exports.order_view_get = (req, res) => {
 exports.order_view_get_client = (req, res) => {
 
   models.Order.findAll({
-    where: {userid: req.userid},
+    where: { userid: req.userid },
     include: [
       { model: models.Item },
       { model: models.User }
@@ -52,7 +52,15 @@ exports.order_get = (req, res) => {
 };
 
 exports.order_inquire_get = (req, res) => {
-  res.render('inquire');
+  models.Inventory.findAll(
+    {
+      price: {
+        $gt:0
+      }
+    }
+  ).then((inventory) => res.render('inquire', {
+    inventory: inventory
+  }));
 };
 
 exports.order_create_post = (req, res) => {
@@ -65,17 +73,16 @@ exports.order_create_post = (req, res) => {
     inquiry_type: req.body.inquiry_type,
     time_estimate: req.body.time_estimate,
     intended_use: req.body.intended_use,
-    service: req.body.service,
     comments: req.body.comments,
     payment: req.body.payment,
-    po_num: req.body.po_num
+    po_num: req.body.po_num,
   };
 
   models.Order.create(bodyvars).then((order) => {
 
     var itemVars = {
       orderId: order.id,
-      //Come back for inventoryId
+      inventoryId: req.body.service
     };
     models.Item.create(itemVars).then(() => {
       res.redirect('/users/portal');
@@ -212,13 +219,13 @@ exports.order_confirmation = (req, res, order) => {
       <h3>Message</h3>
       <p>We will get back to you very soon, feel free to contact us at 1‑608-886-6718.</p>
     `;
-  
+
   mailer.send('corpsedev@gmail.com', '[ProteinCT Order Confirmation]', output, (err, info) => {
-    if(err){
+    if (err) {
       logger.error(err);
       req.flash('danger', 'There was an error. Please try again.');
       res.redirect('contact');
-  
+
     } else {
       req.flash('success', 'Your message has been sent!');
       res.render('portal');
