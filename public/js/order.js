@@ -193,7 +193,7 @@ $('#order_state').change( () => {
     },
     success: () => {
       document.getElementById('order_state').innerText = stdName(newState);
-      //location.reload();
+      location.reload();
     }
   });
 });
