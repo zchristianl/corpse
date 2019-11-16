@@ -159,7 +159,6 @@ describe('user tests', () => {
       .send({ email: 'opflpocx@sharklasers.com'})
       .end(function (err, response) {
         expect(response.status).to.equal(200);
-        console.log(response);
         //expect(response.text).to.have.string('An e-mail has been sent to');
         done();
       });
