@@ -85,7 +85,7 @@ exports.order_create_post = (req, res) => {
       inventoryId: req.body.service
     };
     models.Item.create(itemVars).then(() => {
-      res.redirect('/users/portal');
+      order_confirmation(req, res, bodyvars, itemVars);
     });
   });
 };
@@ -125,11 +125,12 @@ exports.create_invoice = (req, res) => {
 
   let order = {
     id: 1234,
-    clientEmail: 'corpsedev@gmail.com',
+    clientEmail: req.user.email,
   };
   // MAKE INVOICE NAME UNIQUE
   createInvoiceEmail(invoice, 'invoice.pdf', order, req, res);
 };
+
 exports.order_remove = (req, res) => {
   //AUTHORIZE ACTION
   models.Order.destroy({
@@ -208,29 +209,42 @@ exports.order_create = (req, res) => {
 };
 
 // Send order confirmation email to client
-exports.order_confirmation = (req, res, order) => {
-  const output = `
-      <h1>Thank you for your order!</h1>
-      <h3>Order Details</h3>
-      <ul>
-        <li>Order Number: ${order.id}</li>
-        <li>Date: ${order.createdAt}</li>
-      </ul>
-      <h3>Message</h3>
-      <p>We will get back to you very soon, feel free to contact us at 1‑608-886-6718.</p>
-    `;
-
-  mailer.send('corpsedev@gmail.com', '[ProteinCT Order Confirmation]', output, (err, info) => {
-    if (err) {
-      logger.error(err);
-      req.flash('danger', 'There was an error. Please try again.');
-      res.redirect('contact');
-
-    } else {
-      req.flash('success', 'Your message has been sent!');
-      res.render('portal');
+const order_confirmation = (req, res, order, itemVars) => {
+  models.User.findOne({
+    where: {
+      id: order.userId
     }
-    logger.info(info.messageId);
-  });
+  }).then(user => {
+    models.Order.findOne({
+      where: {
+        id: itemVars.orderId
+      }
+    }).then(order => {
+      const output = `
+        <h1>Thank you for your order!</h1>
+        <h3>Order Details</h3>
+        <ul>
+          <li>Order Number: ${itemVars.orderId}</li>
+          <li>Date: ${order.createdAt}</li>
+        </ul>
+        <h3>Message</h3>
+        <p>We will get back to you very soon, feel free to contact us at 1‑608-886-6718.</p>
+      `;
+    
+      mailer.send(user.email, '[ProteinCT Order Confirmation]', output, (err, info) => {
+        if(err){
+          logger.error(err);
+          req.flash('danger', 'There was an error. Please try again.');
+          // NOT SURE WHERE TO SEND USER IF EMAIL FAILS
+          res.redirect('back');
+      
+        } else {
+          req.flash('success', 'Thank you for you order. An order confirmation has been sent to ' + user.email);
+          res.redirect('/users/portal');
+        }
+        logger.info(info.messageId);
+      });
+    });
+  }).catch(err => logger.error(err));
 };
 

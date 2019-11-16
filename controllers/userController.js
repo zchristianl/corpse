@@ -269,12 +269,11 @@ exports.forgot_post = (req, res, next) => {
           resetPasswordExpires: Date.now() + 3600000 // 1 hour
         }).then(user => {
           done(null, token, user);
-        })
-          .catch(err => {
-            logger.error(err);
-            req.flash('error', 'No account with that email address exists.');
-            return res.redirect('/users/forgot');
-          });
+        });
+      }).catch(err => {
+        logger.error(err);
+        req.flash('error', 'No account with that email address exists.');
+        return res.redirect('/users/forgot');
       });
     },
     function (token, user, done) {

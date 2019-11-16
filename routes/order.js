@@ -10,7 +10,4 @@ router.get('/view/:id', global.ensureAuthenticated, orderController.order_get);
 router.post('/create_invoice', global.ensureAuthenticated, orderController.create_invoice);
 router.post('/modify', global.ensureAuthenticated, orderController.order_modify);
 
-// FOR TESTING ORDER CONFIRMATION EMAIL
-//router.get('/', global.ensureAuthenticated, orderController.order_confirmation);
-
 module.exports = router;
