@@ -32,27 +32,9 @@ block content
       .col
         label Service:
         select.custom-select(name='service' required)
-          option(selected hidden disabled)
-          option(value='gene_synthesis') Gene Synthesis
-          option(value='structural_biology_services') Structural Biology Services
-          option(value='custom_monoclonal_antibodies') Custom Monoclonal Antibodies
-          option(value='protein_varians_service') Protein Variants Service
-          option(value='recertified_instruments') Re-certified Instruments
-          option(value='cell_culture_reagents') Cell Culture Reagents
-          option(value='bioinformatics_solutions') Bioinformatics Solutions
-          option(value='protein_expression') Protien Expression #{'&'} Purification
-          option(value='protein_characterization') Protein Characterization
-          option(value='gene_to_antibody') Gene-to-Antibody Service
-          option(value='mab_library') mAb Library Service
-          option(value='molecular_biology_reagents') Molecular Biology Reagents
-          option(value='antitag_antibodies') Anti-tag Antibodies
-          option(value='peptide_synthesis') Peptide Synthesis
-          option(value='gene_to_protien_service') Gene-to-Protein Service
-          option(value='protein_interaction_screening') Protein Interaction Screening
-          option(value='codon_optimization') Codon Optimization #{'&'} Verification
-          option(value='stable_cell_line') Stable Cell Line Construction
-          option(value='catalog_proteins') Catalog Proteins
-          option(value='loading_control_antibodies') Loading Control Antibodies
+          each item in inventory
+            option(value=item.id)
+              =item.name
     .row
       .col
         label Comments:

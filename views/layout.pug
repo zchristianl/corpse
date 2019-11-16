@@ -14,12 +14,11 @@ html
           .navbar-nav
           if user
             if user.account_type === "seller"
-              a.nav-item.nav-link(href='#') Dashboard
               a.nav-item.nav-link(href='/users/view') Clients
+              a.nav-item.nav-link(href='/order') Orders
               a.nav-item.nav-link(href='/inventory') Inventory
               a.nav-item.nav-link(href='/users/logout') Logout
             else
-              a.nav-item.nav-link(href='#') Dashboard
               a.nav-item.nav-link(href='/order/inquire') New Order
               a.nav-item.nav-link(href='/payment/checkout') Checkout
               a.nav-item.nav-link(href='/users/logout') Logout

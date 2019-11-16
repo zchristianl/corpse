@@ -15,8 +15,8 @@ var transporter = exports.transporter = nodemailer.createTransport(smtpTransport
 
 exports.send = async function(email, subject, htmlcontent, callback) {
   var mailOptions = {
-    from: email,
-    to: process.env.AUTH_USER,
+    from: process.env.AUTH_USER,
+    to: email,
     subject: subject,
     html: htmlcontent
   };
@@ -32,16 +32,16 @@ exports.send = async function(email, subject, htmlcontent, callback) {
   });
 };
 
-exports.sendInvoice = async function(doc, filename, order, callback) {
+exports.sendInvoice = async function(invoice, filename, order, callback) {
   var mailOptions = {
     from: 'orders@ProteinCT.com',
     to: order.clientEmail,
-    subject: 'Your Order From ProteinCT - #' + order.id,
-    text: 'Thank you for your order!',
+    subject: '[ Invoice From ProteinCT ]',
+    text: 'Attached is an invoice for your order #' + invoice.invoice_nr,
     attachments: [
       {
         filename: filename,
-        content: doc
+        content: invoice
       }
     ]
   };

@@ -20,8 +20,9 @@ router.get('/logout', userController.logout_post);
 // Portal
 router.get('/portal', global.ensureAuthenticated, userController.portal_get);
 
-// Seller - View All Clients
+// Seller - View Clients
 router.get('/view', global.ensureAuthenticated, userController.client_view_get);
+router.get('/view/:id', global.ensureAuthenticated, userController.client_read_get);
 
 // Seller - Edit Clients
 router.get('/edit/:id', global.ensureAuthenticated, userController.client_edit_get);
@@ -29,7 +30,10 @@ router.post('/edit/', global.ensureAuthenticated, userController.client_edit_pos
 
 //Seller - Create Clients
 router.get('/create/', global.ensureAuthenticated, userController.client_create_get);
-router.post('/create/', global.ensureAuthenticated, userController.validate('createUser'), userController.register_post);
+router.post('/create/', global.ensureAuthenticated, userController.validate('clientCreateUser'), userController.client_new_post);
+
+//Seller - Delete Client
+router.post('/delete/:id', global.ensureAuthenticated, userController.client_delete_post);
 
 // Forgot form
 router.get('/forgot', userController.forgot_get);

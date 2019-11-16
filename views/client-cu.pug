@@ -6,7 +6,7 @@ block content
   else
     h1 Create Client
   br
-  form.needs-validation(method='POST' action=(entry ? '/users/edit' : '/users/create') id="form_registration" novalidate)
+  form.needs-validation(method='POST' action=(client ? '/users/edit' : '/users/create') id="form_registration" novalidate)
     .row
       .col
         label First Name:
@@ -26,21 +26,21 @@ block content
         input.form-control(name='organization' type='text' value=(client ? client.organization : '') required maxlength='25')
       .col 
         label Department:
-        input.form-control(name='department' type='text' value=(client ? client.department : '') required maxlength='25')
+        input.form-control(name='department' type='text' value=(client ? client.department : '') maxlength='25')
       .col 
         label Research Area:
         select.custom-select(name='research_area' id='research_area')
-          option(value='' selected)
-          option(value='cancer') Cancer
-          option(value='neuroscience') Neuroscience
-          option(value='stem_cell') Stem Cell
-          option(value='virology') Virology
-          option(value='epigenetics') Epigenetics
-          option(value='cardiovascular_disease') Cardiovascular Disease
+          option(value='' selected=(entry == null))
+          option(value='cancer' selected=(client != null && client.research_area === 'cancer')) Cancer
+          option(value='neuroscience' selected=(client != null && client.research_area === 'neuroscience')) Neuroscience
+          option(value='stem_cell' selected=(client != null && client.research_area === 'stem_cell')) Stem Cell
+          option(value='virology' selected=(client != null && client.research_area === 'virology')) Virology
+          option(value='epigenetics' selected=(client != null && client.research_area === 'epigenetics')) Epigenetics
+          option(value='cardiovascular_disease' selected=(client != null && client.research_area === 'cardiovascular_disease')) Cardiovascular Disease
     .row
       .col 
         label Address:
-        textarea.form-control(rows="5" name="address") #{(client) ? client.address : ""}
+        textarea.form-control(rows="5" name="address" required) #{(client) ? client.address : ""}
     .form-row
       .col-md
         label City:
@@ -48,8 +48,7 @@ block content
         div.invalid-feedback We need to know where you live!
       .col-sm-90
         label State:
-        select.custom-select(name='state' disabled)
-          option(value=(client ? client.state : '') selected)=(client ? client.state : '')
+        input.form-control(name='state' type='text' value=value=(client ? client.state : '') maxlength='2' required)
       .col-sm-90
         label ZIP:
         input.form-control(name='zip' type='text' value=(client ? client.zip : '') pattern='[0-9]*' maxlength="5" required)
@@ -58,23 +57,51 @@ block content
         label Phone:
         input.form-control(name='phone' type='text' value=(client ? client.phone : '') pattern="^[1-9]{1}\\d{5}\\d{4}$" required='true')
         div.invalid-feedback Please enter a 10-digit phone number without any dashes or parentheses.
-    br
-    h2 Payment
     .row 
-      .col
-        label Payment Method:
-        select.custom-select(name='payment' id='payment' required)
-          option(value='' selected disabled hidden) 
-          option(value='check' selected=(client != null && client.payment === 'check')) Check
-          option(value='po' selected=(client != null && client.payment === 'po')) Purchase Order
-          option(value='cc' selected=(client != null && client.payment === 'cc')) Credit/Debit Card
-      .col(id='po_num_col' hidden)
+      .col(id='po_num_col')
         label PO #:
-        input.form-control(name='po_num' type='text' value=(client ? client.po_num : ""))  
+        input.form-control(name='po_num' type='text' value=(client ? client.po_num : ''))  
     span(style="float: right; padding: 10px 0px 10px 0px;")
-      input(type='hidden' name='id' value=(cilent ? client.id : ''))
+      input(type='hidden' name='id' value=(client ? client.id : ''))
       input.btn.btn-primary(type='submit' value=(client ? 'Update' : 'Create'))
     if client
       span(style="float: left; padding: 10px 0px 10px 0px;")
-        input.btn.btn-danger(type='button' value="Delete" disabled)
-      script(src='/js/regval.js')
+        button.btn.btn-danger.deleteButton(type="button" name="id" value=client.id data-toggle='modal' data-target='#DeleteModal') Delete
+    
+  .container
+    #DeleteModal.modal.fade(tabindex="-1" role="dialog" aria-labelledby="DeleteModal" aria-hidden="true")
+      .modal-dialog
+        .modal-content
+          .modal-header
+            h5.modal-title Delete
+            button.close(type="button" data-dismiss="modal" aria-hidden="true") &times;
+          .modal-body
+            p
+              | Click &apos;Delete&apos; to 
+              strong permanently
+              |  delete this record. Click &apos;Cancel&apos; to cancel your action.
+          .modal-footer
+            button.btn.btn-secondary(type="button" data-dismiss="modal") Cancel
+            button.btn.btn-danger.deleteModal(type="button" data-dismiss="modal" id="delete" value=1) Delete
+  script.
+    $('.deleteButton').on('click', function(e) {
+      var itemId = $(e.target).attr('value');
+      console.log(itemId);
+      $(".deleteModal").val(itemId); 
+    });
+
+    $('.deleteModal').on('click', function(e){
+      console.log('here');
+      $target = $(e.target);
+      $.ajax({
+        type: 'POST',
+        url: '/users/delete/'+$target.attr('value'),
+        dataType: 'json',
+        success: function(response){
+          if (response.redirect !== undefined && response.redirect) {
+            window.location.href = response.redirect;
+          }
+        }
+      });
+    }); 
+  script(src='/js/formval.js')
