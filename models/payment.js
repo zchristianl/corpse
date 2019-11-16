@@ -4,9 +4,9 @@ module.exports = (sequelize, type) => sequelize.define('payment', {
     primaryKey: true,
     autoIncrement: true
   },
-  payment_number: {
+  reference_number: {
     type: type.STRING,
   },
-  payment_type: type.INTEGER, //check,stripe,PO
-  payment_amount: type.DECIMAL
+  method: type.INTEGER, //check,stripe,PO
+  amount: type.DECIMAL
 });

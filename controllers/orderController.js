@@ -18,7 +18,7 @@ exports.order_view_get = (req, res) => {
 exports.order_view_get_client = (req, res) => {
 
   models.Order.findAll({
-    where: {userid: req.userid},
+    where: { userid: req.userid },
     include: [
       { model: models.Item },
       { model: models.User }
@@ -33,24 +33,34 @@ exports.order_view_get_client = (req, res) => {
 exports.order_get = (req, res) => {
   models.Order.findAll({
 
-    where: {id: req.params.id},
+    where: { id: req.params.id },
     include: [
-      { model: models.Item, include: [{
-        model: models.Inventory
-      }]},
+      {
+        model: models.Item, include: [{
+          model: models.Inventory
+        }]
+      },
       { model: models.User },
-      {model: models.Payment}
+      { model: models.Payment }
     ],
     limit: 1
   })
-    .then((order) => res.render('order_view', {
+    .then((order) => res.render('order-ru', {
       order: order[0],
     }))
     .catch(err => logger.error(err));
 };
 
 exports.order_inquire_get = (req, res) => {
-  res.render('inquire');
+  models.Inventory.findAll(
+    {
+      price: {
+        $gt:0
+      }
+    }
+  ).then((inventory) => res.render('inquire', {
+    inventory: inventory
+  }));
 };
 
 exports.order_create_post = (req, res) => {
@@ -63,17 +73,16 @@ exports.order_create_post = (req, res) => {
     inquiry_type: req.body.inquiry_type,
     time_estimate: req.body.time_estimate,
     intended_use: req.body.intended_use,
-    service: req.body.service,
     comments: req.body.comments,
     payment: req.body.payment,
-    po_num: req.body.po_num
+    po_num: req.body.po_num,
   };
 
   models.Order.create(bodyvars).then((order) => {
 
     var itemVars = {
       orderId: order.id,
-      //Come back for inventoryId
+      inventoryId: req.body.service
     };
     models.Item.create(itemVars).then(() => {
       order_confirmation(req, res, bodyvars, itemVars);
@@ -146,7 +155,7 @@ exports.order_modify = (req, res) => {
         state: req.body.state,
         type: req.body.type,
         user: req.body.user,
-      }).then(() => { res.redirect('NO_EXIST'); }); // CALL item modify if needed.
+      }).then(() => { res.sendStatus(200).end(); }); // CALL item modify if needed.
     }).catch(err => logger.error(err));
     return;
   }
@@ -168,15 +177,15 @@ exports.order_modify = (req, res) => {
 };
 
 //INTERNAL USE ONLY
-exports.inventoryUpdate = (id, count)=>{
+exports.inventoryUpdate = (id, count) => {
   models.Item.findOne(
     {
       where: {
         id: id
       },
-      include: [{model:models.Inventory}]
+      include: [{ model: models.Inventory }]
     }
-  ).then((entry)=>{entry.inventory.stock = count;});
+  ).then((entry) => { entry.inventory.stock = count; });
 };
 
 exports.order_create = (req, res) => {

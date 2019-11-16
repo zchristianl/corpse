@@ -31,13 +31,13 @@ exports.checkout_post = (req, res) => {
     })
     .catch(err => {
       logger.error(err);
-      res.status(500).send({error: 'Purchase Failed'});
+      res.status(500).send({ error: 'Purchase Failed' });
     });
 };
 exports.payment_get = (req, res) => {
   models.Payment.findAll({
 
-    where: {id: req.params.id},
+    where: { id: req.params.id },
     limit: 1
   })
     .catch(err => logger.error(err));
@@ -48,14 +48,14 @@ exports.payment_create = (req, res) => {
 
   //AUTHORIZE ACTION
   bodyvars = {
-    orderid: req.orderid,
-    payment_number: req.payment_number,
-    payment_type: req.payment_type,
-    payment_amount: req.payment_amount
+    orderId: req.body.order_id,
+    reference_number: req.body.reference,
+    method: req.body.method,
+    amount: req.body.amount
   };
 
-  models.Payment.create(bodyvars);
-  return res;
+  models.Payment.create(bodyvars).catch(err => logger.error(err));
+  return res.sendStatus(200).end();
 };
 
 exports.payment_remove = (req, res) => {
@@ -64,6 +64,6 @@ exports.payment_remove = (req, res) => {
     where: {
       id: req.body.id
     }
-  }).catch(err => logger.err(err));
+  }).catch(err => logger.error(err));
   return res;
 };

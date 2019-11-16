@@ -3,7 +3,8 @@ module.exports = {
         "browser": true,
         "commonjs": true,
         "node": true,
-        "mocha": true
+        "mocha": true,
+        "jquery": true
     },
     "extends": "eslint:recommended",
     "globals": {

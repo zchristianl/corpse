@@ -24,7 +24,6 @@ block content
           td
             form(method="GET" action="/inventory/edit/"+item.id style="margin-right: 5px; float:left;")
               button.btn.btn-warning(type="submit") Edit
-              //input(type="hidden" name="id" value=item.id)
             button.btn.btn-danger.deleteButton(type="submit" name="id" value=item.id data-toggle='modal' data-target='#DeleteModal') Delete
   .container
     #DeleteModal.modal.fade(tabindex="-1" role="dialog" aria-labelledby="DeleteModal" aria-hidden="true")
