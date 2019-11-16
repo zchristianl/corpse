@@ -60,7 +60,7 @@ block content
     .row 
       .col(id='po_num_col')
         label PO #:
-        input.form-control(name='po_num' type='text' value=(client ? client.po_num : ""))  
+        input.form-control(name='po_num' type='text' value=(client ? client.po_num : ''))  
     span(style="float: right; padding: 10px 0px 10px 0px;")
       input(type='hidden' name='id' value=(client ? client.id : ''))
       input.btn.btn-primary(type='submit' value=(client ? 'Update' : 'Create'))

@@ -124,6 +124,7 @@ exports.client_new_post = (req, res) => {
       state: req.body.state,
       zip: req.body.zip,
       phone: req.body.phone,
+      po_num: req.body.po_num
     };
 
     let { first_name, last_name, email } = newUser;
@@ -140,6 +141,7 @@ exports.client_new_post = (req, res) => {
       city: regInfo.city,
       state: regInfo.state,
       zip: regInfo.zip,
+      po_num: regInfo.po_num
     })
       .then(user => makeAssociations(user, regInfo))
       .then(() => {
