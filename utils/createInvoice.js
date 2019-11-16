@@ -1,7 +1,6 @@
 const fs = require('fs');
 const PDFDocument = require('pdfkit');
 const mailer = require('../utils/mail');
-const logger = require('../utils/logger');
 
 function createInvoiceDownload(invoice, filename) {
   let doc = new PDFDocument({ size: 'A4', margin: 50 });
@@ -23,8 +22,16 @@ function createInvoiceEmail(invoice, filename, order ,req, res) {
   generateInvoiceTable(doc, invoice);
   generateFooter(doc);
 
+  let buffers = [];
+  doc.on('data', buffers.push.bind(buffers));
+  doc.on('end', () => {
+
+    let pdfData = Buffer.concat(buffers);
+
+    mailer.sendInvoice(pdfData, filename, order, req, res);
+
+  });
   doc.end();
-  mailer.sendInvoice(doc, filename, order, req, res);
 }
 
 function generateHeader(doc) {

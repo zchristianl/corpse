@@ -1,5 +1,6 @@
 const SGmail = require('@sendgrid/mail');
 const logger = require('../utils/logger');
+const fs = require('fs');
 require('dotenv').config();
 
 SGmail.setApiKey(process.env.SENDGRIND_API_KEY);
@@ -16,27 +17,35 @@ exports.send = function(message, req, res) {
   }).catch(err => { logger.error(err); });
 };
 
-exports.sendInvoice = async function(invoice, filename, order, req, res) {
-  var message = {
-    from: 'billing@ProteinCT.com',
+exports.sendInvoice = async function(pdfdata, filename, order, req, res) {
+
+  var base64File = new Buffer(pdfdata).toString('base64');
+
+  const message = {
     to: order.clientEmail,
+    from: 'billing@ProteinCT.com',
     subject: '[ Invoice From ProteinCT ]',
     text: 'Attached is an invoice for your order #' + order.id,
     attachments: [
       {
         filename: filename,
-        content: invoice
-      }
-    ]
+        content: base64File,
+        type: 'application/pdf',
+        disposition: 'attachment',
+        contentId: 'invoice'
+      },
+    ],
   };
 
   SGmail.send(message).then(sent => {
     if(sent){
-      req.flash('info', 'An invoice has been sent to ' + order.clientEmail);
+      req.flash('success', 'An invoice has been sent to ' + order.clientEmail);
       res.render('portal', {user: req.user});
     } else {
       req.flash('danger', 'There was an error. Please try again.');
       res.redirect('/');
     }
-  }).catch(err => { logger.error(err); });
+  }).catch(err => { 
+    logger.error(err);
+  });
 };
