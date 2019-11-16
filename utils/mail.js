@@ -37,7 +37,7 @@ exports.sendInvoice = async function(invoice, filename, order, callback) {
     from: 'orders@ProteinCT.com',
     to: order.clientEmail,
     subject: '[ Invoice From ProteinCT ]',
-    text: 'Attached is an invoice for your order #' + invoice.invoice_nr,
+    text: 'Attached is an invoice for your order #' + order.id,
     attachments: [
       {
         filename: filename,
