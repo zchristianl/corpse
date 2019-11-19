@@ -269,7 +269,6 @@ exports.forgot_post = (req, res, next) => {
       });
     },
     function (token, done) {
-      console.log(req.body.email);
       models.User.findOne({
         where: {
           email: req.body.email
@@ -288,19 +287,9 @@ exports.forgot_post = (req, res, next) => {
       });
     },
     function (token, user, done) {
-      var mailOptions = {
-        to: user.email,
-        from: 'account@proteinct.com',
-        subject: 'Reset Your ProteinCT Password',
-        text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
-          'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-          'http://' + req.headers.host + '/users/reset/' + token + '\n\n' +
-          'If you did not request this, please ignore this email and your password will remain unchanged.\n'
-      };
-      mailer.transporter.sendMail(mailOptions, function (err) {
-        req.flash('info', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
-        done(err, 'done');
-      });
+      var err = mailer.sendForgotPassword(req, user, token); 
+      req.flash('info', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
+      done(err, 'done');
     }
   ], function (err) {
     if (err) return next(err);
@@ -357,17 +346,9 @@ exports.reset_confirm = (req, res) => {
           });
       },
       function (user, done) {
-        var mailOptions = {
-          to: user.email,
-          from: 'account@proteinct.com',
-          subject: 'Your ProteinCT password has been changed',
-          text: 'Hello,\n\n' +
-          'This is a confirmation that the password for your ProteinCT account ' + user.email + ' has just been changed.\n'
-        };
-        mailer.transporter.sendMail(mailOptions, function (err) {
-          req.flash('success', 'Success! Your password has been changed.');
-          done(err);
-        });
+        var err = mailer.sendPasswordReset(user);
+        req.flash('success', 'Success! Your password has been changed.');
+        done(err);
       }
     ], function (err) {
       logger.error(err);
