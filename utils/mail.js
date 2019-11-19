@@ -4,7 +4,7 @@ require('dotenv').config();
 
 SGmail.setApiKey(process.env.SENDGRIND_API_KEY);
 
-exports.send = function(message, req, res) {
+exports.sendContact = function(message, req, res) {
   SGmail.send(message).then(sent => {
     if(sent) {
       req.flash('success', 'Your message has been sent!');
@@ -16,10 +16,35 @@ exports.send = function(message, req, res) {
   }).catch(err => { logger.error(err); });
 };
 
+exports.sendOrderConfrim = function(email, order, itemVars) {
+  const html = `
+  <h1>Thank you for your order!</h1>
+  <h3>Order Details</h3>
+  <ul>
+    <li>Order Number: ${itemVars.orderId}</li>
+    <li>Date: ${order.createdAt}</li>
+  </ul>
+  <h3>Message</h3>
+  <p>We will get back to you very soon, feel free to contact us at 1‑608-886-6718 if you have any questions.</p>
+  `;
+
+  const message = {
+    to: email,
+    from: 'orders@ProteinCT.com',
+    subject: '[ ProteinCT Order Confirmation ]',
+    html: html
+  };
+
+  SGmail.send(message).then(() => {
+    return null;
+  }).catch(err => { 
+    logger.error(err); 
+    return err;
+  });
+};
+
 exports.sendInvoice = async function(pdf, filename, order, req, res) {
-
   var base64File = new Buffer(pdf).toString('base64');
-
   const message = {
     to: order.clientEmail,
     from: 'billing@ProteinCT.com',
@@ -68,7 +93,7 @@ exports.sendForgotPassword = function(req, user, token) {
   });
 };
 
-exports.sendResetPassword = function(user) {
+exports.sendResetConfirm = function(user) {
   var message = {
     to: user.email,
     from: 'account@proteinct.com',

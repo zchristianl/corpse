@@ -334,6 +334,7 @@ exports.reset_confirm = (req, res) => {
                   resetPasswordExpires: undefined
                 })
                   .then(user => {
+                    console.log(user.email);
                     done(null, user);
                   })
                   .catch(err => {
@@ -346,7 +347,7 @@ exports.reset_confirm = (req, res) => {
           });
       },
       function (user, done) {
-        var err = mailer.sendPasswordReset(user);
+        var err = mailer.sendResetConfirm(user);
         req.flash('success', 'Success! Your password has been changed.');
         done(err);
       }
@@ -462,12 +463,11 @@ exports.send_post = (req, res) => {
     `;
 
   var message = {
-    from: 'contact@proteinct.com',
     to: req.body.email,
+    from: 'contact@proteinct.com',
     subject: req.body.subject,
     html: output
   };
   
-  mailer.send(message, req, res);
-
+  mailer.sendContact(message, req, res);
 };
