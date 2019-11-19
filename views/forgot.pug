@@ -1,0 +1,9 @@
+extends layout
+
+block content
+  form(method='POST', action='/users/forgot')
+    legend Forgot Password
+    .form-group
+      label Email
+      input.form-control(type='email', name='email', autofocus)
+    button.btn.btn-primary(type='submit' value='Submit') Reset Password

@@ -1,0 +1,43 @@
+extends layout
+
+block content
+  if entry
+    h1 Modify Inventory Item
+  else
+    h1 Create Inventory Item
+  br
+  form.needs-validation(method='POST', action=(entry ? '/inventory/edit' : '/inventory/create') novalidate)
+    .row
+      .col
+        label Item Name:
+        input.form-control(name='item_name' type='text' value=(entry ? entry.name : '') required maxlength='25')
+    .row
+      .col 
+        label Type:
+        select.custom-select(name='type' required)
+          option(value='' selected=(entry != null && entry.type == null) hidden)
+          option(value='product' selected=(entry != null && entry.type === 'product')) Product
+          option(value='service' selected=(entry != null && entry.type === 'service')) Service
+      .col
+        label Category: 
+        input.form-control(name='category' type='text' value=(entry ? entry.category : '') required maxlength='25')
+    .row 
+      .col
+        label Cost: 
+        input.form-control(name='cost' type='number' value=(entry ? entry.cost : '') step=".01" min="0.01" required maxlength='25')
+      .col
+        label Price: 
+        input.form-control(name='price' type='number' value=(entry ? entry.price : '') step=".01" min="0.01" required maxlength='25')
+      .col
+        label Stock: 
+        input.form-control(name='stock' type='number' value=(entry ? entry.stock : '') step="1" min="0" required maxlength='25')
+    .row
+      .col
+        label Description:
+        - var description = (entry ? entry.description : "");
+        textarea.form-control(rows="5" name="description") #{description}
+    span(style="float: right; padding: 10px 0px 10px 0px;")
+      input(type='hidden' name='id' value=(entry ? entry.id : ''))
+      input.btn.btn-primary(type='submit' value='Submit')
+  script(src='/js/formval.js')
+     
