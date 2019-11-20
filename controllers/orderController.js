@@ -220,30 +220,15 @@ const order_confirmation = (req, res, order, itemVars) => {
         id: itemVars.orderId
       }
     }).then(order => {
-      const output = `
-        <h1>Thank you for your order!</h1>
-        <h3>Order Details</h3>
-        <ul>
-          <li>Order Number: ${itemVars.orderId}</li>
-          <li>Date: ${order.createdAt}</li>
-        </ul>
-        <h3>Message</h3>
-        <p>We will get back to you very soon, feel free to contact us at 1‑608-886-6718.</p>
-      `;
-    
-      mailer.send(user.email, '[ProteinCT Order Confirmation]', output, (err, info) => {
-        if(err){
-          logger.error(err);
-          req.flash('danger', 'There was an error. Please try again.');
-          // NOT SURE WHERE TO SEND USER IF EMAIL FAILS
-          res.redirect('back');
-      
-        } else {
-          req.flash('success', 'Thank you for you order. An order confirmation has been sent to ' + user.email);
-          res.redirect('/users/portal');
-        }
-        logger.info(info.messageId);
-      });
+      var err = mailer.sendOrderConfrim(user.email, order, itemVars);
+      if(err){
+        req.flash('danger', 'There was an error. Please try again.');
+        // NOT SURE WHERE TO SEND USER IF EMAIL FAILS
+        res.redirect('back');
+      } else {
+        req.flash('success', 'Thank you for you order. An order confirmation has been sent to ' + user.email);
+        res.redirect('/users/portal');
+      }
     });
   }).catch(err => logger.error(err));
 };
