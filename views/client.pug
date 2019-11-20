@@ -12,6 +12,15 @@ block content
         th(scope="col") Due
         th(scope="col")
     tbody
+      form(action='/users/view' method='GET')
+        input(type="text" name="name")
+        input(type="text" name="email")
+        input(type="text" name="organization")
+        input(type="text" name="research_area")
+        input(type="text" name="address")
+        input(type="number" name="zip")
+        input(type="submit")
+
       each user in users
         tr
           td 
