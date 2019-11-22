@@ -25,6 +25,15 @@ global.ensureSeller = (req, res, next) => {
   }
 };
 
+global.ensureClient = (req, res, next) => {
+  if(req.isAuthenticated() && req.user.account_type === 'client'){
+    return next ? next() : true;
+  } else {
+    req.flash('danger', 'You do not have permission to access that URL.');
+    res.redirect('back');
+  }
+};
+
 // redirect bootstrap JS
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
 // redirect JS jQuery
