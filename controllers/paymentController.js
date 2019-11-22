@@ -76,14 +76,14 @@ async function create_session() {
     payment_method_types: ['card'],
     line_items: [{
       name: 'DNA Synthesis',
-      description: '',
+      description: 'test',
       amount: 500,
       currency: 'usd',
       quantity: 1,
     },
     {
       name: 'PCR Cloning Kit',
-      description: '',
+      description: 'test',
       amount: 5000,
       currency: 'usd',
       quantity: 1,
