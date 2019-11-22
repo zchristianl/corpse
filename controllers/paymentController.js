@@ -76,12 +76,19 @@ async function create_session() {
     payment_method_types: ['card'],
     line_items: [{
       name: 'DNA Synthesis',
-      description: 'DNA Synthesis service',
-      images: ['logo.png'],
+      description: '',
       amount: 500,
       currency: 'usd',
       quantity: 1,
-    }],
+    },
+    {
+      name: 'PCR Cloning Kit',
+      description: '',
+      amount: 5000,
+      currency: 'usd',
+      quantity: 1,
+    }
+    ],
     success_url: 'https://example.com/success?session_id={CHECKOUT_SESSION_ID}',
     cancel_url: 'https://example.com/cancel',
   });
