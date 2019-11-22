@@ -1,0 +1,12 @@
+extends layout
+
+block content
+  h1 Payment
+  script. 
+    var stripe = Stripe('pk_test_5pvfMynil20Hgop2gjxxrAw90036Py8edd');
+
+    stripe.redirectToCheckout({
+      sessionId: #{session.id}
+    }).then(function (result) {
+      console.log(result);
+    });
