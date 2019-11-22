@@ -75,9 +75,9 @@ async function create_session() {
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ['card'],
     line_items: [{
-      name: 'T-shirt',
-      description: 'Comfortable cotton t-shirt',
-      images: ['https://example.com/t-shirt.png'],
+      name: 'DNA Synthesis',
+      description: 'DNA Synthesis service',
+      images: ['logo.png'],
       amount: 500,
       currency: 'usd',
       quantity: 1,

@@ -6,18 +6,16 @@ block content
     button#buttonCheckout Checkout
   script. 
     var stripe = Stripe('pk_test_5pvfMynil20Hgop2gjxxrAw90036Py8edd');
-
     var button = document.getElementById("buttonCheckout");
 
     button.addEventListener('click', function () {
-    stripe.redirectToCheckout({
-        items: [{
-          sku: sku_GE15smJVI3Luut,
-          quantity: 1
-        }],
-        successUrl: 'https://www.example.com/success',
-        cancelUrl: 'https://www.example.com/cancel'
+      stripe.redirectToCheckout({
+        sessionId: '#{session.id}'
+      }).then(function (result) {
+        console.log(result.error.message)
       });
     });
+
+
 
     
