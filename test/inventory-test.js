@@ -38,50 +38,53 @@ describe('inventory-tests', () => {
     var path = '/inventory/create';
     this.timeout(0);
     page_
-    .post(path)
+      .post(path)
       .set('content-type', 'application/x-www-form-urlencoded')
-      .send({ category: 'TestCat',
-              type: 'product',
-              description: 'TestDescr',
-              cost: '1.00',
-              price: '1.00',  
-              stock: '5'})
+      .send({
+        category: 'TestCat',
+        type: 'product',
+        description: 'TestDescr',
+        cost: '1.00',
+        price: '1.00',
+        stock: '5'
+      })
       .end(function (err, res) {
         expect(res.status).to.equal(200);
         done();
       });
   });
-
 
   it('/inventory - Create Inventory Entry', function (done) {
     var path = '/inventory/create';
     this.timeout(0);
     page_
-    .post(path)
+      .post(path)
       .set('content-type', 'application/x-www-form-urlencoded')
-      .send({ item_name: 'TestItem',
-              category: 'TestCat',
-              type: 'product',
-              description: 'TestDescr',
-              cost: '1.00',
-              price: '1.00',  
-              stock: '5'})
+      .send({
+        item_name: 'TestItem',
+        category: 'TestCat',
+        type: 'product',
+        description: 'TestDescr',
+        cost: '1.00',
+        price: '1.00',
+        stock: '5'
+      })
       .end(function (err, res) {
         expect(res.status).to.equal(200);
         done();
       });
   });
 
-  lastInvItem = '';
+  var lastInvItem = '';
   it('/inventory - Get last Inventory Entry', function (done) {
     var path = '/inventory';
     this.timeout(0);
     page_
-      .get('/inventory')
+      .get(path)
       .end(function (err, res) {
         var matchAllItems = /(?:form method="GET" action="\/inventory\/edit\/)(\d+)"/g;
-        matchedItems = res.text.match(matchAllItems);
-        lastInvItem = matchedItems[matchedItems.length-1].match(/\d+/g)[0];
+        var matchedItems = res.text.match(matchAllItems);
+        lastInvItem = matchedItems[matchedItems.length - 1].match(/\d+/g)[0];
         expect(res.status).to.equal(200);
         done();
       });
@@ -90,7 +93,7 @@ describe('inventory-tests', () => {
   it('/inventory - Get item by parameter id', function (done) {
     this.timeout(0);
     page_
-      .get('/inventory/edit/'+lastInvItem)
+      .get('/inventory/edit/' + lastInvItem)
       .end(function (err, res) {
         expect(res.status).to.equal(200);
         expect(res.text.match(/TestItem/g).length > 0).to.equal(true);
@@ -102,16 +105,18 @@ describe('inventory-tests', () => {
     var path = '/inventory/edit/';
     this.timeout(0);
     page_
-    .post(path)
+      .post(path)
       .set('content-type', 'application/x-www-form-urlencoded')
-      .send({ id: lastInvItem,
-              item_name: 'TestItemEdited',
-              category: 'TestCat',
-              type: 'product',
-              description: 'TestDescr',
-              cost: '1.00',
-              price: '1.00',  
-              stock: '5'})
+      .send({
+        id: lastInvItem,
+        item_name: 'TestItemEdited',
+        category: 'TestCat',
+        type: 'product',
+        description: 'TestDescr',
+        cost: '1.00',
+        price: '1.00',
+        stock: '5'
+      })
       .end(function (err, res) {
         expect(res.status).to.equal(200);
         expect(res.text.match(/TestItemEdited/g).length > 0).to.equal(true);
@@ -120,12 +125,12 @@ describe('inventory-tests', () => {
   });
 
   it('/inventory - Remove Inventory Entry', function (done) {
-    var path = '/inventory/delete/'+lastInvItem;
+    var path = '/inventory/delete/' + lastInvItem;
     this.timeout(0);
     page_
-    .post(path)
+      .post(path)
       .set('content-type', 'application/x-www-form-urlencoded')
-      .send({ id: lastInvItem})
+      .send({ id: lastInvItem })
       .end(function (err, res) {
         expect(res.status).to.equal(200);
         expect(res.text.match(/TestItemEdited/g)).to.equal(null);
