@@ -5,7 +5,7 @@ html
     link(rel='stylesheet', href='/css/style.css')
     script(type='text/javascript' src="/jquery/jquery.min.js")
   body
-    .container
+    .container-fluid
       nav.navbar.navbar-expand-lg.navbar-light.bg-light
         a.navbar-brand(href='/users/portal') CORPSE
         button.navbar-toggler(type='button' data-toggle='collapse' data-target='#headnav' aria-controls='#headnav' aria-expanded='false' aria-label='Toggle Navigation')
@@ -25,13 +25,13 @@ html
           else
               a.nav-item.nav-link(href='/users/login') Login
               a.nav-item.nav-link(href='/users/register') Register
-    .container(style='padding: 15px;')
+    .container-fluid(style="padding: 0 25px 0 25px;")
       != messages('message', locals)
       if errors
         each error, i in errors
           div(class='alert alert-danger') #{error.msg}
       block content
-    #footer.container
+    #footer.container-fluid
       br
       hr
       footer
