@@ -97,7 +97,7 @@ async function create_session() {
 
 exports.checkout = (req, res) => {
   create_session().then(session => {
-    console.log(session);
+
     res.render('payment', {
       session: session
     });
