@@ -74,10 +74,6 @@ async function create_session() {
 
 exports.checkout = (req, res) => {
   create_session().then(session => {
-<<<<<<< Updated upstream
-
-=======
->>>>>>> Stashed changes
     res.render('payment', {
       session: session
     });
