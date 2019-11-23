@@ -10,30 +10,6 @@ exports.checkout_get = (req, res) => {
   res.render('checkout');
 };
 
-exports.checkout_post = (req, res) => {
-  let amount = 500;
-  stripe.customers.create({
-    email: req.body.email,
-    card: req.body.id
-  })
-    .then(customer =>
-      stripe.charges.create({
-        amount: amount,
-        description: 'Sample Charge',
-        currency: 'usd',
-        customer: customer.id,
-        receipt_email: 'corpsedev@gmail.com'
-      }))
-
-    .then(charge => {
-      logger.debug(charge);
-      res.redirect('/');
-    })
-    .catch(err => {
-      logger.error(err);
-      res.status(500).send({ error: 'Purchase Failed' });
-    });
-};
 exports.payment_get = (req, res) => {
   models.Payment.findAll({
 
@@ -43,6 +19,7 @@ exports.payment_get = (req, res) => {
     .catch(err => logger.error(err));
   return res;
 };
+
 exports.payment_create = (req, res) => {
   let bodyvars = undefined;
 
@@ -97,7 +74,6 @@ async function create_session() {
 
 exports.checkout = (req, res) => {
   create_session().then(session => {
-    console.log(session);
     res.render('payment', {
       session: session
     });
