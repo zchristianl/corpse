@@ -48,7 +48,7 @@ router.get('/reset/:token', userController.new_password);
 router.post('/reset/:token', userController.validate('reset'), userController.reset_confirm);
 
 // Contact
-router.get('/contact', global.ensureAuthenticated, userController.contact_seller);
+router.get('/contact', global.ensureAuthenticated, global.ensureClient, userController.contact_seller);
 
 // Process contact
 router.post('/send', userController.send_post);
