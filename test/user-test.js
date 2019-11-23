@@ -68,7 +68,7 @@ describe('user tests', () => {
         done();
       });
   });
-  
+
   it('/path POST test: login Invalid password', function (done) {
     var path = '/users/login';
     chai
@@ -142,7 +142,7 @@ describe('user tests', () => {
       .request(app)
       .post(path)
       .set('content-type', 'application/x-www-form-urlencoded')
-      .send({ email: 'invalid_email@test.com', user: 'invalid'})
+      .send({ email: 'invalid_email@test.com', user: 'invalid' })
       .end(function (err, response) {
         expect(response.status).to.equal(200);
         //expect(response.text).to.have.string('No account with that email address exists');
@@ -156,7 +156,7 @@ describe('user tests', () => {
       .request(app)
       .post(path)
       .set('content-type', 'application/x-www-form-urlencoded')
-      .send({ email: 'opflpocx@sharklasers.com'})
+      .send({ email: 'opflpocx@sharklasers.com' })
       .end(function (err, response) {
         expect(response.status).to.equal(200);
         //expect(response.text).to.have.string('An e-mail has been sent to');
@@ -188,7 +188,7 @@ describe('user tests', () => {
         done();
       });
   });
-  
+
   it('/path POST test: register page connection', function (done) {
     var path = '/users/register';
     chai
@@ -223,6 +223,53 @@ describe('user tests', () => {
         expect(response.serverError).to.be.equal(false);
         expect(response.clientError).to.be.equal(false);
         expect(response.error).to.be.equal(false);
+        done();
+      });
+
+  });
+
+  var page_client = chai.request.agent(app);
+  it('/path POST test: login page data validation', function (done) {
+    var path = '/users/login';
+    page_client
+      .post(path)
+      .set('content-type', 'application/x-www-form-urlencoded')
+      .send({ email: 'duf2@duf.com', password: 'duf' })
+      .end(function (err, response) {
+        expect(response.accepted).to.be.equal(false);
+        expect(response.serverError).to.be.equal(false);
+        expect(response.clientError).to.be.equal(false);
+        expect(response.error).to.be.equal(false);
+        done();
+      });
+
+  });
+
+  it('/user/contact Get Page', function (done) {
+    this.timeout(0);
+    page_client
+      .get('/users/contact')
+      .end(function (err, res) {
+        expect(res.text).to.have.string('Message');
+        done();
+      });
+  });
+
+  it('/user/contact Send message Page', function (done) {
+    var path = '/users/send';
+    page_client
+      .post(path)
+      .set('content-type', 'application/x-www-form-urlencoded')
+      .send({
+        name: 'Name',
+        email: 'duf@duf.com',
+        subject: 'Test',
+        message: 'Test Message',
+        researchArea: 'Cancer'
+      })
+      .end(function (err, response) {
+        expect(response.status).to.equal(200);
+        expect(response.text).to.have.string('Your message has been sent!');
         done();
       });
 
