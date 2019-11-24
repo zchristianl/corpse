@@ -196,7 +196,7 @@ exports.validate = (method) => {
   case 'forgot': {
     return check('email', 'Email is required').not().isEmpty();
   }
-  case 'reset': {
+  case 'changePassword': {
     return [
       check('password', 'Password is required').not().isEmpty(),
       check('password2', 'Confirm Password is required').not().isEmpty(),
@@ -335,7 +335,6 @@ exports.reset_confirm = (req, res) => {
                   resetPasswordExpires: undefined
                 })
                   .then(user => {
-                    console.log(user.email);
                     done(null, user);
                   })
                   .catch(err => {
@@ -524,4 +523,37 @@ exports.account_get = (req, res) => {
       user: user
     });
   }).catch(err => logger.error(err));
+};
+
+exports.edit_account_password = (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.render('edit-account', {
+      errors: errors.array(),
+      client: req.user
+    });
+  } else {
+    models.User.findOne({ 
+      id: req.user.id
+    })
+      .then(user => {
+        bcrypt.genSalt(10, (err, salt) => {
+          bcrypt.hash(req.body.password, salt, (err, hash) => {
+            if (err) {
+              logger.error(err);
+            }
+            user.update({
+              password: hash,
+            })
+              .then(() => {
+                req.flash('success', 'You password has been changed!');
+                res.render('account',{
+                  user: user
+                });
+              })
+              .catch(err => { logger.error(err); });
+          });
+        });
+      });
+  }
 };

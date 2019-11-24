@@ -38,6 +38,7 @@ router.post('/delete/:id', global.ensureAuthenticated, userController.client_del
 // Client - Edit Profile
 router.get('/edit_account', global.ensureClient, userController.edit_account_get);
 router.post('/edit_account', global.ensureClient, userController.edit_account_post);
+router.post('/edit_account_password', global.ensureClient, userController.validate('changePassword'), userController.edit_account_password);
 
 router.get('/account', global.ensureAuthenticated, userController.account_get);
 
@@ -51,7 +52,7 @@ router.post('/forgot', userController.validate('forgot'), userController.forgot_
 router.get('/reset/:token', userController.new_password);
 
 // Confirm new password
-router.post('/reset/:token', userController.validate('reset'), userController.reset_confirm);
+router.post('/reset/:token', userController.validate('changePassword'), userController.reset_confirm);
 
 // Contact
 router.get('/contact', global.ensureAuthenticated, global.ensureClient, userController.contact_seller);

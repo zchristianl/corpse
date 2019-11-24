@@ -7,16 +7,16 @@ block content
     form.needs-validation(method='POST' action=('/users/edit_account_password') id="form_edit_account_password" novalidate)
       .row
         .col
-          label Password:
+          label New Password:
           input.form-control(name='password' id='password' type='password')
           div.invalid-feedback The password does not match.
       .row
         .col
-          label Confirm Password:
+          label Confirm New Password:
           input.form-control(name='password2' id="password2" type='password')
-      span(style="float: right; padding: 10px 0px 10px 0px;")
-        input(type='hidden' name='id' value=(client.id))
+      span(style="float: right; padding: 10px 0px 0px 0px;")
         input.btn.btn-primary(type='submit' value=('Update'))    
+  br
   br
   form.needs-validation(method='POST' action=('/users/edit_account') id="form_edit_account" novalidate)
     .row
