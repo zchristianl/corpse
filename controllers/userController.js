@@ -471,3 +471,19 @@ exports.send_post = (req, res) => {
   
   mailer.sendContact(message, req, res);
 };
+
+exports.edit_profile_get = (req, res) => {
+  models.User.findOne({
+    where: {
+      id: req.user.id
+    }
+  }).then((client) => {
+    res.render('edit-profile', {
+      client: client
+    });
+  }).catch(err => logger.error(err));
+};
+
+exports.edit_profile_post =  (req, res) => {
+  
+};
