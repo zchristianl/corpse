@@ -1,58 +1,111 @@
-var nodemailer = require('nodemailer');
-var smtpTransport = require('nodemailer-smtp-transport');
+const SGmail = require('@sendgrid/mail');
+const logger = require('../utils/logger');
 require('dotenv').config();
 
-var transporter = exports.transporter = nodemailer.createTransport(smtpTransport({
-  service: 'gmail',
-  host: process.env.SMTP_HOST, //mail.example.com (your server smtp)
-  port: process.env.SMTP_PORT, // (specific port)
-  secureConnection: process.env.SMTP_SECURE, //true or false
-  auth: {
-    user: process.env.AUTH_USER, //user@mydomain.com
-    pass: process.env.AUTH_PASS //password from specific user mail
-  }
-}));
+SGmail.setApiKey(process.env.SENDGRIND_API_KEY);
 
-exports.send = async function(email, subject, htmlcontent, callback) {
-  var mailOptions = {
-    from: process.env.AUTH_USER,
+exports.sendContact = function(message, req, res) {
+  SGmail.send(message).then(sent => {
+    if(sent) {
+      req.flash('success', 'Your message has been sent!');
+      res.render('portal', {user: req.user});
+    } else {
+      req.flash('danger', 'There was an error. Please try again.');
+      res.render('contact');
+    }
+  }).catch(err => { logger.error(err); });
+};
+
+exports.sendOrderConfrim = function(email, order, itemVars) {
+  const html = `
+  <h1>Thank you for your order!</h1>
+  <h3>Order Details</h3>
+  <ul>
+    <li>Order Number: ${itemVars.orderId}</li>
+    <li>Date: ${order.createdAt}</li>
+  </ul>
+  <h3>Message</h3>
+  <p>We will get back to you very soon, feel free to contact us at 1‑608-886-6718 if you have any questions.</p>
+  `;
+
+  const message = {
     to: email,
-    subject: subject,
-    html: htmlcontent
+    from: 'orders@ProteinCT.com',
+    subject: '[ ProteinCT Order Confirmation ]',
+    html: html
   };
 
-  transporter.sendMail(mailOptions, function(err, info){
-    transporter.close();
-    if(err) {
-      callback(err, info);
-    }
-    else {
-      callback(null, info);
-    }
+  SGmail.send(message).then(() => {
+    return null;
+  }).catch(err => { 
+    logger.error(err); 
+    return err;
   });
 };
 
-exports.sendInvoice = async function(invoice, filename, order, callback) {
-  var mailOptions = {
-    from: 'orders@ProteinCT.com',
+exports.sendInvoice = async function(pdf, filename, order, req, res) {
+  var base64File = new Buffer(pdf).toString('base64');
+  const message = {
     to: order.clientEmail,
+    from: 'billing@ProteinCT.com',
     subject: '[ Invoice From ProteinCT ]',
     text: 'Attached is an invoice for your order #' + order.id,
     attachments: [
       {
         filename: filename,
-        content: invoice
-      }
-    ]
+        content: base64File,
+        type: 'application/pdf',
+        disposition: 'attachment',
+        contentId: 'invoice'
+      },
+    ],
   };
 
-  transporter.sendMail(mailOptions, function(err, info){
-    transporter.close();
-    if(err) {
-      callback(err, info);
+  SGmail.send(message).then(sent => {
+    if(sent){
+      req.flash('success', 'An invoice has been sent to ' + order.clientEmail);
+      res.render('portal', {user: req.user});
+    } else {
+      req.flash('danger', 'There was an error. Please try again.');
+      res.redirect('/');
     }
-    else {
-      callback(null, info);
-    }
+  }).catch(err => { 
+    logger.error(err);
+  });
+};
+
+exports.sendForgotPassword = function(req, user, token) {
+  var message = {
+    to: user.email,
+    from: 'account@proteinct.com',
+    subject: 'Reset Your ProteinCT Password',
+    text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+    'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+    'http://' + req.headers.host + '/users/reset/' + token + '\n\n' +
+    'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+  };
+
+  SGmail.send(message).then(() => { 
+    return null;
+  }).catch(err => {
+    logger.error(err);
+    return err;
+  });
+};
+
+exports.sendResetConfirm = function(user) {
+  var message = {
+    to: user.email,
+    from: 'account@proteinct.com',
+    subject: 'Your ProteinCT password has been changed',
+    text: 'Hello,\n\n' +
+    'This is a confirmation that the password for your ProteinCT account ' + user.email + ' has just been changed.\n'
+  };
+
+  SGmail.send(message).then(() => { 
+    return null;
+  }).catch(err => {
+    logger.error(err); 
+    return err;
   });
 };

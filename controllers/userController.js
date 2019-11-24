@@ -269,7 +269,6 @@ exports.forgot_post = (req, res, next) => {
       });
     },
     function (token, done) {
-      console.log(req.body.email);
       models.User.findOne({
         where: {
           email: req.body.email
@@ -288,19 +287,9 @@ exports.forgot_post = (req, res, next) => {
       });
     },
     function (token, user, done) {
-      var mailOptions = {
-        to: user.email,
-        from: 'account@proteinct.com',
-        subject: 'Reset Your ProteinCT Password',
-        text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
-          'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
-          'http://' + req.headers.host + '/users/reset/' + token + '\n\n' +
-          'If you did not request this, please ignore this email and your password will remain unchanged.\n'
-      };
-      mailer.transporter.sendMail(mailOptions, function (err) {
-        req.flash('info', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
-        done(err, 'done');
-      });
+      var err = mailer.sendForgotPassword(req, user, token); 
+      req.flash('info', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
+      done(err, 'done');
     }
   ], function (err) {
     if (err) return next(err);
@@ -345,6 +334,7 @@ exports.reset_confirm = (req, res) => {
                   resetPasswordExpires: undefined
                 })
                   .then(user => {
+                    console.log(user.email);
                     done(null, user);
                   })
                   .catch(err => {
@@ -357,17 +347,9 @@ exports.reset_confirm = (req, res) => {
           });
       },
       function (user, done) {
-        var mailOptions = {
-          to: user.email,
-          from: 'account@proteinct.com',
-          subject: 'Your ProteinCT password has been changed',
-          text: 'Hello,\n\n' +
-          'This is a confirmation that the password for your ProteinCT account ' + user.email + ' has just been changed.\n'
-        };
-        mailer.transporter.sendMail(mailOptions, function (err) {
-          req.flash('success', 'Success! Your password has been changed.');
-          done(err);
-        });
+        var err = mailer.sendResetConfirm(user);
+        req.flash('success', 'Success! Your password has been changed.');
+        done(err);
       }
     ], function (err) {
       logger.error(err);
@@ -459,4 +441,33 @@ exports.client_delete_post = (req, res) => {
   })
     .then(() => res.send(JSON.stringify({ redirect: '/users/view', status: 200 })))
     .catch(err => logger.error(err));
+};
+
+exports.contact_seller = (req, res) => {
+  res.render('contact');
+};
+
+// Send email to seller
+exports.send_post = (req, res) => {
+  const output = `
+      <p>You have a message from a client</p>
+      <h3>Contact Details</h3>
+      <ul>
+        <li>Name: ${req.body.name}</li>
+        <li>Email: ${req.body.email}</li>
+        <li>Research Area: ${req.body.researchArea}</li>
+        <li>Subject: ${req.body.subject}</li>
+      </ul>
+      <h3>Message</h3>
+      <p>${req.body.message}</p>
+    `;
+
+  var message = {
+    to: req.body.email,
+    from: 'contact@proteinct.com',
+    subject: req.body.subject,
+    html: output
+  };
+  
+  mailer.sendContact(message, req, res);
 };
