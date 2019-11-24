@@ -5,7 +5,7 @@ module.exports = (sequelize, type) => sequelize.define('order', {
     autoIncrement: true
   },
   amount: {
-    type: type.DECIMAL,
+    type: type.DECIMAL(10, 2),
     defaultValue: 0
   },
   state: type.ENUM('new', 'estimate', 'in-progress', 'payment', 'complete'),

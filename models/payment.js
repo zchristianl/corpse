@@ -8,5 +8,5 @@ module.exports = (sequelize, type) => sequelize.define('payment', {
     type: type.STRING,
   },
   method: type.INTEGER, //check,stripe,PO
-  amount: type.DECIMAL
+  amount: type.DECIMAL(10, 2)
 });
