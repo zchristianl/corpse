@@ -64,7 +64,7 @@ exports.inventory_create = (req, res) => {
     res.render('inventory-cu');
     return;
   }
-  
+
   let bodyvars = undefined;
 
   //AUTHORIZE ACTION
@@ -88,6 +88,18 @@ exports.inventory_remove = (req, res) => {
       id: req.params.id
     }
   })
-    .then(() => res.send(JSON.stringify({redirect: '/inventory', status: 200})))
+    .then(() => res.send(JSON.stringify({ redirect: '/inventory', status: 200 })))
     .catch(err => logger.error(err));
+};
+
+exports.inventory_get_sellable_items = (req, res) => {
+  models.Inventory.findAll(
+    {
+      where: {
+        price: {
+          $gte: 16
+        }
+      }
+    }
+  ).then((inventory) => res.status(200).send(inventory));
 };
