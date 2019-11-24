@@ -2,6 +2,21 @@ extends layout
 
 block content
   h1 Edit Profile
+    br
+    h2 Change password
+    form.needs-validation(method='POST' action=('/users/edit_account_password') id="form_edit_account_password" novalidate)
+      .row
+        .col
+          label Password:
+          input.form-control(name='password' id='password' type='password')
+          div.invalid-feedback The password does not match.
+      .row
+        .col
+          label Confirm Password:
+          input.form-control(name='password2' id="password2" type='password')
+      span(style="float: right; padding: 10px 0px 10px 0px;")
+        input(type='hidden' name='id' value=(client.id))
+        input.btn.btn-primary(type='submit' value=('Update'))    
   br
   form.needs-validation(method='POST' action=('/users/edit_account') id="form_edit_account" novalidate)
     .row
@@ -15,15 +30,6 @@ block content
       .col
         label Email:
         input.form-control(name='email' type='email', value=(client.email) required maxlength='50')
-    .row
-      .col
-        label Password:
-        input.form-control(name='password' id='password' type='password')
-        div.invalid-feedback The password does not match.
-    .row
-      .col
-        label Confirm Password:
-        input.form-control(name='password2' id="password2" type='password')    
     br
     h2 Business Info
     .row

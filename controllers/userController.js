@@ -479,7 +479,6 @@ exports.edit_account_get = (req, res) => {
       id: req.user.id
     }
   }).then((client) => {
-    
     res.render('edit-account', {
       client: client
     });
