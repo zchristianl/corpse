@@ -1,3 +1,4 @@
+/** Event Listeners */
 document.getElementById('edit_button').addEventListener('click', () => {
   makeEditable();
 });
@@ -6,12 +7,18 @@ document.getElementById('add_payment').addEventListener('click', () => {
   addPayment();
 });
 
-Array.from(document.getElementsByName('delete')).forEach(function (element) {
+Array.from(document.getElementsByName('delete-confirm')).forEach(function (element) {
+  console.log('i was also clicked');
   element.addEventListener('click', function () {
-    deleteItem(element);
+    deleteConfirm(element);
   });
 });
+/** End Event Listeners */
 
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip();
+});
+ 
 function stdName(val) {
   switch (val) {
   case 'new':
@@ -58,9 +65,6 @@ function stdName(val) {
 function makeEditable() {
   document.getElementById('edit_button').disabled = true;
   var orderState = ['new', 'estimate', 'in-progress', 'payment', 'complete'];
-  /* var inquiryType = ['estimate', 'quote', 'grant'];
-  var time_estimate = ['immediately', '1-3', '3-6', '6_or_more'];
-  var intended_use = ['research_only', 'clinical_applications']; */
 
   /* Order State */
   var state = document.getElementById('order_state');
@@ -81,63 +85,6 @@ function makeEditable() {
 
   state.innerHTML = '';
   state.appendChild(selectState);
-
-  /*   // Nature of Inquiry
-  var reason = document.getElementById('reason');
-  var currReason = reason.innerText;
-  var selectInquriy = document.createElement('select');
-  selectInquriy.id = 'inquiry';
-
-  inquiryType.forEach(element => {
-    var option = document.createElement('option');
-    option.value = element;
-    option.innerText = stdName(element);
-    if (stdName(element) === currReason) {
-      option.selected = 'selected';
-    }
-    selectInquriy.appendChild(option);
-  });
-
-  reason.innerHTML = '';
-  reason.appendChild(selectInquriy);
-
-  // Time Estimate
-  var timeEstimate = document.getElementById('time_estimate');
-  currReason = timeEstimate.innerText;
-  var selectTimeEstimate = document.createElement('select');
-  selectTimeEstimate.id = 'time_estimate_updated';
-
-  time_estimate.forEach(element => {
-    var option = document.createElement('option');
-    option.value = element;
-    option.innerText = stdName(element);
-    if (stdName(element) === currReason) {
-      option.selected = 'selected';
-    }
-    selectTimeEstimate.appendChild(option);
-  });
-
-  timeEstimate.innerHTML = '';
-  timeEstimate.appendChild(selectTimeEstimate);
-
-  // Intended Use
-  var intendedUse = document.getElementById('intended_use');
-  currReason = intendedUse.innerText;
-  var selectIntendedUse = document.createElement('select');
-  selectIntendedUse.id = 'intended_use_new';
-
-  intended_use.forEach(element => {
-    var option = document.createElement('option');
-    option.value = element;
-    option.innerText = stdName(element);
-    if (stdName(element) === currReason) {
-      option.selected = 'selected';
-    }
-    selectIntendedUse.appendChild(option);
-  });
-
-  intendedUse.innerHTML = '';
-  intendedUse.appendChild(selectIntendedUse); */
 
   // Now the thing 
   var itemOps = document.getElementsByName('item_ops');
@@ -160,6 +107,17 @@ function deleteItem(item) {
       var row = 'row_' + item.value;
       document.getElementById(row).remove();
     }
+  });
+}
+
+function deleteConfirm(element) {
+  $('.tooltip').tooltip('hide');
+  element.innerText = 'Confirm?';
+  element.setAttribute('name', 'delete');
+  Array.from(document.getElementsByName('delete')).forEach(function (element) {
+    element.addEventListener('click', function () {
+      deleteItem(element);
+    });
   });
 }
 
@@ -195,6 +153,21 @@ $('#order_state').change( () => {
     success: () => {
       document.getElementById('order_state').innerText = stdName(newState);
       location.reload();
+    }
+  });
+});
+
+$('#edit_button').click( () => {
+  $.post({
+    url: '/inventory/getsell',
+    success: (res) => {
+      console.log('We got some data back!');
+      console.log(res);
+      res.forEach(item => {
+        var option = document.createElement('option');
+        //option.text = item.
+      });
+      //$("services")
     }
   });
 });
