@@ -54,7 +54,7 @@ let models = {
 
 relations.run(models);
 
-db.options.logging = false;
+db.options.logging = true;
 
 db.sync().then(function() {
   logger.info('Database table sync successful. Rock on, son!');
