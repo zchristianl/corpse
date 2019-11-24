@@ -54,8 +54,10 @@ exports.order_get = (req, res) => {
 exports.order_inquire_get = (req, res) => {
   models.Inventory.findAll(
     {
-      price: {
-        $gt:0
+      where: {
+        price: {
+          $gt:0
+        }
       }
     }
   ).then((inventory) => res.render('inquire', {
