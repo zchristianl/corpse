@@ -36,8 +36,10 @@ router.post('/create/', global.ensureAuthenticated, userController.validate('cli
 router.post('/delete/:id', global.ensureAuthenticated, userController.client_delete_post);
 
 // Client - Edit Profile
-router.get('/edit_profile', global.ensureClient, userController.edit_profile_get);
-router.post('/edit_profile', global.ensureClient, userController.edit_profile_post);
+router.get('/edit_account', global.ensureClient, userController.edit_account_get);
+router.post('/edit_account', global.ensureClient, userController.edit_account_post);
+
+router.get('/account', global.ensureAuthenticated, userController.account_get);
 
 // Forgot form
 router.get('/forgot', userController.forgot_get);

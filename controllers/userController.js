@@ -472,18 +472,54 @@ exports.send_post = (req, res) => {
   mailer.sendContact(message, req, res);
 };
 
-exports.edit_profile_get = (req, res) => {
+exports.edit_account_get = (req, res) => {
   models.User.findOne({
     where: {
       id: req.user.id
     }
   }).then((client) => {
-    res.render('edit-profile', {
+    res.render('edit-account', {
       client: client
     });
   }).catch(err => logger.error(err));
 };
 
-exports.edit_profile_post =  (req, res) => {
-  
+exports.edit_account_post =  (req, res) => {
+  models.User.findOne({
+    where: {
+      id: req.user.id
+    }
+  }).then((entry) => {
+    entry.update({
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
+      email: req.body.email,
+      organization: req.body.organization,
+      reserach_area: req.body.research_area,
+      address: req.body.address,
+      city: req.body.city,
+      state: req.body.state,
+      zip: req.body.zip,
+      phone: req.body.phone,
+      payment: req.body.payment,
+      po_num: req.body.po_num
+    }).then(() => { 
+      req.flash('success', 'Your account has been successfully updated!');
+      res.render('account'); 
+    })
+      .catch(err => logger.error(err));
+  })
+    .catch(err => logger.error(err));
+};
+
+exports.account_get = (req, res) => {
+  models.User.findOne({
+    where: {
+      id: req.user.id
+    }
+  }).then((user) => {
+    res.render('account', {
+      user: user
+    });
+  }).catch(err => logger.error(err));
 };
