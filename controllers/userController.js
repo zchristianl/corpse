@@ -212,6 +212,7 @@ exports.logout_post = (req, res) => {
   res.redirect('/users/login');
 };
 
+// Do not neeed LOCATION, LAB, DEPARTMENT, BUILDING
 const makeAssociations = (user, regInfo) => {
   models.Lab.create({
     userId: user.get('id'),
@@ -478,6 +479,7 @@ exports.edit_account_get = (req, res) => {
       id: req.user.id
     }
   }).then((client) => {
+    
     res.render('edit-account', {
       client: client
     });
@@ -495,6 +497,7 @@ exports.edit_account_post =  (req, res) => {
       last_name: req.body.last_name,
       email: req.body.email,
       organization: req.body.organization,
+      department: req.body.department,
       reserach_area: req.body.research_area,
       address: req.body.address,
       city: req.body.city,

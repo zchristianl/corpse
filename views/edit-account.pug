@@ -14,7 +14,16 @@ block content
     .row
       .col
         label Email:
-        input.form-control(name='email' type='email', value=(client.email) required maxlength='50') 
+        input.form-control(name='email' type='email', value=(client.email) required maxlength='50')
+    .row
+      .col
+        label Password:
+        input.form-control(name='password' id='password' type='password')
+        div.invalid-feedback The password does not match.
+    .row
+      .col
+        label Confirm Password:
+        input.form-control(name='password2' id="password2" type='password')    
     br
     h2 Business Info
     .row
