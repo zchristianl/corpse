@@ -1,3 +1,4 @@
+
 const { check, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
@@ -359,15 +360,50 @@ exports.reset_confirm = (req, res) => {
 };
 
 exports.client_view_get = (req, res) => {
+  if(Object.keys(req.query).length === 0) {
+    req.search = undefined;
+  } else {
+    req.search= req.query;
+  }
+  client_view_get_internal(req,res);
+};
+
+function client_view_get_internal(req, res)  {
+  let search = req.search;
   models.User.findAll({
     where: {
-      account_type: 'client'
+      account_type: 'client',
+      [models.Op.or]: [{
+        first_name: {
+          [models.Op.like]: search && search.name ? '%'+search.name +'%': '%%'
+        }
+      },
+      {
+        last_name: {
+          [models.Op.like]: search && search.name ? '%'+search.name+'%' : '%%'
+        }
+      }],
+      email: {
+        [models.Op.like]: search && search.email ? '%'+search.email+'%' : '%%'
+      },
+      organization: {
+        [models.Op.like]:  search && search.organization ? '%'+search.organization+'%' : '%%'
+      },
+      research_area: {
+        [models.Op.like]: search && search.research_area ? '%'+search.research_area+'%' : '%%'
+      },
+      address: {
+        [models.Op.like]: search && search.address ? '%'+search.address+'%' : '%%'
+      },
+      zip:
+        search && search.zip ? search.zip : {[models.Op.like]: '%%'}
+      ,
     }
   }
   ).then(users => res.render('client', {
     users: users
   }));
-};
+}
 
 exports.client_read_get = (req, res) => {
   models.User.findOne({
