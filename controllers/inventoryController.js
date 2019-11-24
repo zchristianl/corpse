@@ -97,7 +97,7 @@ exports.inventory_get_sellable_items = (req, res) => {
     {
       where: {
         price: {
-          $gte: 16
+          [models.Op.gte]: 0
         }
       }
     }

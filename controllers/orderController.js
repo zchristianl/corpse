@@ -56,7 +56,7 @@ exports.order_inquire_get = (req, res) => {
     {
       where: {
         price: {
-          $gt:0
+          [models.Op.gte]: 0
         }
       }
     }
