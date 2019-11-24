@@ -530,7 +530,8 @@ exports.edit_account_password = (req, res) => {
   if (!errors.isEmpty()) {
     res.render('edit-account', {
       errors: errors.array(),
-      client: req.user
+      client: req.user,
+      user: req.user
     });
   } else {
     models.User.findOne({ 
