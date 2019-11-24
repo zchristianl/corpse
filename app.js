@@ -25,6 +25,15 @@ global.ensureSeller = (req, res, next) => {
   }
 };
 
+global.ensureClient = (req, res, next) => {
+  if(req.isAuthenticated() && req.user.account_type === 'client'){
+    return next ? next() : true;
+  } else {
+    req.flash('danger', 'You do not have permission to access that URL.');
+    res.redirect('back');
+  }
+};
+
 // redirect bootstrap JS
 app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
 // redirect JS jQuery
@@ -33,6 +42,11 @@ app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist'));
 app.use('/css', express.static(__dirname + '/node_modules/bootstrap/dist/css'));
 // redirect Popper for Bootstrap
 app.use('/popper', express.static(__dirname + '/node_modules/popper.js/dist/umd'));
+
+// Set public folders
+app.use(express.static(path.join(__dirname, 'public')));
+app.use('/js', express.static(__dirname + '/js'));
+
 // Load View Engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
@@ -52,10 +66,6 @@ models.db
 app.use(bodyParser.urlencoded({ extended: false }));
 // parse application/json
 app.use(bodyParser.json());
-
-// Set public folders
-app.use(express.static(path.join(__dirname, 'public')));
-app.use('/js', express.static(__dirname + '/js'));
 
 // Express session middleware
 app.use(session({
