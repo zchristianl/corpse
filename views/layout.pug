@@ -2,7 +2,8 @@ html
   head
     title ProteinCT
     link(rel='stylesheet' href='/css/bootstrap.min.css')
-    link(rel='stylesheet', href='/css/style.css')
+    link(rel='stylesheet' href='/css/style.css')
+    script(src="https://kit.fontawesome.com/7b14ff4587.js" crossorigin="anonymous")
     script(type='text/javascript' src="/jquery/jquery.min.js")
     script(src='https://js.stripe.com/v3/')
   body
@@ -24,9 +25,10 @@ html
               a.nav-item.nav-link(href='/payment/checkout') Checkout
               a.nav-item.nav-link(href='/users/logout') Logout
           else
-              a.nav-item.nav-link(href='/users/login') Login
-              a.nav-item.nav-link(href='/users/register') Register
-    .container-fluid(style="padding: 0 25px 0 25px;")
+            a.nav-item.nav-link.my-2.my-sm-0(href='/users/login') Login
+            a.nav-item.nav-link.my-2.my-sm(href='/users/register') Register
+            
+    .container-fluid(style="padding: 5px 25px 0 25px;")
       != messages('message', locals)
       if errors
         each error, i in errors
