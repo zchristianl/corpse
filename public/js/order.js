@@ -18,7 +18,7 @@ Array.from(document.getElementsByName('delete-confirm')).forEach(function (eleme
 $(function () {
   $('[data-toggle="tooltip"]').tooltip();
 });
- 
+
 function stdName(val) {
   switch (val) {
   case 'new':
@@ -92,6 +92,7 @@ function makeEditable() {
     element.removeAttribute('hidden');
   });
   document.getElementById('item_ops_head').hidden = false;
+  document.getElementById('new_item_row').hidden = false;
 }
 
 function deleteItem(item) {
@@ -142,8 +143,9 @@ $('#submit_payment').submit(function (event) {
   });
 });
 
-$('#order_state').change( () => {
-  var newState = document.getElementById('state_new').value;
+$('#order_state').change(() => {
+  $('#state_new').attr('disabled', true);
+  var newState = $('#state_new').val();
   $.post({
     url: '/order/modify',
     data: {
@@ -157,17 +159,37 @@ $('#order_state').change( () => {
   });
 });
 
-$('#edit_button').click( () => {
+$('#edit_button').click(() => {
   $.post({
     url: '/inventory/getsell',
     success: (res) => {
-      console.log('We got some data back!');
-      console.log(res);
+      $('#services').prop('disabled', false);
+      $('#loading-service').remove();
       res.forEach(item => {
         var option = document.createElement('option');
-        //option.text = item.
+        option.text = `${item.name} (${item.category})`;
+        option.value = item.id;
+        option.setAttribute('price', item.price);
+        $('#services').append(option);
       });
-      //$("services")
+      $('#item_amount').val($('#services option:selected').attr('price'));
+    }
+  });
+});
+
+$('#services').change(() => {
+  $('#item_amount').val($('#services option:selected').attr('price'));
+});
+
+$('#new_item').submit(function (event) {
+  event.preventDefault();
+  $('#submit_item_button').attr('disabled', true);
+  var data = $(this).serialize();
+  $.post({
+    url: '/item/create',
+    data: data,
+    success: () => {
+      location.reload();
     }
   });
 });

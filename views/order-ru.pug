@@ -60,10 +60,10 @@ block content
         table.table.table-striped
             thead
                 tr(id="table_head")
-                    th(scope="col") Category 
+                    th(scope="col" style="width: 15%;") Category 
                     th(scope="col") Item Name
-                    th(scope="col") Price
-                    th(scope="col-sm" id="item_ops_head" hidden)
+                    th(scope="col" style="width: 20%;") Price
+                    th(scope="col" style="width: 10%;" id="item_ops_head" hidden)
             tbody(id="table_body")
                 each item in order.items
                     tr(id="row_"+item.id)
@@ -71,22 +71,20 @@ block content
                         td=(item.inventory == null || item.inventory.name == null) ? "" : item.inventory.name
                         td="$"+item.inventory.price
                         td(name="item_ops" hidden)
-                            button.btn.btn-success(name="edit" style="margin-right: 5px;" value=item.id data-toggle="tooltip" data-placement="top" title="Edit")
+                            button.btn.btn-success(name="edit" style="margin: 5px 5px 0 0;" value=item.id data-toggle="tooltip" data-placement="top" title="Edit" disabled)
                                 span.far.fa-edit.fa-lg
-                            button.btn.btn-danger(name="delete-confirm" value=item.id data-toggle="tooltip" data-placement="top" title="Delete")
+                            button.btn.btn-danger(name="delete-confirm" style="margin: 5px 0 0 0;" value=item.id data-toggle="tooltip" data-placement="top" title="Delete")
                                 span.fas.fa-trash-alt.fa-lg
-                tr(id="new_item_row")
+                tr(id="new_item_row" hidden)
                     form.needs-validation(id="new_item" novalidate)
                         input(type="hidden" name="order_id" value=order.id)
-                        td
-                            input.form-control(name='category' id="category" type='text' maxlength='50')
-                        td
+                        td(colspan=2)
                             select.custom-select(name="services" id="services" required disabled)
-                                option(id="loading" selected) Loading...
+                                option(id="loading-service" selected) Loading...
                         td
-                            input.form-control(name='item_amount' id="item_amount" type='number' value='' step=".01" min="0.01" maxlength='25' required)
+                            input.form-control(id="item_amount" type='number' value='' step=".01" min="0.01" maxlength='25' required disabled)
                         td
-                            input.btn.btn-success(type="submit_item" id="submit_item" style="float: right;")
+                            input.btn.btn-success(type="submit" id="submit_item_button" style="float: left;")
     else
         p There are no items.
     br
