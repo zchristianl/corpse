@@ -4,25 +4,26 @@ block content
   h1 Orders
   //a.btn.btn-success(href="" style="float:right; margin-bottom: 5px;") New Order
   //Not ready yet
-  table.table.table-striped
-    thead
-      tr
-        th(scope="col") Date Updated
-        th(scope="col") Name/Org
-        th(scope="col") Total
-        th(scope="col") Status
-        th(scope="col")
-    tbody
-      each order in orders
+  .table-responsive
+    table.table.table-striped
+      thead
         tr
-          -var date = (new Date(order.updatedAt)).toLocaleString('en-US', { month: 'long', day: '2-digit', year: 'numeric' });
-          td=date
-          td
-            b=order.user.first_name + " " + order.user.last_name
-            |#[br]
-            =order.user.organization
-          td="$"+order.amount
-          td=order.state
-          td
-            form(method="GET" action="/order/view/"+order.id style="margin-right: 5px; float:left;")
-              button.btn.btn-primary(type="submit") View
+          th(scope="col" style="width: 10%;") Updated
+          th(scope="col" style="width: 50%;") Name/Org
+          th(scope="col" style="width: 10%;") Total
+          th(scope="col" style="width: 10%;") Status
+          th(scope="col" style="width: 20%;")
+      tbody
+        each order in orders
+          tr(scope="row")
+            -var date = (new Date(order.updatedAt)).toLocaleString('en-US', { month: 'long', day: '2-digit', year: 'numeric' });
+            td=date
+            td
+              b=order.user.first_name + " " + order.user.last_name
+              |#[br]
+              =order.user.organization
+            td="$"+order.amount
+            td=order.state
+            td
+              form(method="GET" action="/order/view/"+order.id style="margin-right: 5px; float:left;")
+                button.btn.btn-primary(type="submit") View
