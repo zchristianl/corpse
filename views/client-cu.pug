@@ -42,14 +42,14 @@ block content
         label Address:
         textarea.form-control(rows="5" name="address" required) #{(client) ? client.address : ""}
     .form-row
-      .col-md
+      .col
         label City:
         input.form-control(name='city' type='text' value=(client ? client.city : '') maxlength='25' required)
         div.invalid-feedback We need to know where you live!
-      .col-sm-90
+      .col-2
         label State:
         input.form-control(name='state' type='text' value=value=(client ? client.state : '') maxlength='2' required)
-      .col-sm-90
+      .col-4
         label ZIP:
         input.form-control(name='zip' type='text' value=(client ? client.zip : '') pattern='[0-9]*' maxlength="5" required)
     .row 
