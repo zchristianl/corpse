@@ -1,0 +1,78 @@
+extends layout
+
+block content
+  h1 Edit Profile
+    br
+    h2 Change password
+    form.needs-validation(method='POST' action=('/users/edit_account_password') id="form_edit_account_password" novalidate)
+      .row
+        .col
+          label New Password:
+          input.form-control(name='password' id='password' type='password')
+          div.invalid-feedback The password does not match.
+      .row
+        .col
+          label Confirm New Password:
+          input.form-control(name='password2' id="password2" type='password')
+      span(style="float: right; padding: 10px 0px 0px 0px;")
+        input.btn.btn-primary(type='submit' value=('Update'))    
+  br
+  br
+  form.needs-validation(method='POST' action=('/users/edit_account') id="form_edit_account" novalidate)
+    .row
+      .col
+        label First Name:
+        input.form-control(name='first_name' type='text' value=(client.first_name) required maxlength='25')
+      .col
+        label Last Name:
+        input.form-control(name='last_name' type='text' value=(client.last_name) required maxlength='25')
+    .row
+      .col
+        label Email:
+        input.form-control(name='email' type='email', value=(client.email) required maxlength='50')
+    br
+    h2 Business Info
+    .row
+      .col 
+        label Organization:
+        input.form-control(name='organization' type='text' value=(client.organization) required maxlength='25')
+      .col 
+        label Department:
+        input.form-control(name='department' type='text' value=(client.department) maxlength='25')
+      .col 
+        label Research Area:
+        select.custom-select(name='research_area' id='research_area')
+          option(value='' selected=(entry == null))
+          option(value='cancer' selected=(client != null && client.research_area === 'cancer')) Cancer
+          option(value='neuroscience' selected=(client != null && client.research_area === 'neuroscience')) Neuroscience
+          option(value='stem_cell' selected=(client != null && client.research_area === 'stem_cell')) Stem Cell
+          option(value='virology' selected=(client != null && client.research_area === 'virology')) Virology
+          option(value='epigenetics' selected=(client != null && client.research_area === 'epigenetics')) Epigenetics
+          option(value='cardiovascular_disease' selected=(client != null && client.research_area === 'cardiovascular_disease')) Cardiovascular Disease
+    .row
+      .col 
+        label Address:
+        textarea.form-control(rows="5" name="address" required) #{client.address}
+    .form-row
+      .col-md
+        label City:
+        input.form-control(name='city' type='text' value=(client.city) maxlength='25' required)
+        div.invalid-feedback We need to know where you live!
+      .col-sm-90
+        label State:
+        input.form-control(name='state' type='text' value=value=(client.state) maxlength='2' required)
+      .col-sm-90
+        label ZIP:
+        input.form-control(name='zip' type='text' value=(client.zip) pattern='[0-9]*' maxlength="5" required)
+    .row 
+      .col
+        label Phone:
+        input.form-control(name='phone' type='text' value=(client.phone) pattern="^[1-9]{1}\\d{5}\\d{4}$" required='true')
+        div.invalid-feedback Please enter a 10-digit phone number without any dashes or parentheses.
+    .row 
+      .col(id='po_num_col')
+        label PO #:
+        input.form-control(name='po_num' type='text' value=(client.po_num))  
+    span(style="float: right; padding: 10px 0px 10px 0px;")
+      input(type='hidden' name='id' value=(client.id))
+      input.btn.btn-primary(type='submit' value=('Update'))
