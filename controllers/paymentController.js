@@ -2,9 +2,7 @@ const models = require('../config/database');
 const logger = require('../utils/logger');
 require('dotenv').config();
 
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-
-const stripe = require('stripe')(stripeSecretKey);
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 exports.checkout_get = (req, res) => {
   res.render('checkout');
@@ -78,4 +76,31 @@ exports.checkout = (req, res) => {
       session: session
     });
   });
+};
+
+const endpointSecret = 'whsec_lbXafEi0NDelOinNP1XnaaXSFkmu0Hze';
+
+exports.stripe_webhook = (req, res) => {
+  const sig = req.headers['stripe-signature'];
+
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+  } catch (err) {
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  // Handle the checkout.session.completed event
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object;
+
+    console.log(session);
+
+    // Fulfill the purchase...
+    //handleCheckoutSession(session);
+  }
+
+  // Return a response to acknowledge receipt of the event
+  res.json({received: true});
 };
