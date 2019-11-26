@@ -196,7 +196,7 @@ exports.validate = (method) => {
   case 'forgot': {
     return check('email', 'Email is required').not().isEmpty();
   }
-  case 'reset': {
+  case 'changePassword': {
     return [
       check('password', 'Password is required').not().isEmpty(),
       check('password2', 'Confirm Password is required').not().isEmpty(),
@@ -212,6 +212,7 @@ exports.logout_post = (req, res) => {
   res.redirect('/users/login');
 };
 
+// Do not neeed LOCATION, LAB, DEPARTMENT, BUILDING
 const makeAssociations = (user, regInfo) => {
   models.Lab.create({
     userId: user.get('id'),
@@ -334,7 +335,6 @@ exports.reset_confirm = (req, res) => {
                   resetPasswordExpires: undefined
                 })
                   .then(user => {
-                    console.log(user.email);
                     done(null, user);
                   })
                   .catch(err => {
@@ -470,4 +470,91 @@ exports.send_post = (req, res) => {
   };
   
   mailer.sendContact(message, req, res);
+};
+
+exports.edit_account_get = (req, res) => {
+  models.User.findOne({
+    where: {
+      id: req.user.id
+    }
+  }).then((client) => {
+    res.render('edit-account', {
+      client: client
+    });
+  }).catch(err => logger.error(err));
+};
+
+exports.edit_account_post =  (req, res) => {
+  models.User.findOne({
+    where: {
+      id: req.user.id
+    }
+  }).then((entry) => {
+    entry.update({
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
+      email: req.body.email,
+      organization: req.body.organization,
+      department: req.body.department,
+      reserach_area: req.body.research_area,
+      address: req.body.address,
+      city: req.body.city,
+      state: req.body.state,
+      zip: req.body.zip,
+      phone: req.body.phone,
+      payment: req.body.payment,
+      po_num: req.body.po_num
+    }).then(() => { 
+      req.flash('success', 'Your account has been successfully updated!');
+      res.render('account'); 
+    })
+      .catch(err => logger.error(err));
+  })
+    .catch(err => logger.error(err));
+};
+
+exports.account_get = (req, res) => {
+  models.User.findOne({
+    where: {
+      id: req.user.id
+    }
+  }).then((user) => {
+    res.render('account', {
+      user: user
+    });
+  }).catch(err => logger.error(err));
+};
+
+exports.edit_account_password = (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    res.render('edit-account', {
+      errors: errors.array(),
+      client: req.user,
+      user: req.user
+    });
+  } else {
+    models.User.findOne({ 
+      id: req.user.id
+    })
+      .then(user => {
+        bcrypt.genSalt(10, (err, salt) => {
+          bcrypt.hash(req.body.password, salt, (err, hash) => {
+            if (err) {
+              logger.error(err);
+            }
+            user.update({
+              password: hash,
+            })
+              .then(() => {
+                req.flash('success', 'You password has been changed!');
+                res.render('account',{
+                  user: user
+                });
+              })
+              .catch(err => { logger.error(err); });
+          });
+        });
+      });
+  }
 };

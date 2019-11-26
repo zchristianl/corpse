@@ -1,24 +1,29 @@
 extends layout
 
 block content
-  h1 
-    form(method='POST', action='/users/send')
-      #form-group
-        label Name:
-        input.form-control(name='name', type='text')
-      #form-group
-        label Email:
-        input.form-control(name='email', type='email')
-      #form-group
-        label Subject:
-        input.form-control(name='subject', type='text')  
-      #form-group
-        label Research Area
-        select#available.form-control(name='researchArea')
-          option Cancer
-          option Stem Cell
-      #form-group
-        label Message:
-        textarea.form-control(name='message')
-      br
-      input.btn.btn-primary(type='submit', value='Submit')
+  h1 Contact Us
+  form(method='POST', action='/users/send')
+    #form-group
+      label Name:
+      input.form-control(name='name', type='text')
+    #form-group
+      label Email:
+      input.form-control(name='email', type='email')
+    #form-group
+      label Subject:
+      input.form-control(name='subject', type='text')  
+    #form-group
+      label Research Area
+      select.custom-select(name='research_area' id='research_area')
+        option(value='' selected)
+        option(value='cancer') Cancer
+        option(value='neuroscience') Neuroscience
+        option(value='stem_cell') Stem Cell
+        option(value='virology') Virology
+        option(value='epigenetics') Epigenetics
+        option(value='cardiovascular_disease') Cardiovascular Disease
+    #form-group
+      label Message:
+      textarea.form-control(name='message')
+    br
+    input.btn.btn-primary(type='submit', value='Submit')
