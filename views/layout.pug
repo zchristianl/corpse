@@ -19,7 +19,6 @@ html(lang="en")
               a.nav-item.nav-link(href='/users/view') Clients
               a.nav-item.nav-link(href='/order') Orders
               a.nav-item.nav-link(href='/inventory') Inventory
-              a.nav-item.nav-link(href='/users/logout') Logout
             else
               a.nav-item.nav-link(href='/order/inquire') New Order
               a.nav-item.nav-link(href='/payment/checkout') Checkout
@@ -28,12 +27,12 @@ html(lang="en")
                 |  Contact Us
                 span.sr-only (current)
             nav-item.dropdown
-            a#navbarDropdownMenuLink-4.nav-link.dropdown-toggle.waves-effect.waves-light(data-toggle='dropdown' aria-haspopup='true' aria-expanded='false')
-              i.fas.fa-user
-              |  Profile
-            .dropdown-menu.dropdown-menu-right.dropdown-default(aria-labelledby='navbarDropdownMenuLink-333')
-              a.dropdown-item(href='/users/account') My Account
-              a.dropdown-item(href='/users/logout') Logout
+              a#navbarDropdownMenuLink-4.nav-link.dropdown-toggle.waves-effect.waves-light(data-toggle='dropdown' aria-haspopup='true' aria-expanded='true')
+                i.fas.fa-user
+                |  Profile
+              .dropdown-menu.dropdown-menu-right.dropdown-default(aria-labelledby='navbarDropdownMenuLink-333')
+                a.dropdown-item(href='/users/account') My Account
+                a.dropdown-item(href='/users/logout') Logout
           else
             a.d-lg-none.nav-item.nav-link(href='/users/login') Login
             a.d-lg-none.nav-item.nav-link(href='/users/register') Register
