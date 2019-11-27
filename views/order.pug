@@ -9,10 +9,11 @@ block content
       thead
         tr
           th(scope="col" style="width: 10%;") Updated
-          th(scope="col" style="width: 50%;") Name/Org
+          th(scope="col" style="width: 15%;") Name/Org
+          th(scope="col" style="width: 45%;") Comments
           th(scope="col" style="width: 10%;") Total
           th(scope="col" style="width: 10%;") Status
-          th(scope="col" style="width: 20%;")
+          th(scope="col" style="width: 10%;")
       tbody
         each order in orders
           tr(scope="row")
@@ -22,6 +23,7 @@ block content
               b=order.user.first_name + " " + order.user.last_name
               |#[br]
               =order.user.organization
+            td=order.comments
             td="$"+order.amount
             td=order.state
             td
