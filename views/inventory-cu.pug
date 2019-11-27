@@ -36,7 +36,7 @@ block content
         label Description:
         - var description = (entry ? entry.description : "");
         textarea.form-control(rows="5" name="description") #{description}
-    span(style="float: right; padding: 10px 0px 10px 0px;")
+    span(style="float: right; padding: 10px 0px 0px 0px;")
       input(type='hidden' name='id' value=(entry ? entry.id : ''))
       input.btn.btn-primary(type='submit' value='Submit')
   script(src='/js/formval.js')
