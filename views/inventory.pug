@@ -3,7 +3,7 @@ extends layout
 block content
   h1 Inventory
   a.btn.btn-success(href="/inventory/create" style="float:right; margin-bottom: 5px;") Create
-  table.table.table-striped
+  table.table.table-striped.table-responsive
     thead
       tr
         th(scope="col") Name
@@ -23,7 +23,7 @@ block content
             b="$"+item.price
           td
             form(method="GET" action="/inventory/edit/"+item.id style="margin-right: 5px; float:left;")
-              button.btn.btn-warning(type="submit") Edit
+              button.btn.btn-primary(type="submit") Edit
             button.btn.btn-danger.deleteButton(type="submit" name="id" value=item.id data-toggle='modal' data-target='#DeleteModal') Delete
   .container
     #DeleteModal.modal.fade(tabindex="-1" role="dialog" aria-labelledby="DeleteModal" aria-hidden="true")

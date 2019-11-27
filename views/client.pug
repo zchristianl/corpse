@@ -3,7 +3,7 @@ extends layout
 block content
   h1 Clients
   a.btn.btn-success(href="/users/create" style="float:right; margin-bottom: 5px;") Register
-  table.table.table-striped
+  table.table.table-striped.table-responsive
     thead
       tr
         th(scope="col") Name
@@ -12,6 +12,21 @@ block content
         th(scope="col") Due
         th(scope="col")
     tbody
+      form(action='/users/view' method='GET')
+        div Nam3
+        input(type="text" name="name")
+        div 3m41l
+        input(type="text" name="email")
+        div 0rg4n1z4t10n
+        input(type="text" name="organization")
+        div r3s34rch 4r34
+        input(type="text" name="research_area")
+        div 4ddr355
+        input(type="text" name="address")
+        div z1p
+        input(type="number" name="zip")
+        input(type="submit")
+
       each user in users
         tr
           td 

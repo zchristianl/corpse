@@ -14,16 +14,13 @@ exports.item_get = (req, res) => {
   return res;
 };
 exports.item_create = (req, res) => {
-  let bodyvars = undefined;
-
-  //AUTHORIZE ACTION
-  bodyvars = {
-    inventoryid: req.inventoryid,
-    orderid: req.orderid
-  };
-
-  models.Item.create(bodyvars);
-  return res;
+  models.Item.create(
+    {
+      inventoryId: req.body.services,
+      orderId: req.body.order_id,
+    }
+  );
+  return res.sendStatus(200).end();
 };
 
 exports.item_modify = (req, res) => {
