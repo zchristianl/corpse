@@ -92,7 +92,10 @@ describe('user tests', () => {
       .send({ email: 'test@test.com', password: 'test' })
       .end(function (err, response) {
         expect(response.status).to.equal(200);
+<<<<<<< HEAD
         // expect(response.redirects.some(x => x.includes('/users/dashboard'))).to.be.true;
+=======
+>>>>>>> 569d9f0ae3af5606a688c0664118e6f721ea4f7f
         done();
       });
   });
