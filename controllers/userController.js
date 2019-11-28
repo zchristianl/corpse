@@ -14,11 +14,10 @@ exports.register_get = (req, res) => {
 };
 
 exports.portal_get = (req, res) => {
-  console.log(req.user.account_type);
   if(req.user.account_type == 'seller') {
     res.render('seller-dashboard');
   } else {
-    res.render('client-dashbard');
+    res.render('client-dashboard');
   }
 };
 
