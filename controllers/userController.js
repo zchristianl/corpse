@@ -360,48 +360,55 @@ exports.reset_confirm = (req, res) => {
 };
 
 exports.client_view_get = (req, res) => {
+  console.log(req.query);
   if(Object.keys(req.query).length === 0) {
-    req.search = undefined;
+    req.term = undefined;
   } else {
-    req.search= req.query;
+    req.term= req.query;
   }
   client_view_get_internal(req,res);
 };
 
-function client_view_get_internal(req, res)  {
-  let search = req.search;
-  console.log(search);
+function client_view_get_internal(req, res) {
+  let search  = req.query;
+  console.log('search: ' + search.term);
+  //term = term.toLowerCase();
   models.User.findAll({
     where: {
       account_type: 'client',
-      [models.Op.or]: [{
-        first_name: {
-          [models.Op.like]: search && search.name ? '%'+search.name +'%': '%%'
-        }
-      },
-      {
-        last_name: {
-          [models.Op.like]: search && search.name ? '%'+search.name+'%' : '%%'
-        }
-      }],
-      email: {
-        [models.Op.like]: search && search.email ? '%'+search.email+'%' : '%%'
-      },
-      organization: {
-        [models.Op.like]:  search && search.organization ? '%'+search.organization+'%' : '%%'
-      },
-      research_area: {
-        [models.Op.like]: search && search.research_area ? '%'+search.research_area+'%' : '%%'
-      },
-      address: {
-        [models.Op.like]: search && search.address ? '%'+search.address+'%' : '%%'
-      },
-      zip:
-        search && search.zip ? search.zip : {[models.Op.like]: '%%'}
-      ,
+      [models.Op.or]: [
+        {
+          first_name: {
+            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+          }
+        },
+        {
+          last_name: {
+            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+          }
+        },
+        {
+          email: {
+            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+          }
+        },
+        {
+          organization: {
+            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+          }
+        },
+        {
+          research_area: {
+            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+          }
+        },
+        {
+          address: {
+            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+          },
+        }]
     }
-  }
-  ).then(users => res.render('client', {
+  }).then(users => res.render('client', {
     users: users
   }));
 }
