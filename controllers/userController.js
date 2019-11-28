@@ -360,7 +360,6 @@ exports.reset_confirm = (req, res) => {
 };
 
 exports.client_view_get = (req, res) => {
-  console.log(req.query);
   if(Object.keys(req.query).length === 0) {
     req.term = undefined;
   } else {
@@ -371,8 +370,6 @@ exports.client_view_get = (req, res) => {
 
 function client_view_get_internal(req, res) {
   let search  = req.query;
-  console.log('search: ' + search.term);
-  //term = term.toLowerCase();
   models.User.findAll({
     where: {
       account_type: 'client',
@@ -406,7 +403,12 @@ function client_view_get_internal(req, res) {
           address: {
             [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
           },
-        }]
+        },{
+          zip: {
+            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+          }
+        }
+      ]
     }
   }).then(users => res.render('client', {
     users: users
