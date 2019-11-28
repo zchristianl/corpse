@@ -370,6 +370,7 @@ exports.client_view_get = (req, res) => {
 
 function client_view_get_internal(req, res)  {
   let search = req.search;
+  console.log(search);
   models.User.findAll({
     where: {
       account_type: 'client',
