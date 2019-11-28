@@ -14,7 +14,12 @@ exports.register_get = (req, res) => {
 };
 
 exports.portal_get = (req, res) => {
-  res.render('portal');
+  console.log(req.user.account_type);
+  if(req.user.account_type == 'seller') {
+    res.render('seller-dashboard');
+  } else {
+    res.render('client-dashbard');
+  }
 };
 
 exports.register_post = (req, res) => {
