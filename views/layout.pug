@@ -28,10 +28,11 @@ html(lang="en")
                 li.nav-item
                   a.nav-link(href='/payment/checkout') Checkout  
             ul.navbar-nav.ml-auto
-              li.nav-item
-                a.nav-link(href='/users/contact')
-                    span.fas.fa-envelope
-                    |  Contact
+              if user.account_type === "client"
+                li.nav-item
+                  a.nav-link(href='/users/contact')
+                      span.fas.fa-envelope
+                      |  Contact
               li.nav-item.dropdown
                 a#dropdown.nav-link.droptown-toggle(href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false")
                   span.fas.fa-user
