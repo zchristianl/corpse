@@ -1,4 +1,3 @@
-
 const { check, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
@@ -13,8 +12,12 @@ exports.register_get = (req, res) => {
   res.render('register');
 };
 
-exports.portal_get = (req, res) => {
-  res.render('portal');
+exports.dashboard_get = (req, res) => {
+  if(req.user.account_type == 'seller') {
+    res.render('seller-dashboard');
+  } else {
+    res.render('client-dashboard');
+  }
 };
 
 exports.register_post = (req, res) => {
@@ -161,7 +164,7 @@ exports.login_get = (req, res) => {
 
 exports.login_post = (req, res, next) => {
   passport.authenticate('local', {
-    successRedirect: '/users/portal',
+    successRedirect: '/users/dashboard',
     failureRedirect: '/users/login',
     failureFlash: true
   })(req, res, next);
@@ -361,46 +364,56 @@ exports.reset_confirm = (req, res) => {
 
 exports.client_view_get = (req, res) => {
   if(Object.keys(req.query).length === 0) {
-    req.search = undefined;
+    req.term = undefined;
   } else {
-    req.search= req.query;
+    req.term= req.query;
   }
   client_view_get_internal(req,res);
 };
 
-function client_view_get_internal(req, res)  {
-  let search = req.search;
+function client_view_get_internal(req, res) {
+  let search  = req.query;
   models.User.findAll({
     where: {
       account_type: 'client',
-      [models.Op.or]: [{
-        first_name: {
-          [models.Op.like]: search && search.name ? '%'+search.name +'%': '%%'
+      [models.Op.or]: [
+        {
+          first_name: {
+            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+          }
+        },
+        {
+          last_name: {
+            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+          }
+        },
+        {
+          email: {
+            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+          }
+        },
+        {
+          organization: {
+            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+          }
+        },
+        {
+          research_area: {
+            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+          }
+        },
+        {
+          address: {
+            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+          },
+        },{
+          zip: {
+            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+          }
         }
-      },
-      {
-        last_name: {
-          [models.Op.like]: search && search.name ? '%'+search.name+'%' : '%%'
-        }
-      }],
-      email: {
-        [models.Op.like]: search && search.email ? '%'+search.email+'%' : '%%'
-      },
-      organization: {
-        [models.Op.like]:  search && search.organization ? '%'+search.organization+'%' : '%%'
-      },
-      research_area: {
-        [models.Op.like]: search && search.research_area ? '%'+search.research_area+'%' : '%%'
-      },
-      address: {
-        [models.Op.like]: search && search.address ? '%'+search.address+'%' : '%%'
-      },
-      zip:
-        search && search.zip ? search.zip : {[models.Op.like]: '%%'}
-      ,
+      ]
     }
-  }
-  ).then(users => res.render('client', {
+  }).then(users => res.render('client', {
     users: users
   }));
 }

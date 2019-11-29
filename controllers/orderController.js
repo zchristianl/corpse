@@ -229,7 +229,7 @@ const order_confirmation = (req, res, order, itemVars) => {
         res.redirect('back');
       } else {
         req.flash('success', 'Thank you for you order. An order confirmation has been sent to ' + user.email);
-        res.redirect('/users/portal');
+        res.redirect('/users/dashboard');
       }
     });
   }).catch(err => logger.error(err));
