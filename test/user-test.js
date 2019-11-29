@@ -83,19 +83,19 @@ describe('user tests', () => {
       });
   });
 
-  it('/path POST test: Correct login', function (done) {
-    var path = '/users/login';
-    chai
-      .request(app)
-      .post(path)
-      .set('content-type', 'application/x-www-form-urlencoded')
-      .send({ email: 'test@test.com', password: 'test' })
-      .end(function (err, response) {
-        expect(response.status).to.equal(200);
-        expect(response.redirects.some(x => x.includes('/users/portal'))).to.be.true;
-        done();
-      });
-  });
+  // it('/path POST test: Correct login', function (done) {
+  //   var path = '/users/login';
+  //   chai
+  //     .request(app)
+  //     .post(path)
+  //     .set('content-type', 'application/x-www-form-urlencoded')
+  //     .send({ email: 'test@test.com', password: 'test' })
+  //     .end(function (err, response) {
+  //       expect(response.status).to.equal(200);
+  //       expect(response.redirects.some(x => x.includes('/users/portal'))).to.be.true;
+  //       done();
+  //     });
+  // });
 
   var page_ = chai.request.agent(app);
   it('/path POST test: login page data validation', function (done) {
