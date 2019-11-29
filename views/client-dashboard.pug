@@ -2,4 +2,34 @@ extends layout
 
 block content
   h1 Client Dashboard
-  p Welcome valued customer! Please select from the option above.
+  //a.btn.btn-success(href="" style="float:right; margin-bottom: 5px;") New Order
+  //Not ready yet
+  .table-responsive
+    table.table.table-striped
+      thead
+        tr
+          th(scope="col" style="width: 8%;") Order #
+          th(scope="col" style="width: 15%;") Updated
+          th(scope="col" style="width: 40%;") Comments
+          th(scope="col" style="width: 10%;") Total
+          th(scope="col" style="width: 8%;") Status
+          th(scope="col" style="width: 10%;") 
+          th(scope="col" style="width: 10%;") 
+      tbody
+        each order in orders
+          tr(scope="row")
+            -var date = (new Date(order.updatedAt)).toLocaleString('en-US', { month: 'long', day: '2-digit', year: 'numeric' });
+            td=order.id
+            td=date
+            td=order.comments
+            td="$"+order.amount
+            td=order.state
+            if order.state == 'payment' && order.payment == 'cc'
+              td  
+                form(method="GET" action="/payment/checkout/"+order.id)
+                  button.btn.btn-warning(type="submit") Pay Now
+            else
+              td
+            td
+              form(method="GET" action="/order/view/"+order.id style="margin-right: 5px; float:left;")
+                button.btn.btn-primary(type="submit") View

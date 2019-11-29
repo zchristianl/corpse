@@ -2,12 +2,11 @@ const models = require('../config/database');
 const logger = require('../utils/logger');
 require('dotenv').config();
 
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
-
-const stripe = require('stripe')(stripeSecretKey);
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
 exports.checkout_get = (req, res) => {
-  res.render('checkout');
+  console.log(req.params.id);
+  // create_session(req, res);
 };
 
 exports.payment_get = (req, res) => {
@@ -48,28 +47,45 @@ exports.payment_remove = (req, res) => {
 // Set your secret key: remember to change this to your live secret key in production
 // See your keys here: https://dashboard.stripe.com/account/apikeys
 
-async function create_session() {
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ['card'],
-    line_items: [{
-      name: 'DNA Synthesis',
-      description: 'test',
-      amount: 500,
-      currency: 'usd',
-      quantity: 1,
-    },
-    {
-      name: 'PCR Cloning Kit',
-      description: 'test',
-      amount: 5000,
-      currency: 'usd',
-      quantity: 1,
+async function create_session(req, res) {
+  console.log(req.params.id);
+  let checkout_items = [];
+  // Build an item list of all items in an order
+  models.Item.findOne({
+    where: {
+      orderId: req.params.id
     }
-    ],
-    success_url: 'https://example.com/success?session_id={CHECKOUT_SESSION_ID}',
-    cancel_url: 'https://example.com/cancel',
+  }).then(items => {
+    for(const item in items) {
+      models.Inventory.findOne({
+        where: {
+          id: item.inventoryId
+        }
+      }).then(inventory_item => {
+        let checkout_item = {
+          name: inventory_item.name,
+          description: inventory_item.description,
+          amount: inventory_item.price * 100,
+          currency: 'usd',
+          quantity: 1,
+        };
+        checkout_items.push(checkout_item);
+      });
+    }
+    console.log(checkout_items);
+    // Create session with list
+    const session = stripe.checkout.sessions.create({
+      payment_method_types: ['card'],
+      line_items: checkout_items,
+      success_url: 'https://example.com/success?session_id={CHECKOUT_SESSION_ID}',
+      cancel_url: 'https://example.com/cancel',
+    });
+    return session;  
+  }).catch(err => {
+    logger.error(err);
+    req.flash('danger', 'Error when try to pay!');
+    res.redirect('client-dashboard');
   });
-  return session;
 }
 
 exports.checkout = (req, res) => {
