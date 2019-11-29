@@ -1,4 +1,3 @@
-
 const { check, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
@@ -13,8 +12,12 @@ exports.register_get = (req, res) => {
   res.render('register');
 };
 
-exports.portal_get = (req, res) => {
-  res.render('portal');
+exports.dashboard_get = (req, res) => {
+  if(req.user.account_type == 'seller') {
+    res.render('seller-dashboard');
+  } else {
+    res.render('client-dashboard');
+  }
 };
 
 exports.register_post = (req, res) => {
@@ -161,7 +164,7 @@ exports.login_get = (req, res) => {
 
 exports.login_post = (req, res, next) => {
   passport.authenticate('local', {
-    successRedirect: '/users/portal',
+    successRedirect: '/users/dashboard',
     failureRedirect: '/users/login',
     failureFlash: true
   })(req, res, next);

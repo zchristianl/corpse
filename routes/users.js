@@ -18,7 +18,7 @@ router.post('/login', userController.login_post);
 router.get('/logout', userController.logout_post);
 
 // Portal
-router.get('/portal', global.ensureAuthenticated, userController.portal_get);
+router.get('/dashboard', global.ensureAuthenticated, userController.dashboard_get);
 
 // Seller - View Clients
 router.get('/view', global.ensureAuthenticated, userController.client_view_get);
