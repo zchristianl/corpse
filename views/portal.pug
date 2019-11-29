@@ -1,9 +1,0 @@
-extends layout
-
-block content
-  h1 Dashboard
-  if user.account_type == "client"
-    p Welcome valued customer! Please select from the options above.
-  else
-    form(method='POST', action='/order/create_invoice')
-      input.btn.btn-primary(type='submit', value='Create Invoice Download and Email')
