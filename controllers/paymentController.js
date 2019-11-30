@@ -45,13 +45,11 @@ exports.payment_remove = (req, res) => {
 function create_session(req, res) {
   // array of items for stripe checkout
   let checkout_items = new Array();
-  // Find all items with this orderId
   models.Item.findOne({
     where: {
       orderId: req.params.id
     }
   }).then(item => {
-    // look through each item and get info from inventory
     models.Inventory.findOne({
       where: {
         id: item.inventoryId
@@ -65,7 +63,6 @@ function create_session(req, res) {
         currency: 'usd',
         quantity: 1,
       };
-      // add object to array for checkout
       checkout_items.push(checkout_item);
       return checkout_items;
     }).then(checkout_items => {
@@ -76,23 +73,18 @@ function create_session(req, res) {
         success_url: 'https://example.com/success?session_id={CHECKOUT_SESSION_ID}',
         cancel_url: 'https://example.com/cancel',
       }).then(session => {
-        return session;
+        res.render('payment', {
+          session: session
+        });
       });
     }).catch(err => {
       logger.error(err);
+      req.flash('danger', 'There seems to be a problem. Please try again later.');
+      res.redirect('client-dashboard');
     });
   });
 }
 
 exports.checkout = (req, res) => {
-  const session = create_session(req, res);
-  if(session) {
-    res.render('payment', {
-      session: session
-    });
-  }
-  else {
-    req.flash('danger', 'Error when trying to pay!');
-    res.redirect('client-dashboard');
-  }
+  create_session(req, res);
 };
