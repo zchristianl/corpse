@@ -12,8 +12,20 @@ exports.register_get = (req, res) => {
   res.render('register');
 };
 
-exports.portal_get = (req, res) => {
-  res.render('portal');
+exports.dashboard_get = (req, res) => {
+  if(req.user.account_type == 'seller') {
+    res.render('seller-dashboard');
+  } else {
+    models.Order.findAll({
+      where: {
+        userId: req.user.id
+      }
+    }).then(orders => {
+      res.render('client-dashboard', {
+        orders: orders
+      });
+    });
+  }
 };
 
 exports.register_post = (req, res) => {
@@ -160,7 +172,7 @@ exports.login_get = (req, res) => {
 
 exports.login_post = (req, res, next) => {
   passport.authenticate('local', {
-    successRedirect: '/users/portal',
+    successRedirect: '/users/dashboard',
     failureRedirect: '/users/login',
     failureFlash: true
   })(req, res, next);
@@ -359,15 +371,60 @@ exports.reset_confirm = (req, res) => {
 };
 
 exports.client_view_get = (req, res) => {
+  if(Object.keys(req.query).length === 0) {
+    req.term = undefined;
+  } else {
+    req.term= req.query;
+  }
+  client_view_get_internal(req,res);
+};
+
+function client_view_get_internal(req, res) {
+  let search  = req.query;
   models.User.findAll({
     where: {
-      account_type: 'client'
+      account_type: 'client',
+      [models.Op.or]: [
+        {
+          first_name: {
+            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+          }
+        },
+        {
+          last_name: {
+            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+          }
+        },
+        {
+          email: {
+            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+          }
+        },
+        {
+          organization: {
+            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+          }
+        },
+        {
+          research_area: {
+            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+          }
+        },
+        {
+          address: {
+            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+          },
+        },{
+          zip: {
+            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+          }
+        }
+      ]
     }
-  }
-  ).then(users => res.render('client', {
+  }).then(users => res.render('client', {
     users: users
   }));
-};
+}
 
 exports.client_read_get = (req, res) => {
   models.User.findOne({

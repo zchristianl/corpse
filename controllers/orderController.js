@@ -54,8 +54,10 @@ exports.order_get = (req, res) => {
 exports.order_inquire_get = (req, res) => {
   models.Inventory.findAll(
     {
-      price: {
-        $gt:0
+      where: {
+        price: {
+          [models.Op.gte]: 0
+        }
       }
     }
   ).then((inventory) => res.render('inquire', {
@@ -227,7 +229,7 @@ const order_confirmation = (req, res, order, itemVars) => {
         res.redirect('back');
       } else {
         req.flash('success', 'Thank you for you order. An order confirmation has been sent to ' + user.email);
-        res.redirect('/users/portal');
+        res.redirect('/users/dashboard');
       }
     });
   }).catch(err => logger.error(err));

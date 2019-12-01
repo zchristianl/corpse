@@ -35,7 +35,7 @@ global.ensureClient = (req, res, next) => {
 };
 
 // redirect bootstrap JS
-app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
+app.use('/bjs', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
 // redirect JS jQuery
 app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist'));
 // redirect Bootstrap CSS
