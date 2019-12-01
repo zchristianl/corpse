@@ -13,8 +13,7 @@ block content
           th(scope="col" style="width: 40%;") Comments
           th(scope="col" style="width: 10%;") Total
           th(scope="col" style="width: 8%;") Status
-          th(scope="col" style="width: 10%;") 
-          th(scope="col" style="width: 10%;") 
+          th(scope="col" style="width: 20%;") 
       tbody
         each order in orders
           tr(scope="row")
@@ -25,11 +24,9 @@ block content
             td="$"+order.amount
             td=order.state
             if order.state == 'payment' && order.payment == 'cc'
-              td  
+              td(align="center")
                 form(method="GET" action="/payment/checkout/"+order.id)
                   button.btn.btn-warning(type="submit") Pay Now
             else
               td
-            td
-              form(method="GET" action="/order/view/"+order.id style="margin-right: 5px; float:left;")
-                button.btn.btn-primary(type="submit") View
+
