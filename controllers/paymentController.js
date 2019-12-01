@@ -66,7 +66,7 @@ function create_session(req, res) {
       checkout_items.push(checkout_item);
       return checkout_items;
     }).then(checkout_items => {
-      console.log(checkout_items);
+      // Need to add urls
       stripe.checkout.sessions.create({
         payment_method_types: ['card'],
         line_items: checkout_items,
