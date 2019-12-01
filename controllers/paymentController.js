@@ -39,10 +39,11 @@ exports.payment_remove = (req, res) => {
   return res;
 };
 
-// Set your secret key: remember to change this to your live secret key in production
-// See your keys here: https://dashboard.stripe.com/account/apikeys
-
-function create_session(req, res) {
+/* 
+  Create a stripe checkout session with items from an orderId
+  Return a session the the payment view to redirect to stripe checkout
+*/
+exports.create_session = (req, res) => {
   // array of items for stripe checkout
   let checkout_items = new Array();
   models.Item.findOne({
@@ -83,8 +84,35 @@ function create_session(req, res) {
       res.redirect('client-dashboard');
     });
   });
-}
+};
 
-exports.checkout = (req, res) => {
-  create_session(req, res);
+/* 
+  Stripe Webhook for payment 
+*/
+exports.stripe_webhook = (req, res) => {
+  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  const sig = req.headers['stripe-signature'];
+
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+  } catch (err) {
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  // Handle the checkout.session.completed event
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object;
+
+    console.log(session);
+
+    // Fulfill the purchase...
+    // On successful payment add payment info to order payment info.
+    // Change order status from paid to COMPLETE?
+    //handleCheckoutSession(session);
+  }
+
+  // Return a response to acknowledge receipt of the event
+  res.json({received: true});
 };
