@@ -2,19 +2,29 @@ extends layout.pug
 block content
     -
         function stdName(val) {
-            switch(val) {
+            switch (val) {
                 case 'new':
                     return 'New';
+                case 'New':
+                    return 'new';
                 case 'estimate':
                     return 'Estimate';
+                case 'Estimate':
+                    return 'esimate';
                 case 'in-progress':
                     return 'In-Progress';
+                case 'In-Progress':
+                    return 'in-progress';
                 case 'payment':
                     return 'Payment';
+                case 'Payment':
+                    return 'payment';
                 case 'complete':
                     return 'Complete';
+                case 'Complete':
+                    return 'complete';
                 case 'grant':
-                    return 'grant';
+                    return 'Grant';
                 case 'immediately':
                     return 'Immediately';
                 case '1-3':
@@ -31,8 +41,8 @@ block content
                     return 'Quote';
                 default:
                     return val;
-            }
-        }
+                }
+            }   
 
     h2(style="float: left;")="Order #"+order.id
         span.badge.badge-primary(id="order_state" orderId=order.id style="margin-left: 5px;")
@@ -88,7 +98,8 @@ block content
     else
         p There are no items.
     br
-    button.btn.btn-primary(id="add_payment" style="float: right;") Add Payment
+    button.btn.btn-primary(id="add_payment" style="float: right;")
+        span.far.fa-edit.fa-lg
     br
     h5 Payments
     table.table.table-striped
@@ -97,7 +108,7 @@ block content
                 th(scope="col") Reference #
                 th(scope="col") Method
                 th(scope="col") Amount
-                th(scope="col" id="pay_ops_head") 
+                th(scope="col" id="pay_ops_head" hidden) 
         tbody(id="payments_body")
             if order.payments != null && order.payments.length > 0
                 each payment in order.payments
@@ -105,7 +116,9 @@ block content
                         td=payment.reference_number
                         td=payment.method
                         td="$"+payment.amount
-                        td
+                        td(name="pay_ops" hidden)
+                            button.btn.btn-danger(name="delete-payment-confirm" style="margin: 5px 0 0 0;" value=payment.id data-toggle="tooltip" data-placement="top" title="Delete")
+                                span.fas.fa-trash-alt.fa-lg
             else
                 p There are no payments.
             tr(id="new_payment_row" hidden)
