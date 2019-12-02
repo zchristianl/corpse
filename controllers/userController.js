@@ -16,7 +16,15 @@ exports.dashboard_get = (req, res) => {
   if(req.user.account_type == 'seller') {
     res.render('seller-dashboard');
   } else {
-    res.render('client-dashboard');
+    models.Order.findAll({
+      where: {
+        userId: req.user.id
+      }
+    }).then(orders => {
+      res.render('client-dashboard', {
+        orders: orders
+      });
+    });
   }
 };
 

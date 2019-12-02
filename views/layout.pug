@@ -6,6 +6,7 @@ html(lang="en")
     link(rel='stylesheet' href='/css/bootstrap.min.css')
     link(rel='stylesheet' href='/css/style.css')
     script(type='text/javascript' src="/jquery/jquery.min.js")
+    script(src='https://js.stripe.com/v3/')
   body
     .container-fluid
       nav.navbar.navbar-expand-lg.navbar-light.bg-light
@@ -24,9 +25,7 @@ html(lang="en")
                   a.nav-link(href='/inventory') Inventory
               else
                 li.nav-item
-                  a.nav-link(href='/order/inquire') New Order
-                li.nav-item
-                  a.nav-link(href='/payment/checkout') Checkout  
+                  a.nav-link(href='/order/inquire') New Order 
             ul.navbar-nav.ml-auto
               if user.account_type === "client"
                 li.nav-item
@@ -44,50 +43,6 @@ html(lang="en")
             ul.navbar-nav.ml-auto
               a.nav-link(href='/users/register') Register
               a.nav-link(href='/users/login') Login
-
-
-
-
-
-
-
-
-
-    //-nav.navbar.navbar-expand-lg.navbar-light.bg-light
-      a.navbar-brand(href='/users/portal') CORPSE
-      button.navbar-toggler(type='button' data-toggle='collapse' data-target='#headnav' aria-controls='#headnav' aria-expanded='false' aria-label='Toggle Navigation')
-        span.navbar-toggler-icon
-      #headnav.collapse.navbar-collapse
-        .navbar-nav
-        if user
-          if user.account_type === "seller"
-            a.nav-item.nav-link(href='/users/view') Clients
-            a.nav-item.nav-link(href='/order') Orders
-            a.nav-item.nav-link(href='/inventory') Inventory
-          else
-            a.nav-item.nav-link(href='/order/inquire') New Order
-            a.nav-item.nav-link(href='/payment/checkout') Checkout
-            a.nav-link.waves-effect.waves-light(href='/users/contact')
-              i.fas.fa-envelope
-              |  Contact Us
-              span.sr-only (current)
-        else
-          a.d-lg-none.nav-item.nav-link(href='/users/login') Login
-          a.d-lg-none.nav-item.nav-link(href='/users/register') Register
-      if !user
-        a.d-lg-block.nav-item.nav-link(href='/users/login' style="display: none;") Login
-        a.d-lg-block.nav-item.nav-link(href='/users/register' style="display: none;") Register
-      else
-        nav-item.dropdown
-          a
-          #navbarDropdownMenuLink-4.nav-link.dropdown-toggle.waves-effect.waves-light(data-toggle='dropdown' aria-haspopup='true' aria-expanded='true')
-            i.fas.fa-user
-            |  Profile
-          .dropdown-menu.dropdown-menu-right.dropdown-default(aria-labelledby='navbarDropdownMenuLink-333')
-            a.dropdown-item(href='/users/account') My Account
-            a.dropdown-item(href='/users/logout') Logout
-
-
     .container-fluid(style="marign: 5px;")
       != messages('message', locals)
       if errors
@@ -101,5 +56,4 @@ html(lang="en")
         p Copyright &copy; 2019
   script(src='/popper/popper.min.js')
   script(src='/bjs/bootstrap.min.js')
-  script(src='https://js.stripe.com/v3/')
   script(src="https://kit.fontawesome.com/7b14ff4587.js" crossorigin="anonymous")
