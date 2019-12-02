@@ -71,7 +71,7 @@ exports.create_session = (req, res) => {
       stripe.checkout.sessions.create({
         payment_method_types: ['card'],
         line_items: checkout_items,
-        success_url: 'https://example.com/success?session_id={CHECKOUT_SESSION_ID}',
+        success_url: 'http://localhost:3000/payment/success',
         cancel_url: 'https://example.com/cancel',
       }).then(session => {
         res.render('payment', {
@@ -116,3 +116,14 @@ exports.stripe_webhook = (req, res) => {
   // Return a response to acknowledge receipt of the event
   res.json({received: true});
 };
+
+// redirect from stripe success
+exports.success_get = (req, res) => {
+  res.render('success');
+};
+
+// redirect from stripe cancel
+exports.cancel_get = (req, res) => {
+  res.render('cancel');
+};
+
