@@ -11,6 +11,7 @@ window.addEventListener('load', () => {
         event.stopPropagation();
       }
       form.classList.add('was-validated');
+      console.log('looks valid');
     }, false);
   });
 }, false);

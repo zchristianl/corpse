@@ -39,6 +39,12 @@ block content
                     return 'Clinical Applications';
                 case 'quote':
                     return 'Quote';
+                case 'cc':
+                    return 'Credit Card';
+                case 'check':
+                    return 'Check';
+                case 'po':
+                    return 'Purchase Order';
                 default:
                     return val;
                 }
@@ -62,18 +68,18 @@ block content
         b="Intended Use: "
         span(id='intended_use')=stdName(order.intended_use)
     br
-    button.btn.btn-success(style="float: right;" id="edit_button")
+    button.btn.btn-primary(style="float: right;" id="edit_button")
         span.far.fa-edit.fa-lg
     br
     h5 Items
-    if order.items != null || order.items.isEmpty()
-        table.table.table-striped
-            thead
-                tr(id="table_head")
-                    th(scope="col" style="width: 15%;") Category 
-                    th(scope="col") Item Name
-                    th(scope="col" style="width: 20%;") Price
-                    th(scope="col" style="width: 10%;" id="item_ops_head" hidden)
+    table.table.table-striped(id="itemtable" hidden=(order.items.length == 0 ? "hidden" : false))
+        thead
+            tr(id="table_head")
+                th(scope="col" style="width: 15%;") Category 
+                th(scope="col") Item Name
+                th(scope="col" style="width: 20%;") Price
+                th(scope="col" style="width: 10%;" id="item_ops_head" hidden)
+        if order.items != null && order.items.length > 0
             tbody(id="table_body")
                 each item in order.items
                     tr(id="row_"+item.id)
@@ -81,40 +87,38 @@ block content
                         td=(item.inventory == null || item.inventory.name == null) ? "" : item.inventory.name
                         td="$"+item.inventory.price
                         td(name="item_ops" hidden)
-                            button.btn.btn-success(name="edit" style="margin: 5px 5px 0 0;" value=item.id data-toggle="tooltip" data-placement="top" title="Edit" disabled)
-                                span.far.fa-edit.fa-lg
                             button.btn.btn-danger(name="delete-confirm" style="margin: 5px 0 0 0;" value=item.id data-toggle="tooltip" data-placement="top" title="Delete")
                                 span.fas.fa-trash-alt.fa-lg
-                tr(id="new_item_row" hidden)
-                    form.needs-validation(id="new_item" novalidate)
-                        input(type="hidden" name="order_id" value=order.id)
-                        td(colspan=2)
-                            select.custom-select(name="services" id="services" required disabled)
-                                option(id="loading-service" selected) Loading...
-                        td
-                            input.form-control(id="item_amount" type='number' value='' step=".01" min="0.01" maxlength='25' required disabled)
-                        td
-                            input.btn.btn-success(type="submit" id="submit_item_button" style="float: left;")
-    else
-        p There are no items.
+        else
+            p There are no items.
+        tr(id="new_item_row" hidden)
+            form(id="new_item")
+                input(type="hidden" name="order_id" value=order.id)
+                td(colspan=2)
+                    select.custom-select(name="services" id="services" required disabled)
+                        option(id="loading-service" selected) Loading...
+                td
+                    input.form-control(id="item_amount" type='number' value='' step=".01" min="0.01" maxlength='25' required disabled)
+                td
+                    input.btn.btn-success(type="submit" id="submit_item_button" style="float: left;")
     br
     button.btn.btn-primary(id="add_payment" style="float: right;")
         span.far.fa-edit.fa-lg
     br
     h5 Payments
-    table.table.table-striped
+    table.table.table-striped(id="paytable" hidden=(order.payments.length == 0 ? "hidden" : false))
         thead
             tr
                 th(scope="col") Reference #
-                th(scope="col") Method
-                th(scope="col") Amount
-                th(scope="col" id="pay_ops_head" hidden) 
+                th(scope="col" style="width: 15%;") Method
+                th(scope="col" style="width: 20%;") Amount
+                th(scope="col" id="pay_ops_head" style="width: 10%;" hidden) 
         tbody(id="payments_body")
             if order.payments != null && order.payments.length > 0
                 each payment in order.payments
-                    tr
+                    tr(id="pay_"+payment.id)
                         td=payment.reference_number
-                        td=payment.method
+                        td=stdName(payment.method)
                         td="$"+payment.amount
                         td(name="pay_ops" hidden)
                             button.btn.btn-danger(name="delete-payment-confirm" style="margin: 5px 0 0 0;" value=payment.id data-toggle="tooltip" data-placement="top" title="Delete")
@@ -122,14 +126,14 @@ block content
             else
                 p There are no payments.
             tr(id="new_payment_row" hidden)
-                form.needs-validation(id="submit_payment" novalidate)
+                form(id="submit_payment")
                     input(type="hidden" name="order_id" value=order.id)
                     td
-                        input.form-control(name='reference' id="reference" type='text' maxlength='50')
+                        input.form-control(name='reference' id='reference' type='text' maxlength='50' required)
                     td
-                        select(name="method" id="method" class="custom-select" required)
-                            option(value="cc") Credit Card
+                        select.custom-select(name="method" id="method" class="custom-select" required)
                             option(value="check") Check
+                            option(value="cc") Credit Card
                             option(value="po") Purchase Order
                     td
                         input.form-control(name='amount' id="amount" type='number' value=(entry ? entry.price : '') step=".01" min="0.01" maxlength='25' required)

@@ -36,7 +36,7 @@ exports.payment_remove = (req, res) => {
       id: req.body.id
     }
   }).catch(err => logger.error(err));
-  return res;
+  return res.sendStatus(200).end();
 };
 
 /* 
