@@ -8,9 +8,14 @@ document.getElementById('add_payment').addEventListener('click', () => {
 });
 
 Array.from(document.getElementsByName('delete-confirm')).forEach(function (element) {
-  console.log('i was also clicked');
   element.addEventListener('click', function () {
     deleteConfirm(element);
+  });
+});
+
+Array.from(document.getElementsByName('delete-payment-confirm')).forEach(function (element) {
+  element.addEventListener('click', function () {
+    deletePaymentConfirm(element);
   });
 });
 /** End Event Listeners */
@@ -57,12 +62,19 @@ function stdName(val) {
     return 'Clinical Applications';
   case 'quote':
     return 'Quote';
+  case 'cc':
+    return 'Credit Card';
+  case 'check':
+    return 'Check';
+  case 'po':
+    return 'Purchase Order';
   default:
     return val;
   }
 }
 
 function makeEditable() {
+  $('#itemtable').attr('hidden', false);
   document.getElementById('edit_button').disabled = true;
   var orderState = ['new', 'estimate', 'in-progress', 'payment', 'complete'];
 
@@ -97,16 +109,30 @@ function makeEditable() {
 
 function deleteItem(item) {
   item.disabled = true;
-  console.log('Delete Item: ' + item.value);
-  // eslint-disable-next-line no-undef
   $.post({
     url: '/item/delete',
     data: {
       id: item.value
     },
     success: () => {
-      var row = 'row_' + item.value;
-      document.getElementById(row).remove();
+      /*  var row = 'row_' + item.value;
+      document.getElementById(row).remove(); */
+      location.reload();
+    }
+  });
+}
+
+function deletePayment(item) {
+  item.disabled = true;
+  $.post({
+    url: '/payment/delete',
+    data: {
+      id: item.value
+    },
+    success: () => {
+      /* var row = 'pay_' + item.value;
+      document.getElementById(row).remove(); */
+      location.reload();
     }
   });
 }
@@ -123,14 +149,32 @@ function deleteConfirm(element) {
 }
 
 function addPayment() {
+  $('#paytable').attr('hidden', false);
   var paymentRow = document.getElementById('new_payment_row');
   if (paymentRow.hidden == true) {
     paymentRow.hidden = false;
   }
+
+  $('#pay_ops_head').attr('hidden', false);
+  var payOps = document.getElementsByName('pay_ops');
+  payOps.forEach(element => {
+    element.removeAttribute('hidden');
+  });
+
+}
+
+function deletePaymentConfirm(element) {
+  $('.tooltip').tooltip('hide');
+  element.innerText = 'Confirm?';
+  element.setAttribute('name', 'delete');
+  Array.from(document.getElementsByName('delete')).forEach(function (element) {
+    element.addEventListener('click', function () {
+      deletePayment(element);
+    });
+  });
 }
 
 $('#submit_payment').submit(function (event) {
-  console.log('here');
   event.preventDefault();
   $('#submit_payment_button').attr('disabled', true);
   var data = $(this).serialize();
