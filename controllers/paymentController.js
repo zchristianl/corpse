@@ -72,7 +72,7 @@ exports.create_session = (req, res) => {
         payment_method_types: ['card'],
         line_items: checkout_items,
         success_url: 'http://localhost:3000/payment/success',
-        cancel_url: 'https://example.com/cancel',
+        cancel_url: 'http://localhost:3000/payment/cancel',
       }).then(session => {
         res.render('payment', {
           session: session
