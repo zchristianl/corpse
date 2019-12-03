@@ -105,14 +105,6 @@ exports.stripe_webhook = (req, res) => {
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
 
-<<<<<<< HEAD
-exports.checkout = (req, res) => {
-  create_session().then(session => {
-    res.render('payment', {
-      session: session
-    });
-  });
-=======
     console.log(session);
 
     // Fulfill the purchase...
@@ -128,11 +120,9 @@ exports.checkout = (req, res) => {
 // redirect from stripe success
 exports.success_get = (req, res) => {
   res.render('success');
->>>>>>> ad60c07e3e1a4bcdc709f41056c4509b372b72f4
 };
 
 // redirect from stripe cancel
 exports.cancel_get = (req, res) => {
   res.render('cancel');
 };
-
