@@ -20,6 +20,7 @@ files.forEach((f)=> {
 
 // DB connection
 const db = new Sequelize(process.env.DB_CONNECTIONSTRING);
+const Op = Sequelize.Op;
 /*
  * Model Registration Step 1
  * Declare variable and call (db, Sequelize) on it based on ProjectRequire
@@ -38,6 +39,7 @@ const Payment = ProjectRequire.payment(db,Sequelize);
 //Model Registration Step 2, Add variable to this list
 let models = {
   db,
+  Op,
   Building,
   Department,
   Institution,
@@ -51,6 +53,8 @@ let models = {
 };
 
 relations.run(models);
+
+db.options.logging = false;
 
 db.sync().then(function() {
   logger.info('Database table sync successful. Rock on, son!');

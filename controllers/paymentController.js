@@ -2,38 +2,8 @@ const models = require('../config/database');
 const logger = require('../utils/logger');
 require('dotenv').config();
 
-const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 
-const stripe = require('stripe')(stripeSecretKey);
-
-exports.checkout_get = (req, res) => {
-  res.render('checkout');
-};
-
-exports.checkout_post = (req, res) => {
-  let amount = 500;
-  stripe.customers.create({
-    email: req.body.email,
-    card: req.body.id
-  })
-    .then(customer =>
-      stripe.charges.create({
-        amount: amount,
-        description: 'Sample Charge',
-        currency: 'usd',
-        customer: customer.id,
-        receipt_email: 'corpsedev@gmail.com'
-      }))
-
-    .then(charge => {
-      logger.debug(charge);
-      res.redirect('/');
-    })
-    .catch(err => {
-      logger.error(err);
-      res.status(500).send({ error: 'Purchase Failed' });
-    });
-};
 exports.payment_get = (req, res) => {
   models.Payment.findAll({
 
@@ -43,6 +13,7 @@ exports.payment_get = (req, res) => {
     .catch(err => logger.error(err));
   return res;
 };
+
 exports.payment_create = (req, res) => {
   let bodyvars = undefined;
 
@@ -68,37 +39,100 @@ exports.payment_remove = (req, res) => {
   return res;
 };
 
-// Set your secret key: remember to change this to your live secret key in production
-// See your keys here: https://dashboard.stripe.com/account/apikeys
-
-async function create_session() {
-  const session = await stripe.checkout.sessions.create({
-    payment_method_types: ['card'],
-    line_items: [{
-      name: 'DNA Synthesis',
-      description: 'test',
-      amount: 500,
-      currency: 'usd',
-      quantity: 1,
-    },
-    {
-      name: 'PCR Cloning Kit',
-      description: 'test',
-      amount: 5000,
-      currency: 'usd',
-      quantity: 1,
+/* 
+  Create a stripe checkout session with items from an orderId
+  Return a session the the payment view to redirect to stripe checkout
+*/
+exports.create_session = (req, res) => {
+  // array of items for stripe checkout
+  let checkout_items = new Array();
+  models.Item.findOne({
+    where: {
+      orderId: req.params.id
     }
-    ],
-    success_url: 'https://example.com/success?session_id={CHECKOUT_SESSION_ID}',
-    cancel_url: 'https://example.com/cancel',
+  }).then(item => {
+    models.Inventory.findOne({
+      where: {
+        id: item.inventoryId
+      }
+    }).then(inventory_item => {
+      // create an object for stripe checkout
+      let checkout_item = {
+        name: inventory_item.name,
+        description: inventory_item.description,
+        amount: inventory_item.price * 100,
+        currency: 'usd',
+        quantity: 1,
+      };
+      checkout_items.push(checkout_item);
+      return checkout_items;
+    }).then(checkout_items => {
+      // Need to add urls
+      stripe.checkout.sessions.create({
+        payment_method_types: ['card'],
+        line_items: checkout_items,
+        success_url: 'http://localhost:3000/payment/success',
+        cancel_url: 'https://example.com/cancel',
+      }).then(session => {
+        res.render('payment', {
+          session: session
+        });
+      });
+    }).catch(err => {
+      logger.error(err);
+      req.flash('danger', 'There seems to be a problem. Please try again later.');
+      res.redirect('client-dashboard');
+    });
   });
-  return session;
-}
+};
 
+/* 
+  Stripe Webhook for payment 
+*/
+exports.stripe_webhook = (req, res) => {
+  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  const sig = req.headers['stripe-signature'];
+
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
+  } catch (err) {
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  // Handle the checkout.session.completed event
+  if (event.type === 'checkout.session.completed') {
+    const session = event.data.object;
+
+<<<<<<< HEAD
 exports.checkout = (req, res) => {
   create_session().then(session => {
     res.render('payment', {
       session: session
     });
   });
+=======
+    console.log(session);
+
+    // Fulfill the purchase...
+    // On successful payment add payment info to order payment info.
+    // Change order status from paid to COMPLETE?
+    //handleCheckoutSession(session);
+  }
+
+  // Return a response to acknowledge receipt of the event
+  res.json({received: true});
 };
+
+// redirect from stripe success
+exports.success_get = (req, res) => {
+  res.render('success');
+>>>>>>> ad60c07e3e1a4bcdc709f41056c4509b372b72f4
+};
+
+// redirect from stripe cancel
+exports.cancel_get = (req, res) => {
+  res.render('cancel');
+};
+

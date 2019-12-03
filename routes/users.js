@@ -18,7 +18,7 @@ router.post('/login', userController.login_post);
 router.get('/logout', userController.logout_post);
 
 // Portal
-router.get('/portal', global.ensureAuthenticated, userController.portal_get);
+router.get('/dashboard', global.ensureAuthenticated, userController.dashboard_get);
 
 // Seller - View Clients
 router.get('/view', global.ensureAuthenticated, userController.client_view_get);
@@ -35,6 +35,13 @@ router.post('/create/', global.ensureAuthenticated, userController.validate('cli
 //Seller - Delete Client
 router.post('/delete/:id', global.ensureAuthenticated, userController.client_delete_post);
 
+// Client - Edit Profile
+router.get('/edit_account', global.ensureAuthenticated, userController.edit_account_get);
+router.post('/edit_account', global.ensureAuthenticated, userController.edit_account_post);
+router.post('/edit_account_password', global.ensureClient, userController.validate('changePassword'), userController.edit_account_password);
+
+router.get('/account', global.ensureAuthenticated, userController.account_get);
+
 // Forgot form
 router.get('/forgot', userController.forgot_get);
 
@@ -45,7 +52,7 @@ router.post('/forgot', userController.validate('forgot'), userController.forgot_
 router.get('/reset/:token', userController.new_password);
 
 // Confirm new password
-router.post('/reset/:token', userController.validate('reset'), userController.reset_confirm);
+router.post('/reset/:token', userController.validate('changePassword'), userController.reset_confirm);
 
 // Contact
 router.get('/contact', global.ensureAuthenticated, global.ensureClient, userController.contact_seller);

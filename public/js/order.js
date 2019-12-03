@@ -1,3 +1,4 @@
+/** Event Listeners */
 document.getElementById('edit_button').addEventListener('click', () => {
   makeEditable();
 });
@@ -6,10 +7,16 @@ document.getElementById('add_payment').addEventListener('click', () => {
   addPayment();
 });
 
-Array.from(document.getElementsByName('delete')).forEach(function (element) {
+Array.from(document.getElementsByName('delete-confirm')).forEach(function (element) {
+  console.log('i was also clicked');
   element.addEventListener('click', function () {
-    deleteItem(element);
+    deleteConfirm(element);
   });
+});
+/** End Event Listeners */
+
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip();
 });
 
 function stdName(val) {
@@ -58,9 +65,6 @@ function stdName(val) {
 function makeEditable() {
   document.getElementById('edit_button').disabled = true;
   var orderState = ['new', 'estimate', 'in-progress', 'payment', 'complete'];
-  /* var inquiryType = ['estimate', 'quote', 'grant'];
-  var time_estimate = ['immediately', '1-3', '3-6', '6_or_more'];
-  var intended_use = ['research_only', 'clinical_applications']; */
 
   /* Order State */
   var state = document.getElementById('order_state');
@@ -82,69 +86,13 @@ function makeEditable() {
   state.innerHTML = '';
   state.appendChild(selectState);
 
-  /*   // Nature of Inquiry
-  var reason = document.getElementById('reason');
-  var currReason = reason.innerText;
-  var selectInquriy = document.createElement('select');
-  selectInquriy.id = 'inquiry';
-
-  inquiryType.forEach(element => {
-    var option = document.createElement('option');
-    option.value = element;
-    option.innerText = stdName(element);
-    if (stdName(element) === currReason) {
-      option.selected = 'selected';
-    }
-    selectInquriy.appendChild(option);
-  });
-
-  reason.innerHTML = '';
-  reason.appendChild(selectInquriy);
-
-  // Time Estimate
-  var timeEstimate = document.getElementById('time_estimate');
-  currReason = timeEstimate.innerText;
-  var selectTimeEstimate = document.createElement('select');
-  selectTimeEstimate.id = 'time_estimate_updated';
-
-  time_estimate.forEach(element => {
-    var option = document.createElement('option');
-    option.value = element;
-    option.innerText = stdName(element);
-    if (stdName(element) === currReason) {
-      option.selected = 'selected';
-    }
-    selectTimeEstimate.appendChild(option);
-  });
-
-  timeEstimate.innerHTML = '';
-  timeEstimate.appendChild(selectTimeEstimate);
-
-  // Intended Use
-  var intendedUse = document.getElementById('intended_use');
-  currReason = intendedUse.innerText;
-  var selectIntendedUse = document.createElement('select');
-  selectIntendedUse.id = 'intended_use_new';
-
-  intended_use.forEach(element => {
-    var option = document.createElement('option');
-    option.value = element;
-    option.innerText = stdName(element);
-    if (stdName(element) === currReason) {
-      option.selected = 'selected';
-    }
-    selectIntendedUse.appendChild(option);
-  });
-
-  intendedUse.innerHTML = '';
-  intendedUse.appendChild(selectIntendedUse); */
-
   // Now the thing 
   var itemOps = document.getElementsByName('item_ops');
   itemOps.forEach(element => {
     element.removeAttribute('hidden');
   });
   document.getElementById('item_ops_head').hidden = false;
+  document.getElementById('new_item_row').hidden = false;
 }
 
 function deleteItem(item) {
@@ -160,6 +108,17 @@ function deleteItem(item) {
       var row = 'row_' + item.value;
       document.getElementById(row).remove();
     }
+  });
+}
+
+function deleteConfirm(element) {
+  $('.tooltip').tooltip('hide');
+  element.innerText = 'Confirm?';
+  element.setAttribute('name', 'delete');
+  Array.from(document.getElementsByName('delete')).forEach(function (element) {
+    element.addEventListener('click', function () {
+      deleteItem(element);
+    });
   });
 }
 
@@ -184,8 +143,9 @@ $('#submit_payment').submit(function (event) {
   });
 });
 
-$('#order_state').change( () => {
-  var newState = document.getElementById('state_new').value;
+$('#order_state').change(() => {
+  $('#state_new').attr('disabled', true);
+  var newState = $('#state_new').val();
   $.post({
     url: '/order/modify',
     data: {
@@ -194,6 +154,41 @@ $('#order_state').change( () => {
     },
     success: () => {
       document.getElementById('order_state').innerText = stdName(newState);
+      location.reload();
+    }
+  });
+});
+
+$('#edit_button').click(() => {
+  $.post({
+    url: '/inventory/getsell',
+    success: (res) => {
+      $('#services').prop('disabled', false);
+      $('#loading-service').remove();
+      res.forEach(item => {
+        var option = document.createElement('option');
+        option.text = `${item.name} (${item.category})`;
+        option.value = item.id;
+        option.setAttribute('price', item.price);
+        $('#services').append(option);
+      });
+      $('#item_amount').val($('#services option:selected').attr('price'));
+    }
+  });
+});
+
+$('#services').change(() => {
+  $('#item_amount').val($('#services option:selected').attr('price'));
+});
+
+$('#new_item').submit(function (event) {
+  event.preventDefault();
+  $('#submit_item_button').attr('disabled', true);
+  var data = $(this).serialize();
+  $.post({
+    url: '/item/create',
+    data: data,
+    success: () => {
       location.reload();
     }
   });

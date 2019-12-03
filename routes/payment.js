@@ -1,14 +1,14 @@
 const express = require('express');
 const router = express.Router();
+const bodyParser = require('body-parser');
 const paymentController = require('../controllers/paymentController');
 
 // checkout 
-router.get('/checkout', global.ensureAuthenticated, paymentController.checkout);
+router.get('/checkout/:id', global.ensureAuthenticated, paymentController.create_session);
+router.post('/create', global.ensureAuthenticated, paymentController.payment_create);
 
-// make payment
-// router.post('/payments', global.ensureAuthenticated, paymentController.checkout_post);
-
-//Add Payment
-// router.post('/create', global.ensureAuthenticated, paymentController.payment_create);
+router.get('/success', paymentController.success_get);
+router.get('/cancel', paymentController.cancel_get);
+router.post('/payment_complete', bodyParser.raw({type: 'application/json'}), paymentController.stripe_webhook); 
 
 module.exports = router;
