@@ -100,7 +100,6 @@ exports.stripe_webhook = (req, res) => {
   try {
     event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
   } catch (err) {
-    console.log('here');
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
@@ -113,7 +112,7 @@ exports.stripe_webhook = (req, res) => {
     // Fulfill the purchase...
     // On successful payment add payment info to order payment info.
     // Change order status from paid to COMPLETE?
-    //handleCheckoutSession(session);
+    // handleCheckoutSession(session);
   }
 
   // Return a response to acknowledge receipt of the event
