@@ -61,6 +61,7 @@ models.db
     logger.error('Unable to connect to the database:', err);
   });
 
+app.use('/payment/stripe_webhook', bodyParser.raw({type: '*/*'})) ;
 // Body Parser Middleware
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));

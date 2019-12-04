@@ -69,6 +69,7 @@ exports.create_session = (req, res) => {
     }).then(checkout_items => {
       // Need to add urls
       stripe.checkout.sessions.create({
+        customer_email: req.user.email,
         payment_method_types: ['card'],
         line_items: checkout_items,
         success_url: 'http://localhost:3000/payment/success',
@@ -90,14 +91,16 @@ exports.create_session = (req, res) => {
   Stripe Webhook for payment 
 */
 exports.stripe_webhook = (req, res) => {
-  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  // endpoint for Stripe CLI
+  const endpointSecret = 'whsec_lbXafEi0NDelOinNP1XnaaXSFkmu0Hze';
   const sig = req.headers['stripe-signature'];
 
   let event;
-
+  
   try {
     event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
   } catch (err) {
+    console.log('here');
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
 
@@ -117,12 +120,12 @@ exports.stripe_webhook = (req, res) => {
   res.json({received: true});
 };
 
-// redirect from stripe success
+// redirect stripe success
 exports.success_get = (req, res) => {
   res.render('success');
 };
 
-// redirect from stripe cancel
+// redirect stripe cancel
 exports.cancel_get = (req, res) => {
   res.render('cancel');
 };
