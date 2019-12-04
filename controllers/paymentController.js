@@ -75,9 +75,27 @@ exports.create_session = (req, res) => {
         success_url: 'http://localhost:3000/payment/success',
         cancel_url: 'http://localhost:3000/payment/cancel',
       }).then(session => {
+        // store checkout id
+        models.Order.findOne({
+          where: {
+            id: req.params.id
+          }
+        }).then(order => {
+          order.update({
+            checkout_id: session.id
+          }).catch(err => {
+            logger.error(err);
+          });
+        }).catch(err => {
+          logger.error(err);
+        });
+        return session;
+      }).then(session => {
         res.render('payment', {
           session: session
         });
+      }).catch(err => {
+        logger.error(err);
       });
     }).catch(err => {
       logger.error(err);
@@ -92,7 +110,8 @@ exports.create_session = (req, res) => {
 */
 exports.stripe_webhook = (req, res) => {
   // endpoint for Stripe CLI
-  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  // endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  const endpointSecret = 'whsec_lbXafEi0NDelOinNP1XnaaXSFkmu0Hze';
   const sig = req.headers['stripe-signature'];
 
   let event;
@@ -112,7 +131,7 @@ exports.stripe_webhook = (req, res) => {
     // Fulfill the purchase...
     // On successful payment add payment info to order payment info.
     // Change order status from paid to COMPLETE?
-    // handleCheckoutSession(session);
+    handleCheckoutSession(session);
   }
 
   // Return a response to acknowledge receipt of the event
@@ -128,3 +147,20 @@ exports.success_get = (req, res) => {
 exports.cancel_get = (req, res) => {
   res.render('cancel');
 };
+
+// update order status to complete
+// Call function to create 
+function handleCheckoutSession(session) {
+  console.log(session);
+  models.Order.findOne({
+    where: {
+      checkout_id: session.id
+    }
+  }).then(order => {
+    order.update({
+      state: 'COMPLETE'
+    }).catch(err => {
+      logger.error(err);
+    });
+  });
+}

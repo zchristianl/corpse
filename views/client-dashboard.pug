@@ -21,9 +21,12 @@ block content
             td=order.id
             td=date
             td=order.comments
-            td="$"+order.amount
+            if order.amount == 0
+              td="TBD"
+            else
+              td="$"+order.amount
             td=order.state
-            if order.state == 'payment' && order.payment == 'cc'
+            if order.state == 'PAYMENT' && order.payment == 'cc'
               td(align="center")
                 form(method="GET" action="/payment/checkout/"+order.id)
                   button.btn.btn-warning(type="submit") Pay Now
