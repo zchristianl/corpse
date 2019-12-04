@@ -92,7 +92,7 @@ exports.create_session = (req, res) => {
 */
 exports.stripe_webhook = (req, res) => {
   // endpoint for Stripe CLI
-  const endpointSecret = 'whsec_lbXafEi0NDelOinNP1XnaaXSFkmu0Hze';
+  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
   const sig = req.headers['stripe-signature'];
 
   let event;
