@@ -69,10 +69,11 @@ exports.create_session = (req, res) => {
     }).then(checkout_items => {
       // Need to add urls
       stripe.checkout.sessions.create({
+        customer_email: req.user.email,
         payment_method_types: ['card'],
         line_items: checkout_items,
         success_url: 'http://localhost:3000/payment/success',
-        cancel_url: 'https://example.com/cancel',
+        cancel_url: 'http://localhost:3000/payment/cancel',
       }).then(session => {
         res.render('payment', {
           session: session
@@ -90,11 +91,12 @@ exports.create_session = (req, res) => {
   Stripe Webhook for payment 
 */
 exports.stripe_webhook = (req, res) => {
+  // endpoint for Stripe CLI
   const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
   const sig = req.headers['stripe-signature'];
 
   let event;
-
+  
   try {
     event = stripe.webhooks.constructEvent(req.body, sig, endpointSecret);
   } catch (err) {
@@ -110,19 +112,19 @@ exports.stripe_webhook = (req, res) => {
     // Fulfill the purchase...
     // On successful payment add payment info to order payment info.
     // Change order status from paid to COMPLETE?
-    //handleCheckoutSession(session);
+    // handleCheckoutSession(session);
   }
 
   // Return a response to acknowledge receipt of the event
   res.json({received: true});
 };
 
-// redirect from stripe success
+// redirect stripe success
 exports.success_get = (req, res) => {
   res.render('success');
 };
 
-// redirect from stripe cancel
+// redirect stripe cancel
 exports.cancel_get = (req, res) => {
   res.render('cancel');
 };
