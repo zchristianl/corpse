@@ -75,9 +75,27 @@ exports.create_session = (req, res) => {
         success_url: 'http://localhost:3000/payment/success',
         cancel_url: 'http://localhost:3000/payment/cancel',
       }).then(session => {
+        // store checkout id
+        models.Order.findOne({
+          where: {
+            id: req.params.id
+          }
+        }).then(order => {
+          order.update({
+            checkout_id: session.id
+          }).catch(err => {
+            logger.error(err);
+          });
+        }).catch(err => {
+          logger.error(err);
+        });
+        return session;
+      }).then(session => {
         res.render('payment', {
           session: session
         });
+      }).catch(err => {
+        logger.error(err);
       });
     }).catch(err => {
       logger.error(err);
@@ -92,7 +110,8 @@ exports.create_session = (req, res) => {
 */
 exports.stripe_webhook = (req, res) => {
   // endpoint for Stripe CLI
-  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  // endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  const endpointSecret = 'whsec_lbXafEi0NDelOinNP1XnaaXSFkmu0Hze';
   const sig = req.headers['stripe-signature'];
 
   let event;
@@ -107,12 +126,7 @@ exports.stripe_webhook = (req, res) => {
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
 
-    console.log(session);
-
-    // Fulfill the purchase...
-    // On successful payment add payment info to order payment info.
-    // Change order status from paid to COMPLETE?
-    // handleCheckoutSession(session);
+    handleCheckoutSession(session);
   }
 
   // Return a response to acknowledge receipt of the event
@@ -127,4 +141,30 @@ exports.success_get = (req, res) => {
 // redirect stripe cancel
 exports.cancel_get = (req, res) => {
   res.render('cancel');
+};
+
+// Ipdate order status to COMPLETE
+// On successful payment add payment info to order payment info.
+// Call function to create Invoice
+const handleCheckoutSession = (session) => {
+  models.Order.findOne({
+    where: {
+      checkout_id: session.id
+    }
+  }).then(order => {
+    order.update({
+      state: 'COMPLETE'
+    }).catch(err => {
+      logger.error(err);
+    });
+
+    models.Payment.create({
+      // Needs to change
+      reference_number: 123456789,
+      method: 'cc',
+      // Session is in cents / 100 to save dollars
+      amount: session.display_items[0].amount / 100,
+      orderId: order.id
+    });
+  });
 };
