@@ -126,11 +126,6 @@ exports.stripe_webhook = (req, res) => {
   if (event.type === 'checkout.session.completed') {
     const session = event.data.object;
 
-    console.log(session);
-
-    // Fulfill the purchase...
-    // On successful payment add payment info to order payment info.
-    // Change order status from paid to COMPLETE?
     handleCheckoutSession(session);
   }
 
@@ -148,10 +143,10 @@ exports.cancel_get = (req, res) => {
   res.render('cancel');
 };
 
-// update order status to complete
-// Call function to create 
-function handleCheckoutSession(session) {
-  console.log(session);
+// Ipdate order status to COMPLETE
+// On successful payment add payment info to order payment info.
+// Call function to create Invoice
+const handleCheckoutSession = (session) => {
   models.Order.findOne({
     where: {
       checkout_id: session.id
@@ -162,5 +157,14 @@ function handleCheckoutSession(session) {
     }).catch(err => {
       logger.error(err);
     });
+
+    models.Payment.create({
+      // Needs to change
+      reference_number: 123456789,
+      method: 'cc',
+      // Session is in cents / 100 to save dollars
+      amount: session.display_items[0].amount / 100,
+      orderId: order.id
+    });
   });
-}
+};
