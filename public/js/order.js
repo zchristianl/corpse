@@ -30,22 +30,22 @@ function stdName(val) {
     return 'New';
   case 'New':
     return 'new';
-  case 'estimate':
+  case 'ESTIMATE':
     return 'Estimate';
   case 'Estimate':
-    return 'esimate';
-  case 'in-progress':
+    return 'ESTIMATE';
+  case 'IN-PROGRESS':
     return 'In-Progress';
   case 'In-Progress':
-    return 'in-progress';
-  case 'payment':
+    return 'IN-PROGRESS';
+  case 'PAYMENT':
     return 'Payment';
   case 'Payment':
-    return 'payment';
-  case 'complete':
+    return 'PAYMENT';
+  case 'COMPLETE':
     return 'Complete';
   case 'Complete':
-    return 'complete';
+    return 'COMPLETE';
   case 'grant':
     return 'Grant';
   case 'immediately':
