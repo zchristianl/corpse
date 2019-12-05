@@ -7,22 +7,22 @@ block content
                     return 'New';
                 case 'New':
                     return 'new';
-                case 'estimate':
+                case 'ESTIMATE':
                     return 'Estimate';
                 case 'Estimate':
-                    return 'esimate';
-                case 'in-progress':
+                    return 'ESTIMATE';
+                case 'IN-PROGRESS':
                     return 'In-Progress';
                 case 'In-Progress':
-                    return 'in-progress';
-                case 'payment':
+                    return 'IN-PROGRESS';
+                case 'PAYMENT':
                     return 'Payment';
                 case 'Payment':
-                    return 'payment';
-                case 'complete':
+                    return 'PAYMENT';
+                case 'COMPLETE':
                     return 'Complete';
                 case 'Complete':
-                    return 'complete';
+                    return 'COMPLETE';
                 case 'grant':
                     return 'Grant';
                 case 'immediately':
@@ -68,8 +68,9 @@ block content
         b="Intended Use: "
         span(id='intended_use')=stdName(order.intended_use)
     br
-    button.btn.btn-primary(style="float: right;" id="edit_button")
-        span.far.fa-edit.fa-lg
+    if user.account_type === "seller"
+        button.btn.btn-primary(style="float: right;" id="edit_button")
+            span.far.fa-edit.fa-lg
     br
     h5 Items
     table.table.table-striped(id="itemtable" hidden=(order.items.length == 0 ? "hidden" : false))
@@ -102,8 +103,9 @@ block content
                 td
                     input.btn.btn-success(type="submit" id="submit_item_button" style="float: left;")
     br
-    button.btn.btn-primary(id="add_payment" style="float: right;")
-        span.far.fa-edit.fa-lg
+    if user.account_type === "seller"
+        button.btn.btn-primary(id="add_payment" style="float: right;")
+            span.far.fa-edit.fa-lg
     br
     h5 Payments
     table.table.table-striped(id="paytable" hidden=(order.payments.length == 0 ? "hidden" : false))
@@ -139,6 +141,7 @@ block content
                         input.form-control(name='amount' id="amount" type='number' value=(entry ? entry.price : '') step=".01" min="0.01" maxlength='25' required)
                     td
                         input.btn.btn-success(type="submit" id="submit_payment_button" style="float: right;")
-
-    script(src='/js/order.js')
-    script(src='/js/formval.js')
+    
+    if user.account_type === "seller"
+        script(src='/js/order.js')
+        script(src='/js/formval.js')

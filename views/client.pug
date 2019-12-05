@@ -4,9 +4,12 @@ block content
   h1 Clients
   a.btn.btn-success(href="/users/create" style="float:right; margin-bottom: 5px;")
     span.fas.fa-plus.fa-lg
-  form.search-form(action='/users/view')
-    input(type='search' name='term' placeholder='Search for Clients...')
-    input(type='submit' value='Search')
+
+  .d-lg-inline-flex.flex-row.p-1
+    form.search-form.d-inline-flex.p-1(action='/users/view')
+      input.form-control(type='search' name='term' placeholder='Search for Clients...' style="margin: 0 5px 0 0;")
+      input.form-control.btn.btn-primary(type='submit' value='Search' style="max-width: 30%;")
+
   table.table.table-striped
     thead
       tr
