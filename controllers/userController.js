@@ -311,7 +311,12 @@ exports.forgot_post = (req, res, next) => {
 };
 
 exports.new_password = (req, res) => {
-  models.User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } })
+  models.User.findOne({ 
+    where: {
+      resetPasswordToken: req.params.token,
+      resetPasswordExpires: { [models.Op.gt]: Date.now() } 
+    }
+  })
     .then(() => {
       res.render('reset', {
         user: req.user
@@ -334,7 +339,12 @@ exports.reset_confirm = (req, res) => {
   } else {
     async.waterfall([
       function (done) {
-        models.User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } })
+        models.User.findOne({ 
+          where: {
+            resetPasswordToken: req.params.token, 
+            resetPasswordExpires: { [models.Op.gt]: Date.now() } 
+          }
+        })
           .then(user => {
             bcrypt.genSalt(10, (err, salt) => {
               bcrypt.hash(req.body.password, salt, (err, hash) => {
