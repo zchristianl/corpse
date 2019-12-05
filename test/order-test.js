@@ -22,17 +22,17 @@ describe('order tests', () => {
       });
   });
 
-  // it('/orders - Create Invoice', function (done) {
-  //   var path = '/order/create_invoice';
-  //   this.timeout(0);
-  //   page_
-  //     .post(path)
-  //     .set('content-type', 'application/x-www-form-urlencoded')
-  //     .send({})
-  //     .end(function (err, res) {
-  //       console.log(res);
-  //       expect(res.status).to.equal(200);
-  //       done();
-  //     });
-  // });
+  it('/orders - Create Invoice', function (done) {
+    var path = '/order/create_invoice';
+    this.timeout(0);
+    page_
+      .post(path)
+      .set('content-type', 'application/x-www-form-urlencoded')
+      .send({})
+      .end(function (err, res) {
+        console.log(res);
+        expect(res.status).to.equal(200);
+        done();
+      });
+  });
 });
