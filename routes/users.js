@@ -38,7 +38,7 @@ router.post('/delete/:id', global.ensureAuthenticated, userController.client_del
 // Client - Edit Profile
 router.get('/edit_account', global.ensureAuthenticated, userController.edit_account_get);
 router.post('/edit_account', global.ensureAuthenticated, userController.edit_account_post);
-router.post('/edit_account_password', global.ensureClient, userController.validate('changePassword'), userController.edit_account_password);
+router.post('/edit_account_password', global.ensureAuthenticated, userController.validate('changePassword'), userController.edit_account_password);
 
 router.get('/account', global.ensureAuthenticated, userController.account_get);
 
