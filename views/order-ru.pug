@@ -69,7 +69,7 @@ block content
         span(id='intended_use')=stdName(order.intended_use)
     br
     button.btn.btn-primary(style="float: right;" id="edit_button")
-        span.far.fa-edit.fa-lg
+        span.far.fa-edit.fa-sm
     br
     h5 Items
     table.table.table-striped(id="itemtable" hidden=(order.items.length == 0 ? "hidden" : false))
@@ -88,7 +88,7 @@ block content
                         td="$"+item.inventory.price
                         td(name="item_ops" hidden)
                             button.btn.btn-danger(name="delete-confirm" style="margin: 5px 0 0 0;" value=item.id data-toggle="tooltip" data-placement="top" title="Delete")
-                                span.fas.fa-trash-alt.fa-lg
+                                span.fas.fa-trash-alt.fa-sm
         else
             p There are no items.
         tr(id="new_item_row" hidden)
@@ -103,7 +103,7 @@ block content
                     input.btn.btn-success(type="submit" id="submit_item_button" style="float: left;")
     br
     button.btn.btn-primary(id="add_payment" style="float: right;")
-        span.far.fa-edit.fa-lg
+        span.far.fa-edit.fa-sm
     br
     h5 Payments
     table.table.table-striped(id="paytable" hidden=(order.payments.length == 0 ? "hidden" : false))
@@ -122,7 +122,7 @@ block content
                         td="$"+payment.amount
                         td(name="pay_ops" hidden)
                             button.btn.btn-danger(name="delete-payment-confirm" style="margin: 5px 0 0 0;" value=payment.id data-toggle="tooltip" data-placement="top" title="Delete")
-                                span.fas.fa-trash-alt.fa-lg
+                                span.fas.fa-trash-alt.fa-sm
             else
                 p There are no payments.
             tr(id="new_payment_row" hidden)
