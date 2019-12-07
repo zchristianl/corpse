@@ -46,7 +46,17 @@ exports.payment_remove = (req, res) => {
 */
 exports.create_session = (req, res) => {
   // array of items for stripe checkout
+  let userEmail;
   let checkout_items = new Array();
+  
+  models.User.findOne({
+    where: {
+      id: req.user.id
+    }
+  }).then(user => {
+    userEmail = user.email;
+  });
+
   models.Item.findAll({
     where: { orderId: req.params.id },
     include: [
@@ -69,11 +79,11 @@ exports.create_session = (req, res) => {
     return checkout_items;
   }).then(checkout_items => {
     stripe.checkout.sessions.create({
-      customer_email: req.user.email,
+      customer_email: userEmail,
       payment_method_types: ['card'],
       line_items: checkout_items,
-      success_url: 'https://proteinctcorpse.com/payment/success',
-      cancel_url: 'https://proteinctcorpse.com/payment/cancel',
+      success_url: 'https://www.proteinctcorpse.com/payment/success',
+      cancel_url: 'https://www.proteinctcorpse.com/payment/cancel',
     }).then(session => {
       // store checkout id
       models.Order.findOne({
