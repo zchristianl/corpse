@@ -9,7 +9,7 @@ block content
           input.form-control(name='name', value=user.first_name + ' ' + user.last_name, type='text')
         #form-group
           label Email:
-          input.form-control(name='email', value=user.email, type='email')
+          input.form-control(name='email', value=user.email, type='email' pattern="^\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$")
         #form-group
           label Subject:
           input.form-control(name='subject', type='text')  

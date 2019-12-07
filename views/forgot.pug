@@ -7,5 +7,5 @@ block content
           h2 Forgot Password
         .form-group
           label Email
-          input.form-control(type='email', name='email', autofocus)
+          input.form-control(type='email', name='email', autofocus pattern="^\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$")
         button.btn.btn-primary(type='submit' value='Submit') Reset Password

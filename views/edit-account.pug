@@ -29,7 +29,7 @@ block content
     .row
       .col
         label Email:
-        input.form-control(name='email' type='email', value=(user.email) required maxlength='50')
+        input.form-control(name='email' type='email', value=(user.email) required maxlength='50' pattern="^\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$")
     br
     h2 Business Info
     .row
