@@ -19,7 +19,9 @@ exports.dashboard_get = (req, res) => {
     models.Order.findAll({
       where: {
         userId: req.user.id
-      }
+      }, order: [
+        ['createdAt', 'DESC']
+      ]
     }).then(orders => {
       res.render('client-dashboard', {
         orders: orders
@@ -301,7 +303,7 @@ exports.forgot_post = (req, res, next) => {
     },
     function (token, user, done) {
       var err = mailer.sendForgotPassword(req, user, token); 
-      req.flash('info', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
+      req.flash('success', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
       done(err, 'done');
     }
   ], function (err) {
