@@ -1,0 +1,25 @@
+
+$theme-colors: (
+  "primary": #893896,
+  "secondary": #32318B,
+  "success": #94CE1E,
+  "danger": #D15353,
+  "info": #2EC4B6
+);
+
+.custom-select{
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.alert-error { //For passport errors
+  color: white;
+  background-color: #D15353;
+  border-color: #D15353;
+}
+
+@import "../node_modules/bootstrap/scss/bootstrap";
+@import "../node_modules/bootstrap/scss/functions";
+@import "../node_modules/bootstrap/scss/variables";
+@import "../node_modules/bootstrap/scss/mixins";
