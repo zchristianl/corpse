@@ -432,7 +432,9 @@ function client_view_get_internal(req, res) {
           }
         }
       ]
-    }
+    }, order: [
+      ['last_name', 'ASC']
+    ]
   }).then(users => res.render('client', {
     users: users
   }));
