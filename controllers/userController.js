@@ -297,7 +297,7 @@ exports.forgot_post = (req, res, next) => {
         });
       }).catch(err => {
         logger.error(err);
-        req.flash('error', 'No account with that email address exists.');
+        req.flash('danger', 'No account with that email address exists.');
         return res.redirect('/users/forgot');
       });
     },
@@ -326,7 +326,7 @@ exports.new_password = (req, res) => {
     })
     .catch(err => {
       logger.error(err);
-      req.flash('error', 'Password reset token is invalid or has expired.');
+      req.flash('danger', 'Password reset token is invalid or has expired.');
       return res.redirect('/user/forgot');
     });
 };
@@ -363,7 +363,7 @@ exports.reset_confirm = (req, res) => {
                   })
                   .catch(err => {
                     logger.error(err);
-                    req.flash('error', 'Password reset token is invalid or has expired.');
+                    req.flash('danger', 'Password reset token is invalid or has expired.');
                     return res.redirect('back');
                   });
               });
