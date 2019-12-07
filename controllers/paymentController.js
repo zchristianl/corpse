@@ -166,5 +166,5 @@ const handleCheckoutSession = (session) => {
       amount: session.display_items[0].amount / 100,
       orderId: order.id
     });
-  });
+  }).catch(err => {logger.error(err);});
 };
