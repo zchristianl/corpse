@@ -1,5 +1,6 @@
 const models = require('../config/database');
 const logger = require('../utils/logger');
+const {createInvoiceEmail } = require('../utils/createInvoice.js');
 require('dotenv').config();
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
@@ -165,5 +166,71 @@ const handleCheckoutSession = (session) => {
       amount: session.display_items[0].amount / 100,
       orderId: order.id
     });
+  });
+};
+
+// Create and send an invoice for an order
+exports.create_invoice = (req, res) => {
+  let invoice_items = new Array();
+  let shipping;
+  let subtotal = 0;
+  let clientEmail;
+
+  models.Item.findAll({
+    where: { orderId: req.params.id },
+    include: [
+      {
+        model: models.Inventory
+      }
+    ]
+  }).then(inventory_item => { 
+    inventory_item.forEach((item) => {
+      let items = {
+        item: item.inventory.name,
+        description: item.inventory.description,
+        quantity: 1,
+        amount: item.inventory.price * 100
+      };
+      subtotal += parseFloat(item.inventory.price) * 100;
+      invoice_items.push(items);
+    });
+  
+  }).then(() => {
+    models.Order.findOne({
+      where: {
+        id: req.params.id
+      }
+    }).then(order => {
+      models.User.findOne({
+        where: {
+          id: order.userId
+        }
+      }).then(user => {
+        shipping = {
+          name: user.first_name + ' ' + user.last_name,
+          address: user.address.replace('\r', '').split('\n')[0],
+          city: user.city,
+          state: user.state,
+          zip_code: user.zip
+        };
+
+        clientEmail = user.email;
+
+        let invoice = {
+          shipping: shipping,
+          items: invoice_items,
+          subtotal: subtotal,
+          paid: 0,
+          invoice_nr: req.params.id
+        };
+
+        let order = {
+          id: req.params.id,
+          clientEmail: clientEmail,
+        };
+
+        createInvoiceEmail(invoice, 'ProteinCTinvoice.pdf', order, req, res);
+      }).catch(err => {logger.error(err);});
+    }).catch(err => {logger.error(err);});
   }).catch(err => {logger.error(err);});
 };
