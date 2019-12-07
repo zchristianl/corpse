@@ -68,13 +68,12 @@ exports.create_session = (req, res) => {
     });
     return checkout_items;
   }).then(checkout_items => {
-    // Need to add urls
     stripe.checkout.sessions.create({
       customer_email: req.user.email,
       payment_method_types: ['card'],
       line_items: checkout_items,
-      success_url: 'http://localhost:3000/payment/success',
-      cancel_url: 'http://localhost:3000/payment/cancel',
+      success_url: 'https://proteinctcorpse.com/payment/success',
+      cancel_url: 'https://proteinctcorpse.com/payment/cancel',
     }).then(session => {
       // store checkout id
       models.Order.findOne({
@@ -109,9 +108,9 @@ exports.create_session = (req, res) => {
   Stripe Webhook for payment 
 */
 exports.stripe_webhook = (req, res) => {
-  // endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
   // endpoint for Stripe CLI
-  const endpointSecret = 'whsec_lbXafEi0NDelOinNP1XnaaXSFkmu0Hze';
+  // const endpointSecret = 'whsec_lbXafEi0NDelOinNP1XnaaXSFkmu0Hze';
   const sig = req.headers['stripe-signature'];
 
   let event;
@@ -160,7 +159,7 @@ const handleCheckoutSession = (session) => {
 
     models.Payment.create({
       // Needs to change
-      reference_number: 123456789,
+      reference_number: session.id,
       method: 'cc',
       // Session is in cents / 100 to save dollars
       amount: session.display_items[0].amount / 100,
