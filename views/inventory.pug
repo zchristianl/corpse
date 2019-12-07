@@ -17,7 +17,7 @@ block content
       each item, i in items
         tr
           td=item.name
-          td=item.type
+          td=(item.type).charAt(0) + (item.type).substring(1, item.type.length).toLowerCase()
           td="$"+item.cost
           td=item.stock
           td
