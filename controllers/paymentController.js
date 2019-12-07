@@ -178,61 +178,60 @@ exports.create_invoice = (req, res) => {
   let clientEmail;
 
   models.Item.findAll({
-    where: {
-      orderId: req.params.id
-    }
-  }).then(items => {
-    models.Inventory.findAll({
-      where: {
-        id: items.inventoryId
+
+    where: { orderId: req.params.id },
+    include: [
+      {
+        model: models.Inventory
       }
-    }).then(inv_items => {
-      inv_items.forEach(inv_item => { 
-        let items = {
-          item: inv_item.name,
-          description: inv_item.description,
-          quantity: 1,
-          amount: inv_item.price * 100
-        };
-        subtotal += parseFloat(inv_item.price);
-        invoice_items.push(items);
-      });
-    }).then(() => {
-      models.Order.findOne({
+    ]
+  }).then(inv_items => { 
+    inv_items.forEach((item) => {
+      let items = {
+        item: item.inventory.name,
+        description: item.inventory.description,
+        quantity: 1,
+        amount: item.inventory.price * 100
+      };
+      subtotal += parseFloat(item.inventory.price) * 100;
+      invoice_items.push(items);
+    });
+  
+  }).then(() => {
+    models.Order.findOne({
+      where: {
+        id: req.params.id
+      }
+    }).then(order => {
+      models.User.findOne({
         where: {
-          id: req.params.id
+          id: order.userId
         }
-      }).then(order => {
-        models.User.findOne({
-          where: {
-            id: order.userId
-          }
-        }).then(user => {
-          shipping = {
-            name: user.first_name + ' ' + user.last_name,
-            address: user.address.replace('\r', '').split('\n')[0],
-            city: user.city,
-            state: user.state,
-            zip_code: user.zip
-          };
+      }).then(user => {
+        shipping = {
+          name: user.first_name + ' ' + user.last_name,
+          address: user.address.replace('\r', '').split('\n')[0],
+          city: user.city,
+          state: user.state,
+          zip_code: user.zip
+        };
 
-          clientEmail = user.email;
+        clientEmail = user.email;
 
-          let invoice = {
-            shipping: shipping,
-            items: invoice_items,
-            subtotal: subtotal * 100,
-            paid: 0,
-            invoice_nr: req.params.id
-          };
+        let invoice = {
+          shipping: shipping,
+          items: invoice_items,
+          subtotal: subtotal,
+          paid: 0,
+          invoice_nr: req.params.id
+        };
 
-          let order = {
-            id: req.params.id,
-            clientEmail: clientEmail,
-          };
+        let order = {
+          id: req.params.id,
+          clientEmail: clientEmail,
+        };
 
-          createInvoiceEmail(invoice, 'ProteinCTinvoice.pdf', order, req, res);
-        }).catch(err => {logger.error(err);});
+        createInvoiceEmail(invoice, 'ProteinCTinvoice.pdf', order, req, res);
       }).catch(err => {logger.error(err);});
     }).catch(err => {logger.error(err);});
   }).catch(err => {logger.error(err);});
