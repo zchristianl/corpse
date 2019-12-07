@@ -2,7 +2,7 @@ extends layout
 
 block content
   h1 Inventory
-  a.btn.btn-purple(href="/inventory/create" style="float:right; margin-bottom: 5px;")
+  a.btn.btn-primary(href="/inventory/create" style="float:right; margin-bottom: 5px;")
     span.fas.fa-plus.fa-lg
   table.table.table-striped
     thead
@@ -44,27 +44,7 @@ block content
             button.btn.btn-secondary(type="button" data-dismiss="modal") Cancel
             button.btn.btn-danger.deleteModal(type="button" data-dismiss="modal" id="delete" value=1) Delete
 
-  script.
-    $('.deleteButton').on('click', function(e) {
-      var itemId = $(e.target).attr('value');
-      console.log(itemId);
-      $(".deleteModal").val(itemId); 
-    });
-
-    $('.deleteModal').on('click', function(e){
-      console.log('here');
-      $target = $(e.target);
-      $.ajax({
-        type: 'POST',
-        url: '/inventory/delete/'+$target.attr('value'),
-        dataType: 'json',
-        success: function(response){
-          if (response.redirect !== undefined && response.redirect) {
-            window.location.href = response.redirect;
-          }
-        }
-      });
-    }); 
+  script(src='/js/inventory.js')
 
 
 
