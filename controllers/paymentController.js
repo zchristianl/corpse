@@ -185,8 +185,8 @@ exports.create_invoice = (req, res) => {
         model: models.Inventory
       }
     ]
-  }).then(inv_items => { 
-    inv_items.forEach((item) => {
+  }).then(inventory_item => { 
+    inventory_item.forEach((item) => {
       let items = {
         item: item.inventory.name,
         description: item.inventory.description,
