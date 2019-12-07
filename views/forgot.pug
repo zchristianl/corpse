@@ -1,9 +1,11 @@
 extends layout
 
 block content
-  form(method='POST', action='/users/forgot')
-    legend Forgot Password
-    .form-group
-      label Email
-      input.form-control(type='email', name='email', autofocus)
-    button.btn.btn-primary(type='submit' value='Submit') Reset Password
+  .container.col-lg-5
+      form(method='POST', action='/users/forgot')
+        legend
+          h2 Forgot Password
+        .form-group
+          label Email
+          input.form-control(type='email', name='email', autofocus)
+        button.btn.btn-primary(type='submit' value='Submit') Reset Password

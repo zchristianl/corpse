@@ -3,11 +3,10 @@ html(lang="en")
     title ProteinCT
     meta(charset="utf-8")
     meta(name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no")
-    link(rel='stylesheet' href='/css/bootstrap.min.css')
-    link(rel='stylesheet' href='/css/style.css')
+    link(rel='stylesheet' href='/css/custom.css')
     script(type='text/javascript' src="/jquery/jquery.min.js")
   body
-    .container-fluid
+    .container-fluid(style="margin-bottom: 5px;")
       nav.navbar.navbar-expand-lg.navbar-light.bg-light
         a.navbar-brand(href='/users/dashboard')
           img(src='/images/protein_ct_small.png' style="")
@@ -43,7 +42,7 @@ html(lang="en")
             ul.navbar-nav.ml-auto
               a.nav-link(href='/users/register') Register
               a.nav-link(href='/users/login') Login
-    .container-fluid(style="marign: 5px;")
+    .container-fluid
       != messages('message', locals)
       if errors
         each error, i in errors
