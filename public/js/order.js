@@ -26,10 +26,10 @@ $(function () {
 
 function stdName(val) {
   switch (val) {
-  case 'new':
+  case 'NEW':
     return 'New';
   case 'New':
-    return 'new';
+    return 'NEW';
   case 'ESTIMATE':
     return 'Estimate';
   case 'Estimate':
@@ -76,7 +76,7 @@ function stdName(val) {
 function makeEditable() {
   $('#itemtable').attr('hidden', false);
   document.getElementById('edit_button').disabled = true;
-  var orderState = ['new', 'estimate', 'in-progress', 'payment', 'complete'];
+  var orderState = ['NEW', 'ESTIMATE', 'IN-PROGRESS', 'PAYMENT', 'COMPLETE'];
 
   /* Order State */
   var state = document.getElementById('order_state');
