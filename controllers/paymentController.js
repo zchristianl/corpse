@@ -178,7 +178,6 @@ exports.create_invoice = (req, res) => {
   let clientEmail;
 
   models.Item.findAll({
-
     where: { orderId: req.params.id },
     include: [
       {
