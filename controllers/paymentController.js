@@ -46,62 +46,61 @@ exports.payment_remove = (req, res) => {
 exports.create_session = (req, res) => {
   // array of items for stripe checkout
   let checkout_items = new Array();
-  models.Item.findOne({
-    where: {
-      orderId: req.params.id
-    }
-  }).then(item => {
-    models.Inventory.findOne({
-      where: {
-        id: item.inventoryId
+  models.Item.findAll({
+    where: { orderId: req.params.id },
+    include: [
+      {
+        model: models.Inventory
       }
-    }).then(inventory_item => {
-      // create an object for stripe checkout
+    ]
+  }).then(inventory_item => { 
+    // create an object for stripe checkout
+    inventory_item.forEach(item => {
       let checkout_item = {
-        name: inventory_item.name,
-        description: inventory_item.description,
-        amount: inventory_item.price * 100,
+        name: item.inventory.name,
+        description: item.inventory.description,
+        amount: item.inventory.price * 100,
         currency: 'usd',
         quantity: 1,
       };
       checkout_items.push(checkout_item);
-      return checkout_items;
-    }).then(checkout_items => {
-      // Need to add urls
-      stripe.checkout.sessions.create({
-        customer_email: req.user.email,
-        payment_method_types: ['card'],
-        line_items: checkout_items,
-        success_url: 'http://localhost:3000/payment/success',
-        cancel_url: 'http://localhost:3000/payment/cancel',
-      }).then(session => {
-        // store checkout id
-        models.Order.findOne({
-          where: {
-            id: req.params.id
-          }
-        }).then(order => {
-          order.update({
-            checkout_id: session.id
-          }).catch(err => {
-            logger.error(err);
-          });
+    });
+    return checkout_items;
+  }).then(checkout_items => {
+    // Need to add urls
+    stripe.checkout.sessions.create({
+      customer_email: req.user.email,
+      payment_method_types: ['card'],
+      line_items: checkout_items,
+      success_url: 'http://localhost:3000/payment/success',
+      cancel_url: 'http://localhost:3000/payment/cancel',
+    }).then(session => {
+      // store checkout id
+      models.Order.findOne({
+        where: {
+          id: req.params.id
+        }
+      }).then(order => {
+        order.update({
+          checkout_id: session.id
         }).catch(err => {
           logger.error(err);
-        });
-        return session;
-      }).then(session => {
-        res.render('payment', {
-          session: session
         });
       }).catch(err => {
         logger.error(err);
       });
+      return session;
+    }).then(session => {
+      res.render('payment', {
+        session: session
+      });
     }).catch(err => {
       logger.error(err);
-      req.flash('danger', 'There seems to be a problem. Please try again later.');
-      res.redirect('client-dashboard');
     });
+  }).catch(err => {
+    logger.error(err);
+    req.flash('danger', 'There seems to be a problem. Please try again later.');
+    res.redirect('client-dashboard');
   });
 };
 
@@ -109,8 +108,8 @@ exports.create_session = (req, res) => {
   Stripe Webhook for payment 
 */
 exports.stripe_webhook = (req, res) => {
-  // endpoint for Stripe CLI
   // endpointSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  // endpoint for Stripe CLI
   const endpointSecret = 'whsec_lbXafEi0NDelOinNP1XnaaXSFkmu0Hze';
   const sig = req.headers['stripe-signature'];
 
