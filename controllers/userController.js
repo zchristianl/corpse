@@ -611,7 +611,9 @@ exports.edit_account_password = (req, res) => {
     });
   } else {
     models.User.findOne({ 
-      id: req.user.id
+      where: {
+        id: req.user.id
+      }
     })
       .then(user => {
         bcrypt.genSalt(10, (err, salt) => {
