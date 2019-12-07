@@ -28,5 +28,5 @@ block content
             td=(order.state).charAt(0) + (order.state).substring(1, order.state.length).toLowerCase()
             td
               form(method="GET" action="/order/view/"+order.id style="margin-right: 5px; float:left;")
-                button.btn.btn-primary(type="submit")
-                  span.far.fa-eye.fa-lg
+                button.btn.btn-warning(type="submit")
+                  span.far.fa-eye.fa-sm

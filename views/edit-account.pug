@@ -22,57 +22,109 @@ block content
     .row
       .col
         label First Name:
-        input.form-control(name='first_name' type='text' value=(client.first_name) required maxlength='25')
+        input.form-control(name='first_name' type='text' value=(user.first_name) required maxlength='25')
       .col
         label Last Name:
-        input.form-control(name='last_name' type='text' value=(client.last_name) required maxlength='25')
+        input.form-control(name='last_name' type='text' value=(user.last_name) required maxlength='25')
     .row
       .col
         label Email:
-        input.form-control(name='email' type='email', value=(client.email) required maxlength='50')
+        input.form-control(name='email' type='email', value=(user.email) required maxlength='50')
     br
     h2 Business Info
     .row
       .col 
         label Organization:
-        input.form-control(name='organization' type='text' value=(client.organization) required maxlength='25')
+        input.form-control(name='organization' type='text' value=(user.organization) required maxlength='25')
       .col 
         label Department:
-        input.form-control(name='department' type='text' value=(client.department) maxlength='25')
+        input.form-control(name='department' type='text' value=(user.department) maxlength='25')
       .col 
         label Research Area:
-        select.custom-select(name='research_area' id='research_area')
-          option(value='' selected=(entry == null))
-          option(value='cancer' selected=(client != null && client.research_area === 'cancer')) Cancer
-          option(value='neuroscience' selected=(client != null && client.research_area === 'neuroscience')) Neuroscience
-          option(value='stem_cell' selected=(client != null && client.research_area === 'stem_cell')) Stem Cell
-          option(value='virology' selected=(client != null && client.research_area === 'virology')) Virology
-          option(value='epigenetics' selected=(client != null && client.research_area === 'epigenetics')) Epigenetics
-          option(value='cardiovascular_disease' selected=(client != null && client.research_area === 'cardiovascular_disease')) Cardiovascular Disease
+        select.custom-select(name='research_area')
+          option(value='cancer' selected=(user.research_area === 'cancer')) Cancer
+          option(value='neuroscience' selected=(user.research_area === 'neuroscience')) Neuroscience
+          option(value='stem_cell' selected=(user.research_area === 'stem_cell')) Stem Cell
+          option(value='virology' selected=(user.research_area === 'virology')) Virology
+          option(value='epigenetics' selected=(user.research_area === 'epigenetics')) Epigenetics
+          option(value='cardiovascular_disease' selected=(user.research_area === 'cardiovascular_disease')) Cardiovascular Disease
     .row
       .col 
         label Address:
-        textarea.form-control(rows="5" name="address" required) #{client.address}
+        textarea.form-control(rows="5" name="address" required) #{user.address}
     .form-row
       .col-md
         label City:
-        input.form-control(name='city' type='text' value=(client.city) maxlength='25' required)
+        input.form-control(name='city' type='text' value=(user.city) maxlength='25' required)
         div.invalid-feedback We need to know where you live!
       .col-sm-90
         label State:
-        input.form-control(name='state' type='text' value=value=(client.state) maxlength='2' required)
+        select.custom-select(name='state' required)
+          option(selected disabled hidden)
+          option(value='AL' selected=(user != null && client.state === 'AL')) AL
+          option(value='AK' selected=(user != null && client.state === 'AK')) AK
+          option(value='AR' selected=(user != null && client.state === 'AR')) AR
+          option(value='AZ' selected=(user != null && client.state === 'AZ')) AZ
+          option(value='CA' selected=(user != null && client.state === 'CA')) CA
+          option(value='CO' selected=(user != null && client.state === 'CO')) CO
+          option(value='CT' selected=(user != null && client.state === 'CT')) CT
+          option(value='DC' selected=(user != null && client.state === 'DC')) DC
+          option(value='DE' selected=(user != null && client.state === 'DE')) DE
+          option(value='FL' selected=(user != null && client.state === 'FL')) FL
+          option(value='GA' selected=(user != null && client.state === 'GA')) GA
+          option(value='HI' selected=(user != null && client.state === 'HI')) HI
+          option(value='IA' selected=(user != null && client.state === 'IA')) IA
+          option(value='ID' selected=(user != null && client.state === 'ID')) ID
+          option(value='IL' selected=(user != null && client.state === 'IL')) IL
+          option(value='IN' selected=(user != null && client.state === 'IN')) IN
+          option(value='KS' selected=(user != null && client.state === 'KS')) KS
+          option(value='KY' selected=(user != null && client.state === 'KY')) KY
+          option(value='LA' selected=(user != null && client.state === 'LA')) LA
+          option(value='MA' selected=(user != null && client.state === 'MA')) MA
+          option(value='MD' selected=(user != null && client.state === 'MD')) MD
+          option(value='ME' selected=(user != null && client.state === 'ME')) ME
+          option(value='MI' selected=(user != null && client.state === 'MI')) MI
+          option(value='MN' selected=(user != null && client.state === 'MN')) MN
+          option(value='MO' selected=(user != null && client.state === 'MO')) MO
+          option(value='MS' selected=(user != null && client.state === 'MS')) MS
+          option(value='MT' selected=(user != null && client.state === 'MT')) MT
+          option(value='NC' selected=(user != null && client.state === 'NC')) NC
+          option(value='NE' selected=(user != null && client.state === 'NE')) NE
+          option(value='NH' selected=(user != null && client.state === 'NH')) NH
+          option(value='NJ' selected=(user != null && client.state === 'NJ')) NJ
+          option(value='NM' selected=(user != null && client.state === 'NM')) NM
+          option(value='NV' selected=(user != null && client.state === 'NV')) NV
+          option(value='NY' selected=(user != null && client.state === 'NY')) NY
+          option(value='ND' selected=(user != null && client.state === 'ND')) ND
+          option(value='OH' selected=(user != null && client.state === 'OH')) OH
+          option(value='OK' selected=(user != null && client.state === 'OK')) OK
+          option(value='OR' selected=(user != null && client.state === 'OR')) OR
+          option(value='PA' selected=(user != null && client.state === 'PA')) PA
+          option(value='RI' selected=(user != null && client.state === 'RI')) RI
+          option(value='SC' selected=(user != null && client.state === 'SC')) SC
+          option(value='SD' selected=(user != null && client.state === 'SD')) SD
+          option(value='TN' selected=(user != null && client.state === 'TN')) TN
+          option(value='TX' selected=(user != null && client.state === 'TX')) TX
+          option(value='UT' selected=(user != null && client.state === 'UT')) UT
+          option(value='VT' selected=(user != null && client.state === 'VT')) VT
+          option(value='VA' selected=(user != null && client.state === 'VA')) VA
+          option(value='WA' selected=(user != null && client.state === 'WA')) WA
+          option(value='WI' selected=(user != null && client.state === 'WI')) WI
+          option(value='WV' selected=(user != null && client.state === 'WV')) WV
+          option(value='WY' selected=(user != null && client.state === 'WY')) WY
+
       .col-sm-90
         label ZIP:
-        input.form-control(name='zip' type='text' value=(client.zip) pattern='[0-9]*' maxlength="5" required)
+        input.form-control(name='zip' type='text' value=(user.zip) pattern='[0-9]*' maxlength="5" required)
     .row 
       .col
         label Phone:
-        input.form-control(name='phone' type='text' value=(client.phone) pattern="^[1-9]{1}\\d{5}\\d{4}$" required='true')
+        input.form-control(name='phone' type='text' value=(user.phone) pattern="^[1-9]{1}\\d{5}\\d{4}$" required='true')
         div.invalid-feedback Please enter a 10-digit phone number without any dashes or parentheses.
     .row 
       .col(id='po_num_col')
         label PO #:
-        input.form-control(name='po_num' type='text' value=(client.po_num))  
+        input.form-control(name='po_num' type='text' value=(user.po_num))  
     span(style="float: right; padding: 10px 0px 10px 0px;")
-      input(type='hidden' name='id' value=(client.id))
+      input(type='hidden' name='id' value=(user.id))
       input.btn.btn-primary(type='submit' value=('Update'))
