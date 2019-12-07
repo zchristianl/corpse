@@ -19,7 +19,9 @@ exports.dashboard_get = (req, res) => {
     models.Order.findAll({
       where: {
         userId: req.user.id
-      }
+      }, order: [
+        ['createdAt', 'DESC']
+      ]
     }).then(orders => {
       res.render('client-dashboard', {
         orders: orders
@@ -295,13 +297,13 @@ exports.forgot_post = (req, res, next) => {
         });
       }).catch(err => {
         logger.error(err);
-        req.flash('error', 'No account with that email address exists.');
+        req.flash('danger', 'No account with that email address exists.');
         return res.redirect('/users/forgot');
       });
     },
     function (token, user, done) {
       var err = mailer.sendForgotPassword(req, user, token); 
-      req.flash('info', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
+      req.flash('success', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
       done(err, 'done');
     }
   ], function (err) {
@@ -324,7 +326,7 @@ exports.new_password = (req, res) => {
     })
     .catch(err => {
       logger.error(err);
-      req.flash('error', 'Password reset token is invalid or has expired.');
+      req.flash('danger', 'Password reset token is invalid or has expired.');
       return res.redirect('/user/forgot');
     });
 };
@@ -361,7 +363,7 @@ exports.reset_confirm = (req, res) => {
                   })
                   .catch(err => {
                     logger.error(err);
-                    req.flash('error', 'Password reset token is invalid or has expired.');
+                    req.flash('danger', 'Password reset token is invalid or has expired.');
                     return res.redirect('back');
                   });
               });
@@ -430,7 +432,9 @@ function client_view_get_internal(req, res) {
           }
         }
       ]
-    }
+    }, order: [
+      ['last_name', 'ASC']
+    ]
   }).then(users => res.render('client', {
     users: users
   }));

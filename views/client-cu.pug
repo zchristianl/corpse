@@ -17,7 +17,7 @@ block content
     .row
       .col
         label Email:
-        input.form-control(name='email' type='email', value=(client ? client.email : '') required maxlength='50') 
+        input.form-control(name='email' type='email', value=(client ? client.email : '') required maxlength='50' pattern="^\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$") 
     br
     h2 Business Info
     .row
@@ -48,7 +48,59 @@ block content
         div.invalid-feedback We need to know where you live!
       .col-2
         label State:
-        input.form-control(name='state' type='text' value=value=(client ? client.state : '') maxlength='2' required)
+        select.custom-select(name='state' required)
+          option(selected disabled hidden)
+          option(value='AL' selected=(client != null && client.state === 'AL')) AL
+          option(value='AK' selected=(client != null && client.state === 'AK')) AK
+          option(value='AR' selected=(client != null && client.state === 'AR')) AR
+          option(value='AZ' selected=(client != null && client.state === 'AZ')) AZ
+          option(value='CA' selected=(client != null && client.state === 'CA')) CA
+          option(value='CO' selected=(client != null && client.state === 'CO')) CO
+          option(value='CT' selected=(client != null && client.state === 'CT')) CT
+          option(value='DC' selected=(client != null && client.state === 'DC')) DC
+          option(value='DE' selected=(client != null && client.state === 'DE')) DE
+          option(value='FL' selected=(client != null && client.state === 'FL')) FL
+          option(value='GA' selected=(client != null && client.state === 'GA')) GA
+          option(value='HI' selected=(client != null && client.state === 'HI')) HI
+          option(value='IA' selected=(client != null && client.state === 'IA')) IA
+          option(value='ID' selected=(client != null && client.state === 'ID')) ID
+          option(value='IL' selected=(client != null && client.state === 'IL')) IL
+          option(value='IN' selected=(client != null && client.state === 'IN')) IN
+          option(value='KS' selected=(client != null && client.state === 'KS')) KS
+          option(value='KY' selected=(client != null && client.state === 'KY')) KY
+          option(value='LA' selected=(client != null && client.state === 'LA')) LA
+          option(value='MA' selected=(client != null && client.state === 'MA')) MA
+          option(value='MD' selected=(client != null && client.state === 'MD')) MD
+          option(value='ME' selected=(client != null && client.state === 'ME')) ME
+          option(value='MI' selected=(client != null && client.state === 'MI')) MI
+          option(value='MN' selected=(client != null && client.state === 'MN')) MN
+          option(value='MO' selected=(client != null && client.state === 'MO')) MO
+          option(value='MS' selected=(client != null && client.state === 'MS')) MS
+          option(value='MT' selected=(client != null && client.state === 'MT')) MT
+          option(value='NC' selected=(client != null && client.state === 'NC')) NC
+          option(value='NE' selected=(client != null && client.state === 'NE')) NE
+          option(value='NH' selected=(client != null && client.state === 'NH')) NH
+          option(value='NJ' selected=(client != null && client.state === 'NJ')) NJ
+          option(value='NM' selected=(client != null && client.state === 'NM')) NM
+          option(value='NV' selected=(client != null && client.state === 'NV')) NV
+          option(value='NY' selected=(client != null && client.state === 'NY')) NY
+          option(value='ND' selected=(client != null && client.state === 'ND')) ND
+          option(value='OH' selected=(client != null && client.state === 'OH')) OH
+          option(value='OK' selected=(client != null && client.state === 'OK')) OK
+          option(value='OR' selected=(client != null && client.state === 'OR')) OR
+          option(value='PA' selected=(client != null && client.state === 'PA')) PA
+          option(value='RI' selected=(client != null && client.state === 'RI')) RI
+          option(value='SC' selected=(client != null && client.state === 'SC')) SC
+          option(value='SD' selected=(client != null && client.state === 'SD')) SD
+          option(value='TN' selected=(client != null && client.state === 'TN')) TN
+          option(value='TX' selected=(client != null && client.state === 'TX')) TX
+          option(value='UT' selected=(client != null && client.state === 'UT')) UT
+          option(value='VT' selected=(client != null && client.state === 'VT')) VT
+          option(value='VA' selected=(client != null && client.state === 'VA')) VA
+          option(value='WA' selected=(client != null && client.state === 'WA')) WA
+          option(value='WI' selected=(client != null && client.state === 'WI')) WI
+          option(value='WV' selected=(client != null && client.state === 'WV')) WV
+          option(value='WY' selected=(client != null && client.state === 'WY')) WY
       .col-4
         label ZIP:
         input.form-control(name='zip' type='text' value=(client ? client.zip : '') pattern='[0-9]*' maxlength="5" required)
@@ -67,7 +119,7 @@ block content
     if client
       span(style="float: left; padding: 10px 0px 10px 0px;")
         button.btn.btn-danger.deleteButton(type="button" name="id" value=client.id data-toggle='modal' data-target='#DeleteModal') Delete
-    
+
   .container
     #DeleteModal.modal.fade(tabindex="-1" role="dialog" aria-labelledby="DeleteModal" aria-hidden="true")
       .modal-dialog

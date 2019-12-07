@@ -16,8 +16,8 @@ block content
         label Type:
         select.custom-select(name='type' required)
           option(value='' selected=(entry != null && entry.type == null) hidden)
-          option(value='product' selected=(entry != null && entry.type === 'product')) Product
-          option(value='service' selected=(entry != null && entry.type === 'service')) Service
+          option(value='product' selected=(entry != null && entry.type === 'PRODUCT')) Product
+          option(value='service' selected=(entry != null && entry.type === 'SERVICE')) Service
       .col
         label Category: 
         input.form-control(name='category' type='text' value=(entry ? entry.category : '') required maxlength='25')

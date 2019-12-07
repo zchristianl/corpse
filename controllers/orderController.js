@@ -7,6 +7,8 @@ exports.order_view_get = (req, res) => {
     include: [
       { model: models.Item },
       { model: models.User }
+    ], order: [
+      ['createdAt', 'DESC']
     ]
   })
     .then(orders => res.render('order', {

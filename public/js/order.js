@@ -26,26 +26,26 @@ $(function () {
 
 function stdName(val) {
   switch (val) {
-  case 'new':
+  case 'NEW':
     return 'New';
   case 'New':
-    return 'new';
-  case 'estimate':
+    return 'NEW';
+  case 'ESTIMATE':
     return 'Estimate';
   case 'Estimate':
-    return 'esimate';
-  case 'in-progress':
+    return 'ESTIMATE';
+  case 'IN-PROGRESS':
     return 'In-Progress';
   case 'In-Progress':
-    return 'in-progress';
-  case 'payment':
+    return 'IN-PROGRESS';
+  case 'PAYMENT':
     return 'Payment';
   case 'Payment':
-    return 'payment';
-  case 'complete':
+    return 'PAYMENT';
+  case 'COMPLETE':
     return 'Complete';
   case 'Complete':
-    return 'complete';
+    return 'COMPLETE';
   case 'grant':
     return 'Grant';
   case 'immediately':
@@ -76,7 +76,7 @@ function stdName(val) {
 function makeEditable() {
   $('#itemtable').attr('hidden', false);
   document.getElementById('edit_button').disabled = true;
-  var orderState = ['new', 'estimate', 'in-progress', 'payment', 'complete'];
+  var orderState = ['NEW', 'ESTIMATE', 'IN-PROGRESS', 'PAYMENT', 'COMPLETE'];
 
   /* Order State */
   var state = document.getElementById('order_state');

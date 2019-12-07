@@ -2,11 +2,14 @@ extends layout
 
 block content
   h1 Clients
-  a.btn.btn-purple(href="/users/create" style="float:right; margin-bottom: 5px;")
+  a.btn.btn-primary(href="/users/create" style="float:right; margin-bottom: 5px;")
     span.fas.fa-plus.fa-lg
-  form.search-form(action='/users/view')
-    input(type='search' name='term' placeholder='Search for Clients...')
-    input(type='submit' value='Search')
+
+  .d-lg-inline-flex.flex-row.p-1
+    form.search-form.d-inline-flex.p-1(action='/users/view')
+      input.form-control(type='search' name='term' placeholder='Search for Clients...' style="margin: 0 5px 0 0;")
+      input.form-control.btn.btn-primary(type='submit' value='Search' style="max-width: 30%;")
+
   table.table.table-striped
     thead
       tr
@@ -27,7 +30,7 @@ block content
           td $0.00
           td $0.00
           td
-            a.btn.btn-warning(href='/users/view/'+user.id role="button" style="margin-right: 5px;")
+            a.btn.btn-primary(href='/users/view/'+user.id role="button" style="margin-right: 5px;")
               span.far.fa-eye.fa-sm
-            a.btn.btn-primary(href='/users/edit/'+user.id role="button" style="margin-left: 5px;")
+            a.btn.btn-secondary(href='/users/edit/'+user.id role="button" style="margin-left: 5px;")
               span.far.fa-edit.fa-sm

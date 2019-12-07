@@ -3,26 +3,26 @@ block content
     -
         function stdName(val) {
             switch (val) {
-                case 'new':
-                    return 'New';
-                case 'New':
-                    return 'new';
-                case 'estimate':
+            case 'NEW':
+                return 'New';
+            case 'New':
+                return 'NEW';
+                case 'ESTIMATE':
                     return 'Estimate';
                 case 'Estimate':
-                    return 'esimate';
-                case 'in-progress':
+                    return 'ESTIMATE';
+                case 'IN-PROGRESS':
                     return 'In-Progress';
                 case 'In-Progress':
-                    return 'in-progress';
-                case 'payment':
+                    return 'IN-PROGRESS';
+                case 'PAYMENT':
                     return 'Payment';
                 case 'Payment':
-                    return 'payment';
-                case 'complete':
+                    return 'PAYMENT';
+                case 'COMPLETE':
                     return 'Complete';
                 case 'Complete':
-                    return 'complete';
+                    return 'COMPLETE';
                 case 'grant':
                     return 'Grant';
                 case 'immediately':
@@ -68,8 +68,9 @@ block content
         b="Intended Use: "
         span(id='intended_use')=stdName(order.intended_use)
     br
-    button.btn.btn-primary(style="float: right;" id="edit_button")
-        span.far.fa-edit.fa-sm
+    if user.account_type === "seller"
+        button.btn.btn-primary(style="float: right;" id="edit_button")
+            span.far.fa-edit.fa-sm
     br
     h5 Items
     table.table.table-striped(id="itemtable" hidden=(order.items.length == 0 ? "hidden" : false))
@@ -102,8 +103,9 @@ block content
                 td
                     input.btn.btn-success(type="submit" id="submit_item_button" style="float: left;")
     br
-    button.btn.btn-primary(id="add_payment" style="float: right;")
-        span.far.fa-edit.fa-sm
+    if user.account_type === "seller"
+        button.btn.btn-primary(id="add_payment" style="float: right;")
+            span.far.fa-edit.fa-sm
     br
     h5 Payments
     table.table.table-striped(id="paytable" hidden=(order.payments.length == 0 ? "hidden" : false))
@@ -144,5 +146,6 @@ block content
         form(method="GET" action="/payment/invoice/"+order.id style="margin-right: 5px; float:right;")
             button.btn.btn-primary(type="submit") Send Invoice
 
-    script(src='/js/order.js')
-    script(src='/js/formval.js')
+    if user.account_type === "seller"
+        script(src='/js/order.js')
+        script(src='/js/formval.js')
