@@ -511,7 +511,15 @@ exports.client_delete_post = (req, res) => {
 };
 
 exports.contact_seller = (req, res) => {
-  res.render('contact');
+  models.User.findOne({
+    where: {
+      id: req.user.id
+    }
+  }).then(user => {
+    res.render('contact', {
+      user: user,
+    });
+  });
 };
 
 // Send email to seller
@@ -544,9 +552,9 @@ exports.edit_account_get = (req, res) => {
     where: {
       id: req.user.id
     }
-  }).then((client) => {
+  }).then((user) => {
     res.render('edit-account', {
-      client: client
+      user: user
     });
   }).catch(err => logger.error(err));
 };
@@ -556,24 +564,25 @@ exports.edit_account_post =  (req, res) => {
     where: {
       id: req.user.id
     }
-  }).then((entry) => {
-    entry.update({
+  }).then(user => {
+    user.update({
       first_name: req.body.first_name,
       last_name: req.body.last_name,
       email: req.body.email,
       organization: req.body.organization,
       department: req.body.department,
-      reserach_area: req.body.research_area,
+      research_area: req.body.research_area,
       address: req.body.address,
       city: req.body.city,
       state: req.body.state,
       zip: req.body.zip,
       phone: req.body.phone,
-      payment: req.body.payment,
       po_num: req.body.po_num
     }).then(() => { 
       req.flash('success', 'Your account has been successfully updated!');
-      res.render('account'); 
+      res.render('account', {
+        user: user
+      }); 
     })
       .catch(err => logger.error(err));
   })
