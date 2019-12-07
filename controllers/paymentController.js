@@ -1,5 +1,6 @@
 const models = require('../config/database');
 const logger = require('../utils/logger');
+const {createInvoiceEmail } = require('../utils/createInvoice.js');
 require('dotenv').config();
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
@@ -169,73 +170,66 @@ const handleCheckoutSession = (session) => {
   });
 };
 
+// Create and send an invoice for an order
 exports.create_invoice = (req, res) => {
-  const {createInvoiceEmail } = require('../utils/createInvoice.js');
-
   let invoice_items = new Array();
   let shipping;
-  let subtotal;
+  let subtotal = 0;
   let clientEmail;
 
-  models.Order.findOne({
+  models.Item.findAll({
     where: {
-      id: req.params.id
+      orderId: req.params.id
     }
-  }).then(order => {
-    models.User.findOne({
+  }).then(items => {
+    models.Inventory.findAll({
       where: {
-        id: order.userId
+        id: items.inventoryId
       }
-    }).then(user => {
-      shipping = {
-        name: user.first_name + ' ' + user.last_name,
-        address: user.address.replace('\r', '').split('\n')[0],
-        city: user.city,
-        state: user.state,
-        zip_code: user.zip
-      };
-
-      clientEmail = user.email;
-      console.log(req.params.id);
-      models.Item.findAll({
+    }).then(inv_items => {
+      inv_items.forEach(inv_item => { 
+        let items = {
+          item: inv_item.name,
+          description: inv_item.description,
+          quantity: 1,
+          amount: inv_item.price * 100
+        };
+        subtotal += parseFloat(inv_item.price);
+        invoice_items.push(items);
+      });
+    }).then(() => {
+      models.Order.findOne({
         where: {
-          orderId: req.params.id
+          id: req.params.id
         }
-      }).then(item => {
-        console.log('4 ' + item.id);
-        models.Inventory.findAll({
+      }).then(order => {
+        models.User.findOne({
           where: {
-            id: item.inventoryId
+            id: order.userId
           }
-        }).then(inv_items => {
-          console.log('here');
-          subtotal = 0;
-          for(let inv_item in inv_items) {
-            let items = {
-              item: inv_item.name,
-              description: inv_item.description,
-              quantity: 1,
-              amount: item.price
-            };
-            subtotal += item.price;
-            invoice_items.push(items);
-          }
+        }).then(user => {
+          shipping = {
+            name: user.first_name + ' ' + user.last_name,
+            address: user.address.replace('\r', '').split('\n')[0],
+            city: user.city,
+            state: user.state,
+            zip_code: user.zip
+          };
+
+          clientEmail = user.email;
 
           let invoice = {
             shipping: shipping,
             items: invoice_items,
-            subtotal: subtotal,
+            subtotal: subtotal * 100,
             paid: 0,
             invoice_nr: req.params.id
           };
-        
+
           let order = {
             id: req.params.id,
             clientEmail: clientEmail,
           };
-        
-          console.log(invoice);
-          console.log(order);
 
           createInvoiceEmail(invoice, 'ProteinCTinvoice.pdf', order, req, res);
         }).catch(err => {logger.error(err);});

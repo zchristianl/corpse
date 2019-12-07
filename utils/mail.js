@@ -65,10 +65,14 @@ exports.sendInvoice = async function(pdf, filename, order, req, res) {
   SGmail.send(message).then(sent => {
     if(sent){
       req.flash('success', 'An invoice has been sent to ' + order.clientEmail);
-      res.redirect('/users/dashboard');
+      res.render('seller-dashboard', {
+        user: req.user
+      });
     } else {
       req.flash('danger', 'There was an error. Please try again.');
-      res.redirect('/');
+      res.render('back', {
+        user: req.user
+      });
     }
   }).catch(err => { 
     logger.error(err);
