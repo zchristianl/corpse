@@ -142,7 +142,7 @@ block content
                     td
                         input.btn.btn-success(type="submit" id="submit_payment_button" style="float: right;")
     br
-    if order.state !== 'COMPLETE'
+    if order.state !== 'COMPLETE' && user.account_type === 'seller'
         form(method="GET" action="/payment/invoice/"+order.id style="margin-right: 5px; float:right;")
             button.btn.btn-primary(type="submit") Send Invoice
 
