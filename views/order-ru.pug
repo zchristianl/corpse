@@ -103,10 +103,49 @@ block content
                 td
                     input.btn.btn-success(type="submit" id="submit_item_button" style="float: left;")
     br
+
+    button.btn.btn-primary(id="add_note" style="float: right;")
+        span.far.fa-edit.fa-sm
+        
+    br
+
+    h5 Notes
+    table.table.table-striped(id="notestable" hidden=(order.notes.length == 0 ? "hidden" : false))
+        thead
+            tr
+                th(scope="col" style="width: 15%;") User/Date
+                th(scope="col" style="width: 75;") Message
+                th(scope="col" id="notes_ops_head" style="width: 10%;" hidden)
+        tbody(id="notes_body")
+            if order.notes != null && order.notes.length > 0
+                each note in order.notes
+                    tr(id="note_"+note.id)
+                        td
+                            b=note.user.first_name + note.user.last_name
+                            br
+                            =(new Date(note.createdAt)).toLocaleString('en-US', { month: 'long', day: '2-digit', year: 'numeric' })
+                        td=note.message
+                        td(name="note_ops" hidden)
+                            if user.account_type === "seller"
+                                button.btn.btn-danger(name="delete-note-confirm" style="margin: 5px 0 0 0;" value=note.id data-toggle="tooltip" data-placement="top" title="Delete")
+                                    span.fas.fa-trash-alt.fa-sm
+            else
+                p There are no notes. 
+        tr(id="new_message_row" hidden)
+            form(id="newnote")
+                input(type="hidden" name="order_id" value=order.id)
+                input(type="hidden" name="user_id" value=user.id)
+                td(colspan=2)
+                    textarea.form-control(name='message' id='message' maxlength="500" required)
+                td
+                    input.btn.btn-success(type="submit" id="submit_note_button" style="float: left;")
+    br
+
     if user.account_type === "seller"
         button.btn.btn-primary(id="add_payment" style="float: right;")
             span.far.fa-edit.fa-sm
     br
+
     h5 Payments
     table.table.table-striped(id="paytable" hidden=(order.payments.length == 0 ? "hidden" : false))
         thead
@@ -123,8 +162,8 @@ block content
                         td=stdName(payment.method)
                         td="$"+payment.amount
                         td(name="pay_ops" hidden)
-                            button.btn.btn-danger(name="delete-payment-confirm" style="margin: 5px 0 0 0;" value=payment.id data-toggle="tooltip" data-placement="top" title="Delete")
-                                span.fas.fa-trash-alt.fa-sm
+                                    button.btn.btn-danger(name="delete-payment-confirm" style="margin: 5px 0 0 0;" value=payment.id data-toggle="tooltip" data-placement="top" title="Delete")
+                                        span.fas.fa-trash-alt.fa-sm
             else
                 p There are no payments.
             tr(id="new_payment_row" hidden)
@@ -147,5 +186,6 @@ block content
             button.btn.btn-primary(type="submit") Send Invoice
 
     if user.account_type === "seller"
-        script(src='/js/order.js')
+        script(src='/js/order-seller.js')
         script(src='/js/formval.js')
+    script(src='/js/order-client.js')
