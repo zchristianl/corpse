@@ -74,7 +74,7 @@ exports.inventory_create = (req, res) => {
     type: req.body.type,
     description: req.body.description,
     cost: req.body.cost,
-    price: req.body.price,
+    price: req.body.price ? req.body.price : 0.00,
     stock: req.body.stock
   };
 

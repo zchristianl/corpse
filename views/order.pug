@@ -16,7 +16,7 @@ block content
           th(scope="col" style="width: 10%;")
       tbody
         each order in orders
-          tr(scope="row")
+          tr
             -var date = (new Date(order.updatedAt)).toLocaleString('en-US', { month: 'long', day: '2-digit', year: 'numeric' });
             td=date
             td
