@@ -7,9 +7,10 @@ const logger = require('./utils/logger');
 const passport = require('passport');
 const fs = require('fs');
 const app = express();
+const compileSass = require('compile-sass');
 
 global.ensureAuthenticated = (req, res, next) => {
-  if(req.isAuthenticated()){
+  if (req.isAuthenticated()) {
     return next ? next() : true;
   } else {
     res.redirect('/users/login');
@@ -17,7 +18,7 @@ global.ensureAuthenticated = (req, res, next) => {
 };
 
 global.ensureSeller = (req, res, next) => {
-  if(req.isAuthenticated() && req.user.account_type === 'seller'){
+  if (req.isAuthenticated() && req.user.account_type === 'seller') {
     return next ? next() : true;
   } else {
     req.flash('danger', 'You do not have permission to access that URL.');
@@ -26,7 +27,7 @@ global.ensureSeller = (req, res, next) => {
 };
 
 global.ensureClient = (req, res, next) => {
-  if(req.isAuthenticated() && req.user.account_type === 'client'){
+  if (req.isAuthenticated() && req.user.account_type === 'client') {
     return next ? next() : true;
   } else {
     req.flash('danger', 'You do not have permission to access that URL.');
@@ -35,7 +36,7 @@ global.ensureClient = (req, res, next) => {
 };
 
 // redirect bootstrap JS
-app.use('/js', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
+app.use('/bjs', express.static(__dirname + '/node_modules/bootstrap/dist/js'));
 // redirect JS jQuery
 app.use('/jquery', express.static(__dirname + '/node_modules/jquery/dist'));
 // redirect Bootstrap CSS
@@ -61,6 +62,7 @@ models.db
     logger.error('Unable to connect to the database:', err);
   });
 
+app.use('/payment/stripe_webhook', bodyParser.raw({ type: '*/*' }));
 // Body Parser Middleware
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -73,7 +75,7 @@ app.use(session({
   resave: true,
   saveUninitialized: true,
   cookie: {
-    maxAge: 60000*30,
+    maxAge: 60000 * 30,
     expires: false
   }
 }));
@@ -92,7 +94,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Global for user
-app.get('*', function(req, res, next){
+app.get('*', function (req, res, next) {
   res.locals.user = req.user || null;
   next();
 });
@@ -104,14 +106,16 @@ app.get('/', global.ensureAuthenticated, (req, res) => {
 /*
 * Register all Routes into app based on route file name
 * */
-let files =fs.readdirSync(path.join(__dirname,'./routes'));
+let files = fs.readdirSync(path.join(__dirname, './routes'));
 
-files.forEach((f)=> {
+files.forEach((f) => {
   if (path.extname(f) === '.js') {
     let fileName = path.basename(f, '.js');
-    app.use('/'+fileName,require('./routes/' + fileName + '.js'));
+    app.use('/' + fileName, require('./routes/' + fileName + '.js'));
   }
 });
+
+compileSass.compileSassAndSave('scss/custom.scss', 'public/css');
 
 app.listen(3000, () => {
   logger.info('App running on port 3000');

@@ -3,18 +3,18 @@ extends layout
 block content
   h1 Client Registration
   br
-  form.needs-validation(method='POST', action='/users/register' id='form_registration' novalidate)
+  form.needs-validation(method='POST' action='/users/register' id='form_registration' novalidate)
     .row
       .col
         label First Name:
-        input.form-control(name='first_name' type='text' required maxlength='25')
+        input.form-control(name='first_name' type='text' required maxlength='25' autofocus)
       .col
         label Last Name:
         input.form-control(name='last_name' type='text' required maxlength='25')
     .row
       .col
         label Email:
-        input.form-control(name='email' type='email', required maxlength='50') 
+        input.form-control(name='email' type='email', maxlength='50' pattern="^\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$" required) 
     .row
       .col
         label Password:
@@ -52,11 +52,10 @@ block content
         label Address Line 2:
         input.form-control(name='address2' type='text' maxlength='40')
     .form-row
-      .col-md
+      .col
         label City:
         input.form-control(name='city' type='text' maxlength='25' required)
-        div.invalid-feedback We need to know where you live!
-      .col-sm-90
+      .col-2
         label State:
         select.custom-select(name='state' required)
           option(selected disabled hidden)
@@ -111,7 +110,7 @@ block content
           option(value='WI') WI
           option(value='WV') WV
           option(value='WY') WY
-      .col-sm-90
+      .col-4
         label ZIP:
         input.form-control(name='zip' type='text' pattern='[0-9]*' maxlength="5" required)
     .row 

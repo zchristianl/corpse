@@ -18,7 +18,7 @@ router.post('/login', userController.login_post);
 router.get('/logout', userController.logout_post);
 
 // Portal
-router.get('/portal', global.ensureAuthenticated, userController.portal_get);
+router.get('/dashboard', global.ensureAuthenticated, userController.dashboard_get);
 
 // Seller - View Clients
 router.get('/view', global.ensureAuthenticated, userController.client_view_get);
@@ -36,9 +36,9 @@ router.post('/create/', global.ensureAuthenticated, userController.validate('cli
 router.post('/delete/:id', global.ensureAuthenticated, userController.client_delete_post);
 
 // Client - Edit Profile
-router.get('/edit_account', global.ensureClient, userController.edit_account_get);
-router.post('/edit_account', global.ensureClient, userController.edit_account_post);
-router.post('/edit_account_password', global.ensureClient, userController.validate('changePassword'), userController.edit_account_password);
+router.get('/edit_account', global.ensureAuthenticated, userController.edit_account_get);
+router.post('/edit_account', global.ensureAuthenticated, userController.edit_account_post);
+router.post('/edit_account_password', global.ensureAuthenticated, userController.validate('changePassword'), userController.edit_account_password);
 
 router.get('/account', global.ensureAuthenticated, userController.account_get);
 

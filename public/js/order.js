@@ -1,3 +1,4 @@
+/** Event Listeners */
 document.getElementById('edit_button').addEventListener('click', () => {
   makeEditable();
 });
@@ -6,34 +7,45 @@ document.getElementById('add_payment').addEventListener('click', () => {
   addPayment();
 });
 
-Array.from(document.getElementsByName('delete')).forEach(function (element) {
+Array.from(document.getElementsByName('delete-confirm')).forEach(function (element) {
   element.addEventListener('click', function () {
-    deleteItem(element);
+    deleteConfirm(element);
   });
+});
+
+Array.from(document.getElementsByName('delete-payment-confirm')).forEach(function (element) {
+  element.addEventListener('click', function () {
+    deletePaymentConfirm(element);
+  });
+});
+/** End Event Listeners */
+
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip();
 });
 
 function stdName(val) {
   switch (val) {
-  case 'new':
+  case 'NEW':
     return 'New';
   case 'New':
-    return 'new';
-  case 'estimate':
+    return 'NEW';
+  case 'ESTIMATE':
     return 'Estimate';
   case 'Estimate':
-    return 'esimate';
-  case 'in-progress':
+    return 'ESTIMATE';
+  case 'IN-PROGRESS':
     return 'In-Progress';
   case 'In-Progress':
-    return 'in-progress';
-  case 'payment':
+    return 'IN-PROGRESS';
+  case 'PAYMENT':
     return 'Payment';
   case 'Payment':
-    return 'payment';
-  case 'complete':
+    return 'PAYMENT';
+  case 'COMPLETE':
     return 'Complete';
   case 'Complete':
-    return 'complete';
+    return 'COMPLETE';
   case 'grant':
     return 'Grant';
   case 'immediately':
@@ -50,17 +62,21 @@ function stdName(val) {
     return 'Clinical Applications';
   case 'quote':
     return 'Quote';
+  case 'cc':
+    return 'Credit Card';
+  case 'check':
+    return 'Check';
+  case 'po':
+    return 'Purchase Order';
   default:
     return val;
   }
 }
 
 function makeEditable() {
+  $('#itemtable').attr('hidden', false);
   document.getElementById('edit_button').disabled = true;
-  var orderState = ['new', 'estimate', 'in-progress', 'payment', 'complete'];
-  /* var inquiryType = ['estimate', 'quote', 'grant'];
-  var time_estimate = ['immediately', '1-3', '3-6', '6_or_more'];
-  var intended_use = ['research_only', 'clinical_applications']; */
+  var orderState = ['NEW', 'ESTIMATE', 'IN-PROGRESS', 'PAYMENT', 'COMPLETE'];
 
   /* Order State */
   var state = document.getElementById('order_state');
@@ -82,96 +98,83 @@ function makeEditable() {
   state.innerHTML = '';
   state.appendChild(selectState);
 
-  /*   // Nature of Inquiry
-  var reason = document.getElementById('reason');
-  var currReason = reason.innerText;
-  var selectInquriy = document.createElement('select');
-  selectInquriy.id = 'inquiry';
-
-  inquiryType.forEach(element => {
-    var option = document.createElement('option');
-    option.value = element;
-    option.innerText = stdName(element);
-    if (stdName(element) === currReason) {
-      option.selected = 'selected';
-    }
-    selectInquriy.appendChild(option);
-  });
-
-  reason.innerHTML = '';
-  reason.appendChild(selectInquriy);
-
-  // Time Estimate
-  var timeEstimate = document.getElementById('time_estimate');
-  currReason = timeEstimate.innerText;
-  var selectTimeEstimate = document.createElement('select');
-  selectTimeEstimate.id = 'time_estimate_updated';
-
-  time_estimate.forEach(element => {
-    var option = document.createElement('option');
-    option.value = element;
-    option.innerText = stdName(element);
-    if (stdName(element) === currReason) {
-      option.selected = 'selected';
-    }
-    selectTimeEstimate.appendChild(option);
-  });
-
-  timeEstimate.innerHTML = '';
-  timeEstimate.appendChild(selectTimeEstimate);
-
-  // Intended Use
-  var intendedUse = document.getElementById('intended_use');
-  currReason = intendedUse.innerText;
-  var selectIntendedUse = document.createElement('select');
-  selectIntendedUse.id = 'intended_use_new';
-
-  intended_use.forEach(element => {
-    var option = document.createElement('option');
-    option.value = element;
-    option.innerText = stdName(element);
-    if (stdName(element) === currReason) {
-      option.selected = 'selected';
-    }
-    selectIntendedUse.appendChild(option);
-  });
-
-  intendedUse.innerHTML = '';
-  intendedUse.appendChild(selectIntendedUse); */
-
   // Now the thing 
   var itemOps = document.getElementsByName('item_ops');
   itemOps.forEach(element => {
     element.removeAttribute('hidden');
   });
   document.getElementById('item_ops_head').hidden = false;
+  document.getElementById('new_item_row').hidden = false;
 }
 
 function deleteItem(item) {
   item.disabled = true;
-  console.log('Delete Item: ' + item.value);
-  // eslint-disable-next-line no-undef
   $.post({
     url: '/item/delete',
     data: {
       id: item.value
     },
     success: () => {
-      var row = 'row_' + item.value;
-      document.getElementById(row).remove();
+      /*  var row = 'row_' + item.value;
+      document.getElementById(row).remove(); */
+      location.reload();
     }
   });
 }
 
+function deletePayment(item) {
+  item.disabled = true;
+  $.post({
+    url: '/payment/delete',
+    data: {
+      id: item.value
+    },
+    success: () => {
+      /* var row = 'pay_' + item.value;
+      document.getElementById(row).remove(); */
+      location.reload();
+    }
+  });
+}
+
+function deleteConfirm(element) {
+  $('.tooltip').tooltip('hide');
+  element.innerText = 'Confirm?';
+  element.setAttribute('name', 'delete');
+  Array.from(document.getElementsByName('delete')).forEach(function (element) {
+    element.addEventListener('click', function () {
+      deleteItem(element);
+    });
+  });
+}
+
 function addPayment() {
+  $('#paytable').attr('hidden', false);
   var paymentRow = document.getElementById('new_payment_row');
   if (paymentRow.hidden == true) {
     paymentRow.hidden = false;
   }
+
+  $('#pay_ops_head').attr('hidden', false);
+  var payOps = document.getElementsByName('pay_ops');
+  payOps.forEach(element => {
+    element.removeAttribute('hidden');
+  });
+
+}
+
+function deletePaymentConfirm(element) {
+  $('.tooltip').tooltip('hide');
+  element.innerText = 'Confirm?';
+  element.setAttribute('name', 'delete');
+  Array.from(document.getElementsByName('delete')).forEach(function (element) {
+    element.addEventListener('click', function () {
+      deletePayment(element);
+    });
+  });
 }
 
 $('#submit_payment').submit(function (event) {
-  console.log('here');
   event.preventDefault();
   $('#submit_payment_button').attr('disabled', true);
   var data = $(this).serialize();
@@ -184,8 +187,9 @@ $('#submit_payment').submit(function (event) {
   });
 });
 
-$('#order_state').change( () => {
-  var newState = document.getElementById('state_new').value;
+$('#order_state').change(() => {
+  $('#state_new').attr('disabled', true);
+  var newState = $('#state_new').val();
   $.post({
     url: '/order/modify',
     data: {
@@ -194,6 +198,41 @@ $('#order_state').change( () => {
     },
     success: () => {
       document.getElementById('order_state').innerText = stdName(newState);
+      location.reload();
+    }
+  });
+});
+
+$('#edit_button').click(() => {
+  $.post({
+    url: '/inventory/getsell',
+    success: (res) => {
+      $('#services').prop('disabled', false);
+      $('#loading-service').remove();
+      res.forEach(item => {
+        var option = document.createElement('option');
+        option.text = `${item.name} (${item.category})`;
+        option.value = item.id;
+        option.setAttribute('price', item.price);
+        $('#services').append(option);
+      });
+      $('#item_amount').val($('#services option:selected').attr('price'));
+    }
+  });
+});
+
+$('#services').change(() => {
+  $('#item_amount').val($('#services option:selected').attr('price'));
+});
+
+$('#new_item').submit(function (event) {
+  event.preventDefault();
+  $('#submit_item_button').attr('disabled', true);
+  var data = $(this).serialize();
+  $.post({
+    url: '/item/create',
+    data: data,
+    success: () => {
       location.reload();
     }
   });

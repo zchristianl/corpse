@@ -10,13 +10,10 @@ module.exports = (sequelize, type) => {
       allowNull: false,
     },
     category: type.STRING,
-    type: type.ENUM('product', 'service'),
+    type: type.ENUM('PRODUCT', 'SERVICE'),
     description: type.TEXT,
-    cost: {
-      type: type.DECIMAL,
-      allowNull: false
-    },
-    price: type.DECIMAL,
+    cost: type.DECIMAL(10, 2),
+    price: type.DECIMAL(10, 2),
     stock: {
       type: type.INTEGER
     }
