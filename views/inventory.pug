@@ -26,7 +26,7 @@ block content
             form(method="GET" action="/inventory/edit/"+item.id style="margin-right: 5px; float:left;")
               button.btn.btn-primary(type="submit")
                 span.far.fa-edit.fa-sm
-            button.btn.btn-danger.deleteButton(type="submit" name="id" value=item.id data-toggle='modal' data-target='#DeleteModal')
+            button.btn.btn-danger.deleteButton(type="submit" name="delete_item" value=item.id data-toggle='modal' data-target='#DeleteModal')
               span.fas.fa-trash.fa-sm
   .container
     #DeleteModal.modal.fade(tabindex="-1" role="dialog" aria-labelledby="DeleteModal" aria-hidden="true")

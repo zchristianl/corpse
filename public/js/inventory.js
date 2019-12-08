@@ -1,14 +1,11 @@
 /* eslint-disable no-undef */
-$('.deleteButton').on('click', (e) => {
-  var itemId = $(e.target).attr('value');
-  console.log(itemId);
-  console.log(e.target.getAttribute('value'));
-  console.log(e.target);
-  $('.deleteModal').val(itemId);
+Array.from(document.getElementsByName('delete_item')).forEach(function (element) {
+  element.addEventListener('click', function () {
+    $('.deleteModal').val(element.value);
+  });
 });
 
 $('.deleteModal').on('click', (e) => {
-  console.log('here');
   $target = $(e.target);
   $.ajax({
     type: 'POST',
