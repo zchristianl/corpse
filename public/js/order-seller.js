@@ -13,11 +13,18 @@ Array.from(document.getElementsByName('delete-confirm')).forEach(function (eleme
   });
 });
 
+Array.from(document.getElementsByName('delete-note-confirm')).forEach(function (element) {
+  element.addEventListener('click', function () {
+    deleteNoteConfirm(element);
+  });
+});
+
 Array.from(document.getElementsByName('delete-payment-confirm')).forEach(function (element) {
   element.addEventListener('click', function () {
     deletePaymentConfirm(element);
   });
 });
+
 /** End Event Listeners */
 
 $(function () {
@@ -130,8 +137,19 @@ function deletePayment(item) {
       id: item.value
     },
     success: () => {
-      /* var row = 'pay_' + item.value;
-      document.getElementById(row).remove(); */
+      location.reload();
+    }
+  });
+}
+
+function deleteNote(note) {
+  note.disabled = true;
+  $.post({
+    url: '/note/delete',
+    data: {
+      id: note.value
+    },
+    success: () => {
       location.reload();
     }
   });
@@ -170,6 +188,17 @@ function deletePaymentConfirm(element) {
   Array.from(document.getElementsByName('delete')).forEach(function (element) {
     element.addEventListener('click', function () {
       deletePayment(element);
+    });
+  });
+}
+
+function deleteNoteConfirm(element) {
+  $('.tooltip').tooltip('hide');
+  element.innerText = 'Confirm?';
+  element.setAttribute('name', 'delete');
+  Array.from(document.getElementsByName('delete')).forEach(function (element) {
+    element.addEventListener('click', function () {
+      deleteNote(element);
     });
   });
 }
@@ -226,6 +255,7 @@ $('#services').change(() => {
 });
 
 $('#new_item').submit(function (event) {
+  console.log('New item clicked');
   event.preventDefault();
   $('#submit_item_button').attr('disabled', true);
   var data = $(this).serialize();

@@ -24,6 +24,6 @@ block content
             option(value='cardiovascular_disease' selected=(user.research_area === 'cardiovascular_disease')) Cardiovascular Disease
         #form-group
           label Message:
-          textarea.form-control(name='message' rows="5")
+          textarea.form-control(name='message' rows="5" maxlength="500")
         span(style="float: right; padding: 10px 0px 10px 0px;")
           input.btn.btn-primary(type='submit', value='Submit')

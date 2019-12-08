@@ -35,7 +35,7 @@ block content
       .col
         label Description:
         - var description = (entry ? entry.description : "");
-        textarea.form-control(rows="5" name="description") #{description}
+        textarea.form-control(rows="5" name="description" maxlength="500" required) #{description}
     span(style="float: right; padding: 10px 0px 0px 0px;")
       input(type='hidden' name='id' value=(entry ? entry.id : ''))
       input.btn.btn-primary(type='submit' value='Submit')

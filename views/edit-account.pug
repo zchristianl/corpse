@@ -51,7 +51,7 @@ block content
     .row
       .col 
         label Address:
-        textarea.form-control(rows="5" name="address" required) #{user.address}
+        textarea.form-control(rows="5" name="address" required maxlength="500") #{user.address}
     .form-row
       .col-md
         label City:
@@ -61,57 +61,57 @@ block content
         label State:
         select.custom-select(name='state' required)
           option(selected disabled hidden)
-          option(value='AL' selected=(user != null && client.state === 'AL')) AL
-          option(value='AK' selected=(user != null && client.state === 'AK')) AK
-          option(value='AR' selected=(user != null && client.state === 'AR')) AR
-          option(value='AZ' selected=(user != null && client.state === 'AZ')) AZ
-          option(value='CA' selected=(user != null && client.state === 'CA')) CA
-          option(value='CO' selected=(user != null && client.state === 'CO')) CO
-          option(value='CT' selected=(user != null && client.state === 'CT')) CT
-          option(value='DC' selected=(user != null && client.state === 'DC')) DC
-          option(value='DE' selected=(user != null && client.state === 'DE')) DE
-          option(value='FL' selected=(user != null && client.state === 'FL')) FL
-          option(value='GA' selected=(user != null && client.state === 'GA')) GA
-          option(value='HI' selected=(user != null && client.state === 'HI')) HI
-          option(value='IA' selected=(user != null && client.state === 'IA')) IA
-          option(value='ID' selected=(user != null && client.state === 'ID')) ID
-          option(value='IL' selected=(user != null && client.state === 'IL')) IL
-          option(value='IN' selected=(user != null && client.state === 'IN')) IN
-          option(value='KS' selected=(user != null && client.state === 'KS')) KS
-          option(value='KY' selected=(user != null && client.state === 'KY')) KY
-          option(value='LA' selected=(user != null && client.state === 'LA')) LA
-          option(value='MA' selected=(user != null && client.state === 'MA')) MA
-          option(value='MD' selected=(user != null && client.state === 'MD')) MD
-          option(value='ME' selected=(user != null && client.state === 'ME')) ME
-          option(value='MI' selected=(user != null && client.state === 'MI')) MI
-          option(value='MN' selected=(user != null && client.state === 'MN')) MN
-          option(value='MO' selected=(user != null && client.state === 'MO')) MO
-          option(value='MS' selected=(user != null && client.state === 'MS')) MS
-          option(value='MT' selected=(user != null && client.state === 'MT')) MT
-          option(value='NC' selected=(user != null && client.state === 'NC')) NC
-          option(value='NE' selected=(user != null && client.state === 'NE')) NE
-          option(value='NH' selected=(user != null && client.state === 'NH')) NH
-          option(value='NJ' selected=(user != null && client.state === 'NJ')) NJ
-          option(value='NM' selected=(user != null && client.state === 'NM')) NM
-          option(value='NV' selected=(user != null && client.state === 'NV')) NV
-          option(value='NY' selected=(user != null && client.state === 'NY')) NY
-          option(value='ND' selected=(user != null && client.state === 'ND')) ND
-          option(value='OH' selected=(user != null && client.state === 'OH')) OH
-          option(value='OK' selected=(user != null && client.state === 'OK')) OK
-          option(value='OR' selected=(user != null && client.state === 'OR')) OR
-          option(value='PA' selected=(user != null && client.state === 'PA')) PA
-          option(value='RI' selected=(user != null && client.state === 'RI')) RI
-          option(value='SC' selected=(user != null && client.state === 'SC')) SC
-          option(value='SD' selected=(user != null && client.state === 'SD')) SD
-          option(value='TN' selected=(user != null && client.state === 'TN')) TN
-          option(value='TX' selected=(user != null && client.state === 'TX')) TX
-          option(value='UT' selected=(user != null && client.state === 'UT')) UT
-          option(value='VT' selected=(user != null && client.state === 'VT')) VT
-          option(value='VA' selected=(user != null && client.state === 'VA')) VA
-          option(value='WA' selected=(user != null && client.state === 'WA')) WA
-          option(value='WI' selected=(user != null && client.state === 'WI')) WI
-          option(value='WV' selected=(user != null && client.state === 'WV')) WV
-          option(value='WY' selected=(user != null && client.state === 'WY')) WY
+          option(value='AL' selected=(user != null && user.state === 'AL')) AL
+          option(value='AK' selected=(user != null && user.state === 'AK')) AK
+          option(value='AR' selected=(user != null && user.state === 'AR')) AR
+          option(value='AZ' selected=(user != null && user.state === 'AZ')) AZ
+          option(value='CA' selected=(user != null && user.state === 'CA')) CA
+          option(value='CO' selected=(user != null && user.state === 'CO')) CO
+          option(value='CT' selected=(user != null && user.state === 'CT')) CT
+          option(value='DC' selected=(user != null && user.state === 'DC')) DC
+          option(value='DE' selected=(user != null && user.state === 'DE')) DE
+          option(value='FL' selected=(user != null && user.state === 'FL')) FL
+          option(value='GA' selected=(user != null && user.state === 'GA')) GA
+          option(value='HI' selected=(user != null && user.state === 'HI')) HI
+          option(value='IA' selected=(user != null && user.state === 'IA')) IA
+          option(value='ID' selected=(user != null && user.state === 'ID')) ID
+          option(value='IL' selected=(user != null && user.state === 'IL')) IL
+          option(value='IN' selected=(user != null && user.state === 'IN')) IN
+          option(value='KS' selected=(user != null && user.state === 'KS')) KS
+          option(value='KY' selected=(user != null && user.state === 'KY')) KY
+          option(value='LA' selected=(user != null && user.state === 'LA')) LA
+          option(value='MA' selected=(user != null && user.state === 'MA')) MA
+          option(value='MD' selected=(user != null && user.state === 'MD')) MD
+          option(value='ME' selected=(user != null && user.state === 'ME')) ME
+          option(value='MI' selected=(user != null && user.state === 'MI')) MI
+          option(value='MN' selected=(user != null && user.state === 'MN')) MN
+          option(value='MO' selected=(user != null && user.state === 'MO')) MO
+          option(value='MS' selected=(user != null && user.state === 'MS')) MS
+          option(value='MT' selected=(user != null && user.state === 'MT')) MT
+          option(value='NC' selected=(user != null && user.state === 'NC')) NC
+          option(value='NE' selected=(user != null && user.state === 'NE')) NE
+          option(value='NH' selected=(user != null && user.state === 'NH')) NH
+          option(value='NJ' selected=(user != null && user.state === 'NJ')) NJ
+          option(value='NM' selected=(user != null && user.state === 'NM')) NM
+          option(value='NV' selected=(user != null && user.state === 'NV')) NV
+          option(value='NY' selected=(user != null && user.state === 'NY')) NY
+          option(value='ND' selected=(user != null && user.state === 'ND')) ND
+          option(value='OH' selected=(user != null && user.state === 'OH')) OH
+          option(value='OK' selected=(user != null && user.state === 'OK')) OK
+          option(value='OR' selected=(user != null && user.state === 'OR')) OR
+          option(value='PA' selected=(user != null && user.state === 'PA')) PA
+          option(value='RI' selected=(user != null && user.state === 'RI')) RI
+          option(value='SC' selected=(user != null && user.state === 'SC')) SC
+          option(value='SD' selected=(user != null && user.state === 'SD')) SD
+          option(value='TN' selected=(user != null && user.state === 'TN')) TN
+          option(value='TX' selected=(user != null && user.state === 'TX')) TX
+          option(value='UT' selected=(user != null && user.state === 'UT')) UT
+          option(value='VT' selected=(user != null && user.state === 'VT')) VT
+          option(value='VA' selected=(user != null && user.state === 'VA')) VA
+          option(value='WA' selected=(user != null && user.state === 'WA')) WA
+          option(value='WI' selected=(user != null && user.state === 'WI')) WI
+          option(value='WV' selected=(user != null && user.state === 'WV')) WV
+          option(value='WY' selected=(user != null && user.state === 'WY')) WY
 
       .col-sm-90
         label ZIP:

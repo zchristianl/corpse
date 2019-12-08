@@ -35,6 +35,7 @@ const Inventory = ProjectRequire.inventory(db, Sequelize);
 const Order = ProjectRequire.order(db, Sequelize);
 const Item = ProjectRequire.item(db,Sequelize);
 const Payment = ProjectRequire.payment(db,Sequelize);
+const Note = ProjectRequire.note(db, Sequelize);
 
 //Model Registration Step 2, Add variable to this list
 let models = {
@@ -49,7 +50,8 @@ let models = {
   Inventory,
   Order,
   Item,
-  Payment
+  Payment,
+  Note
 };
 
 relations.run(models);
