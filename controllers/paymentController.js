@@ -47,6 +47,7 @@ exports.payment_remove = (req, res) => {
 exports.create_session = (req, res) => {
   // array of items for stripe checkout
   let checkout_items = new Array();
+
   models.Item.findAll({
     where: { orderId: req.params.id },
     include: [
@@ -72,8 +73,8 @@ exports.create_session = (req, res) => {
       customer_email: req.user.email,
       payment_method_types: ['card'],
       line_items: checkout_items,
-      success_url: 'https://proteinctcorpse.com/payment/success',
-      cancel_url: 'https://proteinctcorpse.com/payment/cancel',
+      success_url: 'https://www.proteinctcorpse.com/payment/success',
+      cancel_url: 'https://www.proteinctcorpse.com/payment/cancel',
     }).then(session => {
       // store checkout id
       models.Order.findOne({
@@ -159,7 +160,7 @@ const handleCheckoutSession = (session) => {
 
     models.Payment.create({
       // Needs to change
-      reference_number: session.id,
+      reference_number: session.payment_intent,
       method: 'cc',
       // Session is in cents / 100 to save dollars
       amount: session.display_items[0].amount / 100,
