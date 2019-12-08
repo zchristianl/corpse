@@ -14,7 +14,7 @@ module.exports = (sequelize, type) => {
     description: {
       type: type.TEXT,
       allowNull: false
-    }, 
+    },
     cost: type.DECIMAL(10, 2),
     price: type.DECIMAL(10, 2),
     stock: {
