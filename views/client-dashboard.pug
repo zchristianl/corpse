@@ -8,19 +8,17 @@ block content
     table.table.table-striped
       thead
         tr
-          th(scope="col" style="width: 8%;") Order #
-          th(scope="col" style="width: 15%;") Updated
-          th(scope="col" style="width: 40%;") Comments
-          th(scope="col" style="width: 10%;") Total
-          th(scope="col" style="width: 8%;") Status
-          th(scope="col" style="width: 20%;") 
+          th(scope="col" style="width: 10%;") Order #
+          th(scope="col") Updated
+          th(scope="col") Total
+          th(scope="col") Status
+          th(scope="col") 
       tbody
         each order in orders
           tr(scope="row")
             -var date = (new Date(order.updatedAt)).toLocaleString('en-US', { month: 'long', day: '2-digit', year: 'numeric' });
             td=order.id
             td=date
-            td=order.comments
             if order.amount == 0
               td="TBD"
             else
@@ -32,5 +30,5 @@ block content
                   button.btn.btn-success(type="submit") Pay Now
               form(method="GET" action="/order/view/"+order.id style="margin-left: 5px; float:left;")
                 button.btn.btn-primary(type="submit")
-                  span.far.fa-eye.fa-lg
+                  span.far.fa-eye.fa-sm
 
