@@ -6,3 +6,4 @@ coverage/
 *.pdf
 /stripe-cli-1.2.2
 /public/css/custom.css
+package-lock.json
