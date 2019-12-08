@@ -43,7 +43,15 @@ exports.order_get = (req, res) => {
         }]
       },
       { model: models.User },
-      { model: models.Payment }
+      { model: models.Payment },
+      {
+        model: models.Note, include: [{
+          model: models.User
+        }]
+      }
+    ], order: [
+      [models.Note, 'createdAt', 'DESC'],
+      [models.Item, 'createdAt', 'ASC']
     ],
     limit: 1
   })
@@ -69,7 +77,7 @@ exports.order_inquire_get = (req, res) => {
 
 exports.order_create_post = (req, res) => {
   let bodyvars = undefined;
-
+  var comments = req.body.comments;
   //AUTHORIZE ACTION
   bodyvars = {
     userId: req.body.user,
@@ -77,18 +85,23 @@ exports.order_create_post = (req, res) => {
     inquiry_type: req.body.inquiry_type,
     time_estimate: req.body.time_estimate,
     intended_use: req.body.intended_use,
-    comments: req.body.comments,
     payment: req.body.payment,
     po_num: req.body.po_num,
   };
 
   models.Order.create(bodyvars).then((order) => {
-
     var itemVars = {
       orderId: order.id,
       inventoryId: req.body.service
     };
     models.Item.create(itemVars).then(() => {
+      if(comments != '') {
+        models.Note.create({
+          userId: req.body.user,
+          orderId: order.id,
+          message: req.body.comments
+        });
+      }
       order_confirmation(req, res, bodyvars, itemVars);
     });
   });
@@ -184,7 +197,7 @@ const order_confirmation = (req, res, order, itemVars) => {
       }
     }).then(order => {
       var err = mailer.sendOrderConfrim(user.email, order, itemVars);
-      if(err){
+      if (err) {
         req.flash('danger', 'There was an error. Please try again.');
         // NOT SURE WHERE TO SEND USER IF EMAIL FAILS
         res.redirect('back');
