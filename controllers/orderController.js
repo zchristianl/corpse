@@ -5,18 +5,20 @@ const mailer = require('../utils/mail');
 exports.order_view_get = (req, res) => {
   models.Order.findAll({
     include: [
-      { model: models.Item, include: [{
-        model: models.Inventory
-      }]},
+      {
+        model: models.Item, include: [{
+          model: models.Inventory
+        }]
+      },
       { model: models.User }
     ], order: [
       ['createdAt', 'DESC']
     ]
   })
     .then((orders) => {
-      orders.forEach((o)=>{
+      orders.forEach((o) => {
         let sum = 0;
-        o.items.forEach((itm)=>{sum+=parseFloat(itm.inventory.price);});
+        o.items.forEach((itm) => { sum += parseFloat(itm.inventory.price); });
         o.amount = sum;
       });
       res.render('order', {
@@ -35,7 +37,7 @@ exports.order_view_get_client = (req, res) => {
       { model: models.User }
     ]
   })
-    .then( (orders) => {
+    .then((orders) => {
 
       res.render('NO_EXIST', {
         orders: orders
@@ -96,7 +98,7 @@ exports.order_create_post = (req, res) => {
     state: 'new',
     inquiry_type: req.body.inquiry_type ? req.body.inquiry_type : 1,
     time_estimate: req.body.time_estimate ? req.body.time_estimate : 1,
-    intended_use: req.body.intended_use ? req.body.intended_use: 1,
+    intended_use: req.body.intended_use ? req.body.intended_use : 1,
     comments: req.body.comments ? req.body.comments : '',
     payment: req.body.payment ? req.body.payment : 2,
     po_num: req.body.po_num,
@@ -108,7 +110,7 @@ exports.order_create_post = (req, res) => {
       inventoryId: req.body.service
     };
     models.Item.create(itemVars).then(() => {
-      if(comments != '') {
+      if (comments != '') {
         models.Note.create({
           userId: req.body.user,
           orderId: order.id,
