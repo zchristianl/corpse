@@ -16,8 +16,8 @@ block content
         label Type:
         select.custom-select(name='type' required)
           option(value='' selected=(entry != null && entry.type == null) hidden)
-          option(value='product' selected=(entry != null && entry.type === 'product')) Product
-          option(value='service' selected=(entry != null && entry.type === 'service')) Service
+          option(value='product' selected=(entry != null && entry.type === 'PRODUCT')) Product
+          option(value='service' selected=(entry != null && entry.type === 'SERVICE')) Service
       .col
         label Category: 
         input.form-control(name='category' type='text' value=(entry ? entry.category : '') required maxlength='25')
@@ -36,7 +36,7 @@ block content
         label Description:
         - var description = (entry ? entry.description : "");
         textarea.form-control(rows="5" name="description") #{description}
-    span(style="float: right; padding: 10px 0px 10px 0px;")
+    span(style="float: right; padding: 10px 0px 0px 0px;")
       input(type='hidden' name='id' value=(entry ? entry.id : ''))
       input.btn.btn-primary(type='submit' value='Submit')
   script(src='/js/formval.js')

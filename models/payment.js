@@ -7,6 +7,6 @@ module.exports = (sequelize, type) => sequelize.define('payment', {
   reference_number: {
     type: type.STRING,
   },
-  method: type.INTEGER, //check,stripe,PO
-  amount: type.DECIMAL
+  method: type.ENUM('cc', 'po', 'check'),
+  amount: type.DECIMAL(10, 2)
 });

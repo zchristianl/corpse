@@ -36,7 +36,7 @@ function createInvoiceEmail(invoice, filename, order ,req, res) {
 
 function generateHeader(doc) {
   doc
-    .image('logo.png', 50, 45, { width: 125 })
+    .image('invoice_logo.png', 50, 45, { width: 125 })
     .fillColor('#444444')
     .fontSize(10)
     .text('ProteinCT', 200, 50, { align: 'right' })

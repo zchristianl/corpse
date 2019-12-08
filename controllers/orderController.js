@@ -7,6 +7,8 @@ exports.order_view_get = (req, res) => {
     include: [
       { model: models.Item },
       { model: models.User }
+    ], order: [
+      ['createdAt', 'DESC']
     ]
   })
     .then(orders => res.render('order', {
@@ -54,8 +56,10 @@ exports.order_get = (req, res) => {
 exports.order_inquire_get = (req, res) => {
   models.Inventory.findAll(
     {
-      price: {
-        $gt:0
+      where: {
+        price: {
+          [models.Op.gte]: 0
+        }
       }
     }
   ).then((inventory) => res.render('inquire', {
@@ -88,47 +92,6 @@ exports.order_create_post = (req, res) => {
       order_confirmation(req, res, bodyvars, itemVars);
     });
   });
-};
-
-exports.create_invoice = (req, res) => {
-  const { createInvoiceDownload, createInvoiceEmail } = require('../utils/createInvoice.js');
-  // CREATE INVOICE HERE
-  // USING ORDER USER ASSOCIATION
-  let invoice = {
-    shipping: {
-      name: 'CLIENT NAME',
-      address: 'CLIENT ADDRESS',
-      city: 'CLIENT CITY',
-      state: 'CLIENT STATE',
-      zip_code: 'CLIENT ZIP CODE'
-    },
-    items: [
-      {
-        item: 'DNA 100',
-        description: 'DNA Synthesis',
-        quantity: 1,
-        amount: 100
-      },
-      {
-        item: 'GENO SC',
-        description: 'Genome Sequencing',
-        quantity: 1,
-        amount: 200
-      }
-    ],
-    subtotal: 300,
-    paid: 0,
-    invoice_nr: 1234
-  };
-  // MAKE INVOICE NAME UNIQUE
-  createInvoiceDownload(invoice, 'invoice.pdf');
-
-  let order = {
-    id: 1234,
-    clientEmail: req.user.email,
-  };
-  // MAKE INVOICE NAME UNIQUE
-  createInvoiceEmail(invoice, 'invoice.pdf', order, req, res);
 };
 
 exports.order_remove = (req, res) => {
@@ -227,7 +190,7 @@ const order_confirmation = (req, res, order, itemVars) => {
         res.redirect('back');
       } else {
         req.flash('success', 'Thank you for you order. An order confirmation has been sent to ' + user.email);
-        res.redirect('/users/portal');
+        res.redirect('/users/dashboard');
       }
     });
   }).catch(err => logger.error(err));

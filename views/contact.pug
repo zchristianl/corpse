@@ -1,29 +1,29 @@
 extends layout
 
 block content
-  h1 Contact Us
+  h1(style="text-align: center;") Contact Us
   form(method='POST', action='/users/send')
-    #form-group
-      label Name:
-      input.form-control(name='name', type='text')
-    #form-group
-      label Email:
-      input.form-control(name='email', type='email')
-    #form-group
-      label Subject:
-      input.form-control(name='subject', type='text')  
-    #form-group
-      label Research Area
-      select.custom-select(name='research_area' id='research_area')
-        option(value='' selected)
-        option(value='cancer') Cancer
-        option(value='neuroscience') Neuroscience
-        option(value='stem_cell') Stem Cell
-        option(value='virology') Virology
-        option(value='epigenetics') Epigenetics
-        option(value='cardiovascular_disease') Cardiovascular Disease
-    #form-group
-      label Message:
-      textarea.form-control(name='message')
-    br
-    input.btn.btn-primary(type='submit', value='Submit')
+    .container.col-lg-6
+        #form-group
+          label Name:
+          input.form-control(name='name', value=user.first_name + ' ' + user.last_name, type='text')
+        #form-group
+          label Email:
+          input.form-control(name='email', value=user.email, type='email' pattern="^\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$")
+        #form-group
+          label Subject:
+          input.form-control(name='subject', type='text')  
+        #form-group
+          label Research Area
+          select.custom-select(name='research_area', id='research_area')
+            option(value='cancer' selected=(user.research_area === 'cancer')) Cancer
+            option(value='neuroscience' selected=(user.research_area === 'neuroscience')) Neuroscience
+            option(value='stem_cell' selected=(user.research_area === 'stem_cell')) Stem Cell
+            option(value='virology' selected=(user.research_area === 'virology')) Virology
+            option(value='epigenetics' selected=(user.research_area === 'epigenetics')) Epigenetics
+            option(value='cardiovascular_disease' selected=(user.research_area === 'cardiovascular_disease')) Cardiovascular Disease
+        #form-group
+          label Message:
+          textarea.form-control(name='message' rows="5")
+        span(style="float: right; padding: 10px 0px 10px 0px;")
+          input.btn.btn-primary(type='submit', value='Submit')

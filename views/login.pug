@@ -1,22 +1,24 @@
 extends layout
 
 block content
-  h1 Login
-  .container.w-50
-    form(method='POST', action='/users/login')
-      .row
+  h1(style="text-align: center;") Login
+  form(method='POST' action='/users/login')
+    .container.col-lg-5
+      .row.justify-content-md-center
         .col
           label Email:
-          input.form-control(name='email', type='text')
+          input.form-control(name='email' type='text' autofocus)
           br
-      .row
+      .row.justify-content-md-center
         .col
           label Password:
-          input.form-control(name='password', type='password')
+          input.form-control(name='password' type='password')
           span
             a(href="/users/forgot" style="float: right; padding: 10px 0px 10px 0px;") Forgot Password?
+      .row.justify-content-md-center
+        .col
+          input.w-100.btn.btn-primary(type='submit' value='Login')
       .row
         .col
-          input.w-100.btn.btn-primary(type='submit', value='Login')
-      span(style="float: right; padding: 10px 0px 10px 0px;") Need an account? 
-        a(href="/users/register") Register
+          span(style="float: right; padding: 10px 0px 10px 0px;") Need an account? 
+            a(href="/users/register") Register

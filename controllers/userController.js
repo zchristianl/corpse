@@ -12,8 +12,22 @@ exports.register_get = (req, res) => {
   res.render('register');
 };
 
-exports.portal_get = (req, res) => {
-  res.render('portal');
+exports.dashboard_get = (req, res) => {
+  if(req.user.account_type == 'seller') {
+    res.render('seller-dashboard');
+  } else {
+    models.Order.findAll({
+      where: {
+        userId: req.user.id
+      }, order: [
+        ['createdAt', 'DESC']
+      ]
+    }).then(orders => {
+      res.render('client-dashboard', {
+        orders: orders
+      });
+    });
+  }
 };
 
 exports.register_post = (req, res) => {
@@ -160,7 +174,7 @@ exports.login_get = (req, res) => {
 
 exports.login_post = (req, res, next) => {
   passport.authenticate('local', {
-    successRedirect: '/users/portal',
+    successRedirect: '/users/dashboard',
     failureRedirect: '/users/login',
     failureFlash: true
   })(req, res, next);
@@ -283,13 +297,13 @@ exports.forgot_post = (req, res, next) => {
         });
       }).catch(err => {
         logger.error(err);
-        req.flash('error', 'No account with that email address exists.');
+        req.flash('danger', 'No account with that email address exists.');
         return res.redirect('/users/forgot');
       });
     },
     function (token, user, done) {
       var err = mailer.sendForgotPassword(req, user, token); 
-      req.flash('info', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
+      req.flash('success', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
       done(err, 'done');
     }
   ], function (err) {
@@ -299,7 +313,12 @@ exports.forgot_post = (req, res, next) => {
 };
 
 exports.new_password = (req, res) => {
-  models.User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } })
+  models.User.findOne({ 
+    where: {
+      resetPasswordToken: req.params.token,
+      resetPasswordExpires: { [models.Op.gt]: Date.now() } 
+    }
+  })
     .then(() => {
       res.render('reset', {
         user: req.user
@@ -307,7 +326,7 @@ exports.new_password = (req, res) => {
     })
     .catch(err => {
       logger.error(err);
-      req.flash('error', 'Password reset token is invalid or has expired.');
+      req.flash('danger', 'Password reset token is invalid or has expired.');
       return res.redirect('/user/forgot');
     });
 };
@@ -322,7 +341,12 @@ exports.reset_confirm = (req, res) => {
   } else {
     async.waterfall([
       function (done) {
-        models.User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } })
+        models.User.findOne({ 
+          where: {
+            resetPasswordToken: req.params.token, 
+            resetPasswordExpires: { [models.Op.gt]: Date.now() } 
+          }
+        })
           .then(user => {
             bcrypt.genSalt(10, (err, salt) => {
               bcrypt.hash(req.body.password, salt, (err, hash) => {
@@ -339,7 +363,7 @@ exports.reset_confirm = (req, res) => {
                   })
                   .catch(err => {
                     logger.error(err);
-                    req.flash('error', 'Password reset token is invalid or has expired.');
+                    req.flash('danger', 'Password reset token is invalid or has expired.');
                     return res.redirect('back');
                   });
               });
@@ -359,15 +383,62 @@ exports.reset_confirm = (req, res) => {
 };
 
 exports.client_view_get = (req, res) => {
+  if(Object.keys(req.query).length === 0) {
+    req.term = undefined;
+  } else {
+    req.term= req.query;
+  }
+  client_view_get_internal(req,res);
+};
+
+function client_view_get_internal(req, res) {
+  let search  = req.query;
   models.User.findAll({
     where: {
-      account_type: 'client'
-    }
-  }
-  ).then(users => res.render('client', {
+      account_type: 'client',
+      [models.Op.or]: [
+        {
+          first_name: {
+            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+          }
+        },
+        {
+          last_name: {
+            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+          }
+        },
+        {
+          email: {
+            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+          }
+        },
+        {
+          organization: {
+            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+          }
+        },
+        {
+          research_area: {
+            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+          }
+        },
+        {
+          address: {
+            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+          },
+        },{
+          zip: {
+            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+          }
+        }
+      ]
+    }, order: [
+      ['last_name', 'ASC']
+    ]
+  }).then(users => res.render('client', {
     users: users
   }));
-};
+}
 
 exports.client_read_get = (req, res) => {
   models.User.findOne({
@@ -444,7 +515,15 @@ exports.client_delete_post = (req, res) => {
 };
 
 exports.contact_seller = (req, res) => {
-  res.render('contact');
+  models.User.findOne({
+    where: {
+      id: req.user.id
+    }
+  }).then(user => {
+    res.render('contact', {
+      user: user,
+    });
+  });
 };
 
 // Send email to seller
@@ -477,9 +556,9 @@ exports.edit_account_get = (req, res) => {
     where: {
       id: req.user.id
     }
-  }).then((client) => {
+  }).then((user) => {
     res.render('edit-account', {
-      client: client
+      user: user
     });
   }).catch(err => logger.error(err));
 };
@@ -489,24 +568,25 @@ exports.edit_account_post =  (req, res) => {
     where: {
       id: req.user.id
     }
-  }).then((entry) => {
-    entry.update({
+  }).then(user => {
+    user.update({
       first_name: req.body.first_name,
       last_name: req.body.last_name,
       email: req.body.email,
       organization: req.body.organization,
       department: req.body.department,
-      reserach_area: req.body.research_area,
+      research_area: req.body.research_area,
       address: req.body.address,
       city: req.body.city,
       state: req.body.state,
       zip: req.body.zip,
       phone: req.body.phone,
-      payment: req.body.payment,
       po_num: req.body.po_num
     }).then(() => { 
       req.flash('success', 'Your account has been successfully updated!');
-      res.render('account'); 
+      res.render('account', {
+        user: user
+      }); 
     })
       .catch(err => logger.error(err));
   })
@@ -535,7 +615,9 @@ exports.edit_account_password = (req, res) => {
     });
   } else {
     models.User.findOne({ 
-      id: req.user.id
+      where: {
+        id: req.user.id
+      }
     })
       .then(user => {
         bcrypt.genSalt(10, (err, salt) => {
