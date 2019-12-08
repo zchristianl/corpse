@@ -160,7 +160,7 @@ const handleCheckoutSession = (session) => {
 
     models.Payment.create({
       // Needs to change
-      reference_number: session.id,
+      reference_number: session.payment_intent,
       method: 'cc',
       // Session is in cents / 100 to save dollars
       amount: session.display_items[0].amount / 100,
