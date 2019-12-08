@@ -13,20 +13,81 @@ exports.register_get = (req, res) => {
 };
 
 exports.dashboard_get = (req, res) => {
-  if(req.user.account_type == 'seller') {
-    res.render('seller-dashboard');
+  if (req.user.account_type == 'seller') {
+
+    models.Order.findAll({
+      where: {
+        state: 'NEW'
+      },
+      include: [
+        {
+          model: models.Item, include: [{
+            model: models.Inventory
+          }]
+        },
+        { model: models.User }
+      ], order: [
+        ['createdAt', 'DESC']
+      ]
+    })
+      .then((orders) => {
+        orders.forEach((o) => {
+          let sum = 0;
+          o.items.forEach((itm) => { sum += parseFloat(itm.inventory.price); });
+          o.amount = sum;
+        });
+        res.render('seller-dashboard', {
+          orders: orders
+        });
+      })
+      .catch(err => logger.error(err));
+
   } else {
+
     models.Order.findAll({
       where: {
         userId: req.user.id
-      }, order: [
+      },
+      include: [
+        {
+          model: models.Item, include: [{
+            model: models.Inventory
+          }]
+        },
+        { model: models.User }
+      ], order: [
         ['createdAt', 'DESC']
       ]
-    }).then(orders => {
-      res.render('client-dashboard', {
+    })
+      .then((orders) => {
+        orders.forEach((o) => {
+          let sum = 0;
+          o.items.forEach((itm) => { sum += parseFloat(itm.inventory.price); });
+          o.amount = sum;
+        });
+        res.render('client-dashboard', {
+          orders: orders
+        });
+      })
+      .catch(err => logger.error(err));
+
+    /* models.Order.findAll({
+       model: models.Item, include: [{
+        model: models.Inventory
+      }], order: [
+        ['createdAt', 'DESC']
+      ]
+    }).then((orders) => {
+      orders.forEach((o) => {
+        let sum = 0;
+        o.items.forEach((itm) => { sum += parseFloat(itm.inventory.price); });
+        o.amount = sum;
+      });
+      res.render('order', {
         orders: orders
       });
-    });
+    }); */
+
   }
 };
 
@@ -44,7 +105,7 @@ exports.register_post = (req, res) => {
         email: req.body.email
       }
     }).then(user => {
-      if(user !== null) {
+      if (user !== null) {
         req.flash('danger', 'A user with that email address already exists.');
         res.render('register');
       } else {
@@ -54,7 +115,7 @@ exports.register_post = (req, res) => {
           email: req.body.email,
           password: req.body.password,
         };
-    
+
         const regInfo = {
           organization: req.body.organization,
           department: req.body.department,
@@ -67,9 +128,9 @@ exports.register_post = (req, res) => {
           phone: req.body.phone,
           payment: req.body.payment
         };
-    
+
         let { first_name, last_name, email, password } = newUser;
-    
+
         bcrypt.genSalt(10, (err, salt) => {
           bcrypt.hash(password, salt, (err, hash) => {
             if (err) {
@@ -302,7 +363,7 @@ exports.forgot_post = (req, res, next) => {
       });
     },
     function (token, user, done) {
-      var err = mailer.sendForgotPassword(req, user, token); 
+      var err = mailer.sendForgotPassword(req, user, token);
       req.flash('success', 'An e-mail has been sent to ' + user.email + ' with further instructions.');
       done(err, 'done');
     }
@@ -313,10 +374,10 @@ exports.forgot_post = (req, res, next) => {
 };
 
 exports.new_password = (req, res) => {
-  models.User.findOne({ 
+  models.User.findOne({
     where: {
       resetPasswordToken: req.params.token,
-      resetPasswordExpires: { [models.Op.gt]: Date.now() } 
+      resetPasswordExpires: { [models.Op.gt]: Date.now() }
     }
   })
     .then(() => {
@@ -341,10 +402,10 @@ exports.reset_confirm = (req, res) => {
   } else {
     async.waterfall([
       function (done) {
-        models.User.findOne({ 
+        models.User.findOne({
           where: {
-            resetPasswordToken: req.params.token, 
-            resetPasswordExpires: { [models.Op.gt]: Date.now() } 
+            resetPasswordToken: req.params.token,
+            resetPasswordExpires: { [models.Op.gt]: Date.now() }
           }
         })
           .then(user => {
@@ -383,52 +444,52 @@ exports.reset_confirm = (req, res) => {
 };
 
 exports.client_view_get = (req, res) => {
-  if(Object.keys(req.query).length === 0) {
+  if (Object.keys(req.query).length === 0) {
     req.term = undefined;
   } else {
-    req.term= req.query;
+    req.term = req.query;
   }
-  client_view_get_internal(req,res);
+  client_view_get_internal(req, res);
 };
 
 function client_view_get_internal(req, res) {
-  let search  = req.query;
+  let search = req.query;
   models.User.findAll({
     where: {
       account_type: 'client',
       [models.Op.or]: [
         {
           first_name: {
-            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+            [models.Op.like]: search && search.term ? '%' + search.term + '%' : '%%'
           }
         },
         {
           last_name: {
-            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+            [models.Op.like]: search && search.term ? '%' + search.term + '%' : '%%'
           }
         },
         {
           email: {
-            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+            [models.Op.like]: search && search.term ? '%' + search.term + '%' : '%%'
           }
         },
         {
           organization: {
-            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+            [models.Op.like]: search && search.term ? '%' + search.term + '%' : '%%'
           }
         },
         {
           research_area: {
-            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+            [models.Op.like]: search && search.term ? '%' + search.term + '%' : '%%'
           }
         },
         {
           address: {
-            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+            [models.Op.like]: search && search.term ? '%' + search.term + '%' : '%%'
           },
-        },{
+        }, {
           zip: {
-            [models.Op.like]: search && search.term ? '%'+search.term+'%' : '%%'
+            [models.Op.like]: search && search.term ? '%' + search.term + '%' : '%%'
           }
         }
       ]
@@ -547,7 +608,7 @@ exports.send_post = (req, res) => {
     subject: req.body.subject,
     html: output
   };
-  
+
   mailer.sendContact(message, req, res);
 };
 
@@ -563,7 +624,7 @@ exports.edit_account_get = (req, res) => {
   }).catch(err => logger.error(err));
 };
 
-exports.edit_account_post =  (req, res) => {
+exports.edit_account_post = (req, res) => {
   models.User.findOne({
     where: {
       id: req.user.id
@@ -582,11 +643,11 @@ exports.edit_account_post =  (req, res) => {
       zip: req.body.zip,
       phone: req.body.phone,
       po_num: req.body.po_num
-    }).then(() => { 
+    }).then(() => {
       req.flash('success', 'Your account has been successfully updated!');
       res.render('account', {
         user: user
-      }); 
+      });
     })
       .catch(err => logger.error(err));
   })
@@ -614,7 +675,7 @@ exports.edit_account_password = (req, res) => {
       user: req.user
     });
   } else {
-    models.User.findOne({ 
+    models.User.findOne({
       where: {
         id: req.user.id
       }
@@ -630,7 +691,7 @@ exports.edit_account_password = (req, res) => {
             })
               .then(() => {
                 req.flash('success', 'You password has been changed!');
-                res.render('account',{
+                res.render('account', {
                   user: user
                 });
               })
