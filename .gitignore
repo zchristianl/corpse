@@ -5,4 +5,4 @@
 coverage/
 *.pdf
 /stripe-cli-1.2.2
-custom.css
+/public/css/custom.css
