@@ -121,7 +121,7 @@ block content
                 each note in order.notes
                     tr(id="note_"+note.id)
                         td
-                            b=note.user.first_name + note.user.last_name
+                            b=note.user.first_name + " " + note.user.last_name
                             br
                             =(new Date(note.createdAt)).toLocaleString('en-US', { month: 'long', day: '2-digit', year: 'numeric' })
                         td=note.message

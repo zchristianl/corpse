@@ -100,7 +100,7 @@ app.get('*', function (req, res, next) {
 });
 
 app.get('/', global.ensureAuthenticated, (req, res) => {
-  res.render('layout');
+  res.redirect('/users/dashboard');
 });
 
 /*

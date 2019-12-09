@@ -618,7 +618,7 @@ exports.send_post = (req, res) => {
     `;
 
   var message = {
-    to: req.body.email,
+    to: process.env.SELLER_EMAIL,
     from: 'contact@proteinct.com',
     subject: req.body.subject,
     html: output
