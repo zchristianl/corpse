@@ -25,11 +25,7 @@ const Op = Sequelize.Op;
  * Model Registration Step 1
  * Declare variable and call (db, Sequelize) on it based on ProjectRequire
 */
-const Building = ProjectRequire.building(db, Sequelize);
 const Department = ProjectRequire.department(db, Sequelize);
-const Institution = ProjectRequire.institution(db, Sequelize);
-const Lab = ProjectRequire.lab(db, Sequelize);
-const Location = ProjectRequire.location(db, Sequelize);
 const User = ProjectRequire.user(db, Sequelize);
 const Inventory = ProjectRequire.inventory(db, Sequelize);
 const Order = ProjectRequire.order(db, Sequelize);
@@ -41,11 +37,7 @@ const Note = ProjectRequire.note(db, Sequelize);
 let models = {
   db,
   Op,
-  Building,
   Department,
-  Institution,
-  Lab,
-  Location,
   User,
   Inventory,
   Order,
