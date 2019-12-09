@@ -1,6 +1,7 @@
 const models = require('../config/database');
 const logger = require('../utils/logger');
 const {createInvoiceEmail } = require('../utils/createInvoice.js');
+const passport = require('passport');
 require('dotenv').config();
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
@@ -147,6 +148,9 @@ exports.cancel_get = (req, res) => {
 // On successful payment add payment info to order payment info.
 // Call function to create Invoice
 const handleCheckoutSession = (session) => {
+  let amount_total = 0;
+  passport.authenticate('cookie', { session: false});
+
   models.Order.findOne({
     where: {
       checkout_id: session.id
@@ -158,12 +162,16 @@ const handleCheckoutSession = (session) => {
       logger.error(err);
     });
 
+    for(let i = 0; i  < session.display_items.length; i++) {
+      amount_total += session.display_items[i].amount / 100;
+    }
+
     models.Payment.create({
       // Needs to change
       reference_number: session.payment_intent,
       method: 'cc',
       // Session is in cents / 100 to save dollars
-      amount: session.display_items[0].amount / 100,
+      amount: amount_total,
       orderId: order.id
     });
   });

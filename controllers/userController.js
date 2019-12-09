@@ -159,7 +159,7 @@ exports.register_post = (req, res) => {
               .then(user => makeAssociations(user, regInfo))
               .then(() => {
                 req.flash('success', 'You are now registered and can log in');
-                res.redirect('/');
+                res.redirect('/users/login');
               })
               .catch(err => logger.error(err));
           });
@@ -290,46 +290,11 @@ exports.logout_post = (req, res) => {
   res.redirect('/users/login');
 };
 
-// Do not neeed LOCATION, LAB, DEPARTMENT, BUILDING
 const makeAssociations = (user, regInfo) => {
-  models.Lab.create({
+  models.Department.create({
     userId: user.get('id'),
-    pi_first: 'pi first',
-    pi_last: 'pi last',
-    pi_email: 'pi_email@gmail.com',
-    phone: '18471234567'
+    name: regInfo.department
   })
-    .then(lab => {
-      models.Location.create({
-        userId: user.get('id'),
-        labId: lab.get('id'),
-        room: 12,
-      })
-        .then(location => {
-          models.Building.create({
-            locationId: location.get('id'),
-            name: regInfo.department,
-            address: regInfo.address1,
-            zip_code: regInfo.zip_code
-          })
-            .then(() => {
-              models.Institution.create({
-                locationId: location.get('id'),
-                name: regInfo.organization,
-                address: regInfo.address1,
-                city: regInfo.city,
-                post_code: regInfo.zip_code,
-                state: regInfo.state
-              });
-            });
-        });
-    })
-    .then(() => {
-      models.Department.create({
-        userId: user.get('id'),
-        name: regInfo.department
-      });
-    })
     .catch(err => logger.error(err));
 };
 
