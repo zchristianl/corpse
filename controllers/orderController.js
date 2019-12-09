@@ -20,6 +20,7 @@ function order_view_get_core(req, res, view, customuser,viewobj) {
     ]
   })
     .then((orders) => {
+      orders.usertype = req.user.account_type;
       orders.forEach((o) => {
         let sum = 0;
         o.items.forEach((itm) => { sum += parseFloat(itm.inventory.price); });
@@ -31,7 +32,7 @@ function order_view_get_core(req, res, view, customuser,viewobj) {
       res.render(view, temp);
     })
     .catch(err => logger.error(err));
-};
+}
 
 exports.order_view_get = (req, res) => {
   order_view_get_core(req, res, 'order');
@@ -137,9 +138,10 @@ exports.order_remove = (req, res) => {
   //AUTHORIZE ACTION
   models.Order.destroy({
     where: {
-      id: req.body.id
+      id: req.params.id
     }
-  }).then(res.redirect('NO_EXIST')).catch(err => logger.err(err));
+  }).then(() => res.send(JSON.stringify({ redirect: '/order', status: 200 })))
+    .catch(err => logger.error(err));
 };
 
 exports.order_modify = (req, res) => {

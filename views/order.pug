@@ -28,3 +28,25 @@ block content
               form(method="GET" action="/order/view/"+order.id style="margin-right: 5px; float:left;")
                 button.btn.btn-primary(type="submit")
                   span.far.fa-eye.fa-sm
+              button.btn.btn-danger.deleteButton(type="submit" name="delete_item" value=order.id data-toggle='modal' data-target='#DeleteModal')
+                span.fas.fa-trash.fa-sm
+  if orders.usertype == "seller"
+    .container
+      #DeleteModal.modal.fade(tabindex="-1" role="dialog" aria-labelledby="DeleteModal" aria-hidden="true")
+        .modal-dialog
+          .modal-content
+            .modal-header
+              h5.modal-title Delete
+              button.close(type="button" data-dismiss="modal" aria-hidden="true") &times;
+            .modal-body
+              p
+                | Click &apos;Delete&apos; to 
+                strong permanently
+                |  delete this record. Click &apos;Cancel&apos; to cancel your action.
+            .modal-footer
+              button.btn.btn-secondary(type="button" data-dismiss="modal") Cancel
+              button.btn.btn-danger.deleteModal(type="button" data-dismiss="modal" id="delete" value=1) Delete
+
+  script(src='/js/order.js')
+
+
