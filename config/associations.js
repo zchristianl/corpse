@@ -1,9 +1,5 @@
 module.exports = {
   run: (models)=>{
-    models.Location.belongsTo(models.Building);
-    models.Location.belongsTo(models.Institution);
-    models.Lab.belongsTo(models.Location);
-    models.Lab.hasMany(models.User);
     models.User.belongsTo(models.Department);
     models.Order.belongsTo(models.User);
     models.User.hasMany(models.Order);
