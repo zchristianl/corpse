@@ -1,6 +1,7 @@
 const models = require('../config/database');
 const logger = require('../utils/logger');
 const {createInvoiceEmail } = require('../utils/createInvoice.js');
+const passport = require('passport');
 require('dotenv').config();
 
 const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
@@ -147,6 +148,9 @@ exports.cancel_get = (req, res) => {
 // On successful payment add payment info to order payment info.
 // Call function to create Invoice
 const handleCheckoutSession = (session) => {
+
+  passport.authenticate('cookie', { session: false});
+
   models.Order.findOne({
     where: {
       checkout_id: session.id
