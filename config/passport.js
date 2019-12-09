@@ -1,5 +1,6 @@
 const bcrypt = require('bcryptjs');
 const LocalStrategy = require('passport-local').Strategy;
+const CookieStrategy = require('passport-cookie');
 const {User} = require('../config/database');
 
 module.exports = (passport) => {
@@ -25,7 +26,7 @@ module.exports = (passport) => {
         }
       });
     });
-  }
+  },
   ));
 
   passport.serializeUser(function(user, done) {
@@ -43,4 +44,15 @@ module.exports = (passport) => {
       }
     });
   });
+
+  passport.use(new CookieStrategy(
+    function(token, done) {
+      User.findByToken({ token: token }, function(err, user) {
+        if (err) { return done(err); }
+        if (!user) { return done(null, false); }
+        return done(null, user);
+      });
+    }
+  ));
 };
+
