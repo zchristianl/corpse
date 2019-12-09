@@ -2,8 +2,12 @@ const models = require('../config/database');
 const logger = require('../utils/logger');
 const mailer = require('../utils/mail');
 
-exports.order_view_get = (req, res) => {
+function order_view_get_core(req, res, view, customuser,viewobj) {
   models.Order.findAll({
+
+    where: {
+      userId:  customuser ? customuser : (req.user.account_type == 'seller' ? {[models.Op.gte]:0} :req.user.id)
+    },
     include: [
       {
         model: models.Item, include: [{
@@ -21,12 +25,19 @@ exports.order_view_get = (req, res) => {
         o.items.forEach((itm) => { sum += parseFloat(itm.inventory.price); });
         o.amount = sum;
       });
-      res.render('order', {
-        orders: orders
-      });
+      let temp = {};
+      temp.orders = orders;
+      if (viewobj) {temp[viewobj[0]] = viewobj[1][viewobj[0]];}
+      res.render(view, temp);
     })
     .catch(err => logger.error(err));
 };
+
+exports.order_view_get = (req, res) => {
+  order_view_get_core(req, res, 'order');
+};
+
+exports.order_view_get_core_wrapper = (req,res,view,customuser,viewobj) => order_view_get_core(req,res,view,customuser,viewobj);
 
 exports.order_view_get_client = (req, res) => {
 

@@ -7,13 +7,16 @@ require('dotenv').config();
 const async = require('async');
 const crypto = require('crypto');
 const mailer = require('../utils/mail');
+const orderMethods = require('./orderController');
 
 exports.register_get = (req, res) => {
   res.render('register');
 };
 
 exports.dashboard_get = (req, res) => {
-  if (req.user.account_type == 'seller') {
+  orderMethods.order_view_get_core_wrapper(req,res,req.user.account_type == 'seller' ? 'seller-dashboard': 'client-dashboard');
+
+  /* if (req.user.account_type == 'seller') {
 
     models.Order.findAll({
       where: {
@@ -69,9 +72,9 @@ exports.dashboard_get = (req, res) => {
           orders: orders
         });
       })
-      .catch(err => logger.error(err));
+      .catch(err => logger.error(err)); *****************/
 
-    /* models.Order.findAll({
+  /* models.Order.findAll({
        model: models.Item, include: [{
         model: models.Inventory
       }], order: [
@@ -88,7 +91,7 @@ exports.dashboard_get = (req, res) => {
       });
     }); */
 
-  }
+  //}
 };
 
 exports.register_post = (req, res) => {
@@ -455,6 +458,11 @@ exports.client_view_get = (req, res) => {
 function client_view_get_internal(req, res) {
   let search = req.query;
   models.User.findAll({
+    include: [{model: models.Order,
+      include: [{model: models.Item, include: [{
+        model: models.Inventory
+      }]}]
+    }],
     where: {
       account_type: 'client',
       [models.Op.or]: [
@@ -496,9 +504,21 @@ function client_view_get_internal(req, res) {
     }, order: [
       ['last_name', 'ASC']
     ]
-  }).then(users => res.render('client', {
-    users: users
-  }));
+  }).then((users) => {
+
+    users.forEach((u)=>{
+      let sum = 0;
+      u.orders.forEach((o)=>{
+        o.items.forEach((itm)=>{
+          sum += parseFloat(itm.inventory.price);
+        });
+      });
+      u.due = sum;
+    });
+    res.render('client', {
+      users: users
+    });
+  });
 }
 
 exports.client_read_get = (req, res) => {
@@ -506,14 +526,9 @@ exports.client_read_get = (req, res) => {
     where: {
       id: req.params.id
     }
-  }).then(client => models.Order.findAll({
-    where: {
-      userId: client.id
-    }
-  }).then(orders => res.render('client-r', {
-    client: client,
-    orders: orders
-  })));
+  }).then((client) => {
+    orderMethods.order_view_get_core_wrapper(req,res,'client-r',req.params.id,['client',{client:client}]);
+  });
 };
 
 exports.client_edit_get = (req, res) => {
