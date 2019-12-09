@@ -2,8 +2,12 @@ const models = require('../config/database');
 const logger = require('../utils/logger');
 const mailer = require('../utils/mail');
 
-exports.order_view_get = (req, res) => {
+function order_view_get_core(req, res, view, customuser,viewobj) {
   models.Order.findAll({
+
+    where: {
+      userId:  customuser ? customuser : (req.user.account_type == 'seller' ? {[models.Op.gte]:0} :req.user.id)
+    },
     include: [
       {
         model: models.Item, include: [{
@@ -16,17 +20,25 @@ exports.order_view_get = (req, res) => {
     ]
   })
     .then((orders) => {
+      orders.usertype = req.user.account_type;
       orders.forEach((o) => {
         let sum = 0;
         o.items.forEach((itm) => { sum += parseFloat(itm.inventory.price); });
         o.amount = sum;
       });
-      res.render('order', {
-        orders: orders
-      });
+      let temp = {};
+      temp.orders = orders;
+      if (viewobj) {temp[viewobj[0]] = viewobj[1][viewobj[0]];}
+      res.render(view, temp);
     })
     .catch(err => logger.error(err));
+}
+
+exports.order_view_get = (req, res) => {
+  order_view_get_core(req, res, 'order');
 };
+
+exports.order_view_get_core_wrapper = (req,res,view,customuser,viewobj) => order_view_get_core(req,res,view,customuser,viewobj);
 
 exports.order_view_get_client = (req, res) => {
 
@@ -126,9 +138,10 @@ exports.order_remove = (req, res) => {
   //AUTHORIZE ACTION
   models.Order.destroy({
     where: {
-      id: req.body.id
+      id: req.params.id
     }
-  }).then(res.redirect('NO_EXIST')).catch(err => logger.err(err));
+  }).then(() => res.send(JSON.stringify({ redirect: '/order', status: 200 })))
+    .catch(err => logger.error(err));
 };
 
 exports.order_modify = (req, res) => {

@@ -15,7 +15,6 @@ block content
       tr
         th(scope="col" style="width: 40%;") Name
         th(scope="col" style="width: 20%;") Customer Since
-        th(scope="col" style="width: 10%;") Paid
         th(scope="col" style="width: 10%;") Due
         th(scope="col" style="width: 10%; text-align: center;")
     tbody
@@ -27,8 +26,7 @@ block content
             =user.organization
           -var date = (new Date(user.createdAt)).toLocaleString('en-US', { month: 'long', year: 'numeric' });
           td=date
-          td $0.00
-          td $0.00
+          td=user.due
           td(style="text-align: center;")
             a.btn.btn-primary(href='/users/view/'+user.id role="button" style="margin-right: 5px;")
               span.far.fa-eye.fa-sm
