@@ -1,6 +1,6 @@
 {
   "name": "corpse",
-  "version": "3.0.3",
+  "version": "3.0.4",
   "description": "CS506 Project",
   "main": "app.js",
   "scripts": {
