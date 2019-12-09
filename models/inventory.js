@@ -6,10 +6,10 @@ module.exports = (sequelize, type) => {
       autoIncrement: true
     },
     name: {
-      type: type.STRING,
+      type: type.STRING(256),
       allowNull: false,
     },
-    category: type.STRING,
+    category: type.STRING(256),
     type: type.ENUM('PRODUCT', 'SERVICE'),
     description: {
       type: type.TEXT,
