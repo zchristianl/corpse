@@ -25,21 +25,24 @@ block content
     #orders.tab-pane.fade.show.active(role='tabpanel', aria-labelledby='orders-tab')
       br
       table.table.table-striped
-        thead
-          tr
-            th(scope="col") Date Updated
-            th(scope="col") Total
-            th(scope="col") Status
-            th(scope="col")
-        each order in orders
-          tr
-            -var date = (new Date(order.updatedAt)).toLocaleString('en-US', { month: 'long', day: '2-digit', year: 'numeric' });
-            td=date
-            td="$"+order.amount
-            td=order.state
-            td
-              form(method="GET" action="/order/view/"+order.id style="margin-right: 5px; float:left;")
-                button.btn.btn-success(type="submit") View
+        if orders.length > 0
+          thead
+            tr
+              th(scope="col") Date Updated
+              th(scope="col") Total
+              th(scope="col") Status
+              th(scope="col")
+          each order in orders
+            tr
+              -var date = (new Date(order.updatedAt)).toLocaleString('en-US', { month: 'long', day: '2-digit', year: 'numeric' });
+              td=date
+              td="$"+order.amount
+              td=order.state
+              td
+                form(method="GET" action="/order/view/"+order.id style="margin-right: 5px; float:left;")
+                  button.btn.btn-success(type="submit") View
+        else
+          p There are no orders.
     #info.tab-pane.fade(role='tabpanel', aria-labelledby='info-tab' style='padding: 5px;')
       b Client Registered: 
       |#{(client.password != null) ? "Yes" : "No"}

@@ -103,7 +103,7 @@ block content
                 td
                     input.form-control(id="item_amount" type='number' value='' step=".01" min="0.01" maxlength='25' required disabled)
                 td
-                    input.btn.btn-success(type="submit" id="submit_item_button" style="float: left;")
+                    input.btn.btn-success(type="submit" id="submit_item_button" style="float: left;" value="Submit")
     br
 
     button.btn.btn-primary(id="add_note" style="float: right;" data-toggle="tooltip" data-placement="top" title=(user.account_type === "seller" ? "Add/Delete Notes" : "Add Notes"))
@@ -123,7 +123,7 @@ block content
                 each note in order.notes
                     tr(id="note_"+note.id)
                         td
-                            b=note.user.first_name + " " note.user.last_name
+                            b=note.user.first_name + " " + note.user.last_name
                             br
                             =(new Date(note.createdAt)).toLocaleString('en-US', { month: 'long', day: '2-digit', year: 'numeric' })
                         td=note.message
@@ -140,7 +140,7 @@ block content
                 td(colspan=2)
                     textarea.form-control(name='message' id='message' maxlength="500" required)
                 td
-                    input.btn.btn-success(type="submit" id="submit_note_button" style="float: left;")
+                    input.btn.btn-success(type="submit" id="submit_note_button" style="float: left;" value="Submit")
     br
 
     if user.account_type === "seller"
@@ -185,7 +185,7 @@ block content
                     td
                         input.form-control(name='amount' id="amount" type='number' value=(entry ? entry.price : '') step=".01" min="0.01" maxlength='25' required)
                     td
-                        input.btn.btn-success(type="submit" id="submit_payment_button" style="float: right;")
+                        input.btn.btn-success(type="submit" id="submit_payment_button" style="float: right;" value="Submit")
     br
 
     if user.account_type === "seller"
