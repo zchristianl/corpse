@@ -11,6 +11,8 @@ block content
                     return 'Estimate';
                 case 'Estimate':
                     return 'ESTIMATE';
+                case 'estimate':
+                    return 'Estimate';
                 case 'IN-PROGRESS':
                     return 'In-Progress';
                 case 'In-Progress':
@@ -69,7 +71,7 @@ block content
         span(id='intended_use')=stdName(order.intended_use)
     br
     if user.account_type === "seller"
-        button.btn.btn-primary(style="float: right;" id="edit_button")
+        button.btn.btn-primary(style="float: right;" id="edit_button" data-toggle="tooltip" data-placement="top" title="Edit Order")
             span.far.fa-edit.fa-sm
     br
     h5 Items
@@ -104,9 +106,9 @@ block content
                     input.btn.btn-success(type="submit" id="submit_item_button" style="float: left;")
     br
 
-    button.btn.btn-primary(id="add_note" style="float: right;")
+    button.btn.btn-primary(id="add_note" style="float: right;" data-toggle="tooltip" data-placement="top" title=(user.account_type === "seller" ? "Add/Delete Notes" : "Add Notes"))
         span.far.fa-edit.fa-sm
-        
+
     br
 
     h5 Notes
@@ -121,7 +123,7 @@ block content
                 each note in order.notes
                     tr(id="note_"+note.id)
                         td
-                            b=note.user.first_name + note.user.last_name
+                            b=note.user.first_name + " " note.user.last_name
                             br
                             =(new Date(note.createdAt)).toLocaleString('en-US', { month: 'long', day: '2-digit', year: 'numeric' })
                         td=note.message
@@ -142,8 +144,12 @@ block content
     br
 
     if user.account_type === "seller"
-        button.btn.btn-primary(id="add_payment" style="float: right;")
+        button.btn.btn-primary(id="add_payment" style="float: right;" data-toggle="tooltip" data-placement="top" title="Add/Delete Payments")
             span.far.fa-edit.fa-sm
+        if order.state !== 'COMPLETE'
+            form(method="GET" action="/payment/invoice/"+order.id style="float: right;")
+                button.btn.btn-secondary(type="submit" style="margin-right: 5px; float: right;" data-toggle="tooltip" data-placement="top" title="Send Invoice")
+                    span.far.fa-envelope.fa-sm
     br
 
     h5 Payments
@@ -162,8 +168,8 @@ block content
                         td=stdName(payment.method)
                         td="$"+payment.amount
                         td(name="pay_ops" hidden)
-                                    button.btn.btn-danger(name="delete-payment-confirm" style="margin: 5px 0 0 0;" value=payment.id data-toggle="tooltip" data-placement="top" title="Delete")
-                                        span.fas.fa-trash-alt.fa-sm
+                            button.btn.btn-danger(name="delete-payment-confirm" style="margin: 5px 0 0 0;" value=payment.id data-toggle="tooltip" data-placement="top" title="Delete")
+                                span.fas.fa-trash-alt.fa-sm
             else
                 p There are no payments.
             tr(id="new_payment_row" hidden)
@@ -181,9 +187,6 @@ block content
                     td
                         input.btn.btn-success(type="submit" id="submit_payment_button" style="float: right;")
     br
-    if order.state !== 'COMPLETE' && user.account_type === 'seller'
-        form(method="GET" action="/payment/invoice/"+order.id style="margin-right: 5px; float:right;")
-            button.btn.btn-primary(type="submit") Send Invoice
 
     if user.account_type === "seller"
         script(src='/js/order-seller.js')
