@@ -163,7 +163,7 @@ const handleCheckoutSession = (session) => {
     });
 
     for(let i = 0; i  < session.display_items.length; i++) {
-      amount_total += session.display_items[0].amount / 100;
+      amount_total += session.display_items[i].amount / 100;
     }
 
     models.Payment.create({
