@@ -159,7 +159,7 @@ exports.register_post = (req, res) => {
               .then(user => makeAssociations(user, regInfo))
               .then(() => {
                 req.flash('success', 'You are now registered and can log in');
-                res.redirect('/');
+                res.redirect('/users/login');
               })
               .catch(err => logger.error(err));
           });
