@@ -480,7 +480,7 @@ function client_view_get_internal(req, res) {
         });
 
         o.payments.forEach((p)=>{
-          sub += p.amount;
+          sub += parseFloat(p.amount);
         });
       });
       u.due = sum;

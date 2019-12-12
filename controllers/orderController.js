@@ -26,7 +26,7 @@ function order_view_get_core(req, res, view, customuser,viewobj) {
         let sub = 0;
         o.items.forEach((itm) => { sum += parseFloat(itm.inventory.price); });
         o.payments.forEach((p)=>{
-          sub += p.amount;
+          sub += parseFloat(p.amount);
         });
         o.amount = sum;
         o.paid = sub;
