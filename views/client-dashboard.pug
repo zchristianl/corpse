@@ -20,10 +20,7 @@ block content
               -var date = (new Date(order.updatedAt)).toLocaleString('en-US', { month: 'long', day: '2-digit', year: 'numeric' });
               td=order.id
               td=date
-              if order.amount == 0
-                td="TBD"
-              else
-                td="$"+order.amount
+              td="$"+(order.amount).toFixed(2)
               td=(order.state).charAt(0) + (order.state).substring(1, order.state.length).toLowerCase()
               td(style="text-align: center;")
                 if order.state == 'PAYMENT' && order.payment == 'cc'
