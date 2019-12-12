@@ -22,7 +22,7 @@ block content
                   b=order.user.first_name + " " + order.user.last_name
                   |#[br]
                   =order.user.organization
-                td="$"+order.amount
+                td="$"+(order.amount).toFixed(2)
                 td=(order.state).charAt(0) + (order.state).substring(1, order.state.length).toLowerCase()
                 td
                   form(method="GET" action="/order/view/"+order.id style="margin-right: 5px; float:left;")
