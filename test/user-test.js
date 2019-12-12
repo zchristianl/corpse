@@ -8,34 +8,6 @@ var expect = require('chai').expect;
 
 chai.use(chaiHttp);
 
-const userController = require('../controllers/userController');
-
-var req2 = {
-  body: { id: '1', state: '1', type: '1', amount: '1', user_id: '1', message: 'asdf', order_id: '1', comments: '1' },
-  params: { id: '1', token: '1' },
-  userid: '1',
-  user: { id: '1', account_type: '1' },
-  query: '1',
-  term: '1'
-};
-
-var req4 = {
-  body: { state: '1', type: '1', amount: '1', user_id: '1', message: 'asdf', order_id: '1', comments: '1' },
-  params: { token: '1' },
-  userid: '1',
-  user: { id: '1', account_type: '1' },
-  query: '',
-  term: '1'
-};
-
-var res2 = {
-  sendStatus: function () { },
-  end: function () { },
-  render: function () { },
-  send: function () { },
-  redirect: function() {}
-};
-
 describe('user tests', () => {
   it('/user/login GET', function (done) {
     this.timeout(0);
@@ -300,70 +272,8 @@ describe('user tests', () => {
         expect(response.text).to.have.string('Your message has been sent!');
         done();
       });
+
   });
-  it('User Test: new post', function () {
-    userController.client_new_post(req2, res2);
-    // expect(res.status).to.equal(200);
-  });
-  it('User Test: new password', function () {
-    userController.new_password(req2, res2);
-    // expect(res.status).to.equal(200);
-  });
-  it('User Test: reset confirm', function () {
-    userController.reset_confirm(req2, res2);
-    // expect(res.status).to.equal(200);
-  });
-  it('User Test: client view get', function () {
-    //userController.client_view_get(req2, res2);
-    // expect(res.status).to.equal(200);
-  });
-  it('User Test: client read get', function () {
-    userController.client_read_get(req2, res2);
-    // expect(res.status).to.equal(200);
-  });
-  it('User Test: client edit get', function () {
-    userController.client_edit_get(req2, res2);
-    // expect(res.status).to.equal(200);
-  });
-  it('User Test: client create get', function () {
-    userController.client_create_get(req2, res2);
-    // expect(res.status).to.equal(200);
-  });
-  it('User Test: client edit post', function () {
-    userController.client_edit_post(req2, res2);
-    // expect(res.status).to.equal(200);
-  });
-  it('User Test: client delete post', function () {
-    userController.client_delete_post(req2, res2);
-    // expect(res.status).to.equal(200);
-  });
-  it('User Test: edit account get', function () {
-    userController.edit_account_get(req2, res2);
-    // expect(res.status).to.equal(200);
-  });
-  it('User Test: edit account post', function () {
-    userController.edit_account_post(req2, res2);
-    // expect(res.status).to.equal(200);
-  });
-  it('User Test: edit accoutn get', function () {
-    userController.edit_account_get(req2, res2);
-    // expect(res.status).to.equal(200);
-  });
-  it('User Test: account get', function () {
-    userController.account_get(req2, res2);
-    // expect(res.status).to.equal(200);
-  });
-  it('User Test: edit account password', function () {
-    userController.edit_account_password(req2, res2);
-    // expect(res.status).to.equal(200);
-  });
-  it('User Test: client view get', function () {
-    //userController.client_view_get(req3, res2);
-    // expect(res.status).to.equal(200);
-  });
-  it('User Test: client edit post', function () {
-    userController.client_edit_post(req4, res2);
-    // expect(res.status).to.equal(200);
-  });
+
 });
 
