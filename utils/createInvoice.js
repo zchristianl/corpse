@@ -91,6 +91,7 @@ function generateInvoiceTable(doc, invoice) {
     doc,
     invoiceTableTop,
     'Item',
+    '',
     'Unit Cost',
     'Quantity',
     'Line Total'
@@ -105,6 +106,7 @@ function generateInvoiceTable(doc, invoice) {
       doc,
       position,
       item.item,
+      item.description,
       formatCurrency(item.amount / item.quantity),
       item.quantity,
       formatCurrency(item.amount)
@@ -164,6 +166,7 @@ function generateTableRow(
   doc,
   y,
   item,
+  description,
   unitCost,
   quantity,
   lineTotal
@@ -171,6 +174,7 @@ function generateTableRow(
   doc
     .fontSize(10)
     .text(item, 50, y)
+    .text('', 150, y)
     .text(unitCost, 280, y, { width: 90, align: 'right' })
     .text(quantity, 370, y, { width: 90, align: 'right' })
     .text(lineTotal, 0, y, { align: 'right' });
