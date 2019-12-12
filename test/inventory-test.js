@@ -3,17 +3,6 @@ var chaiHttp = require('chai-http');
 var app = require('../app');
 var expect = require('chai').expect;
 
-const inventoryController = require('../controllers/inventoryController');
-
-var req = {
-  body : {id: '1', user_id: '1', message:'asdf', order_id: '1'}
-};
-
-var res = {
-  sendStatus: function(){},
-  end: function(){}
-};
-
 chai.use(chaiHttp);
 
 describe('inventory-tests', () => {
@@ -158,13 +147,5 @@ describe('inventory-tests', () => {
         done();
       });
   });
-  it('Inventory Test: get sellable items', function () {
-    try{
-      inventoryController.inventory_get_sellable_items(req, res);
-    }
-    catch(err){
-      console.log(err);
-    }
-    // expect(res.status).to.equal(200);
-  });
+
 });

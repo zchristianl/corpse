@@ -1,11 +1,11 @@
 {
   "name": "corpse",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "description": "CS506 Project",
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "test": "nyc --reporter=html -x '/config/passport.js' mocha --exit",
+    "test": "nyc --reporter=html mocha --exit",
     "lint": "eslint ./"
   },
   "repository": {
