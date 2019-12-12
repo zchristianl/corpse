@@ -14,7 +14,7 @@ function order_view_get_core(req, res, view, customuser,viewobj) {
           model: models.Inventory
         }]
       },
-      { model: models.User }
+      { model: models.User }, {model: models.Payment}
     ], order: [
       ['createdAt', 'DESC']
     ]
@@ -23,9 +23,15 @@ function order_view_get_core(req, res, view, customuser,viewobj) {
       orders.usertype = req.user.account_type;
       orders.forEach((o) => {
         let sum = 0;
+        let sub = 0;
         o.items.forEach((itm) => { sum += parseFloat(itm.inventory.price); });
+        o.payments.forEach((p)=>{
+          sub += p.amount;
+        });
         o.amount = sum;
+        o.paid = sub;
       });
+
       let temp = {};
       temp.orders = orders;
       if (viewobj) {temp[viewobj[0]] = viewobj[1][viewobj[0]];}

@@ -26,7 +26,8 @@ block content
             =user.organization
           -var date = (new Date(user.createdAt)).toLocaleString('en-US', { month: 'long', year: 'numeric' });
           td=date
-          td="$"+user.due
+          -var left = (parseFloat(user.due)-parseFloat(user.paid))
+          td="$"+left
           td(style="text-align: center;")
             a.btn.btn-primary(href='/users/view/'+user.id role="button" style="margin-right: 5px;")
               span.far.fa-eye.fa-sm

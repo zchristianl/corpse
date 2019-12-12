@@ -426,7 +426,7 @@ function client_view_get_internal(req, res) {
     include: [{model: models.Order,
       include: [{model: models.Item, include: [{
         model: models.Inventory
-      }]}]
+      }]},{model: models.Payment}]
     }],
     where: {
       account_type: 'client',
@@ -473,12 +473,18 @@ function client_view_get_internal(req, res) {
 
     users.forEach((u)=>{
       let sum = 0;
+      let sub = 0;
       u.orders.forEach((o)=>{
         o.items.forEach((itm)=>{
           sum += parseFloat(itm.inventory.price);
         });
+
+        o.payments.forEach((p)=>{
+          sub += p.amount;
+        });
       });
       u.due = sum;
+      u.paid = sub;
     });
     res.render('client', {
       users: users
